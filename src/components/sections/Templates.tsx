@@ -11,21 +11,30 @@ const templates: Template[] = [
   {
     name: 'Simple Preavis',
     description: 'Clean and minimalist design perfect for modern industries',
-    image: '/simple-preavis-0.1.0-small.webp',
+    image: '/simple-preavis.png',
   },
   {
     name: 'Formalettre',
     description: 'Professional and traditional format ideal for corporate roles',
-    image: '/formalettre-0.3.0-small.webp',
+    image: '/formalettre.png',
   },
   {
     name: 'Fireside',
     description: 'Warm and approachable style great for creative positions',
-    image: '/fireside-1.0.0-small.webp',
+    image: '/fireside.png',
+  },
+  {
+    name: 'Letter Pro',
+    description: 'DIN 5008 compliant professional letter template for formal correspondence',
+    image: '/letter-pro.png',
   },
 ]
 
 const Templates = () => {
+  // Duplicate templates multiple times for seamless infinite loop
+  // We need enough duplicates to ensure smooth scrolling in both directions
+  const duplicatedTemplates = [...templates, ...templates, ...templates, ...templates]
+
   return (
     <section id="templates" className="templates">
       <div className="container">
@@ -35,23 +44,19 @@ const Templates = () => {
             <p>Choose from our collection of professionally designed PDF templates</p>
           </div>
         </ScrollAnimation>
-        <div className="templates-grid">
-          {templates.map((template, index) => (
-            <ScrollAnimation 
-              key={index} 
-              delay={index * 120}
-              className={index % 2 === 0 ? 'scroll-slide-left' : 'scroll-slide-right'}
-            >
-              <div className="template-card">
-                <div className="template-image-wrapper">
-                  <img src={template.image} alt={template.name} className="template-image" />
-                </div>
-                <div className="template-info">
-                  <h3>{template.name}</h3>
-                  <p>{template.description}</p>
-                </div>
+      </div>
+      <div className="templates-carousel-wrapper">
+        <div className="templates-carousel">
+          {duplicatedTemplates.map((template, index) => (
+            <div key={`${template.name}-${index}`} className="template-card">
+              <div className="template-image-wrapper">
+                <img src={template.image} alt={template.name} className="template-image" />
               </div>
-            </ScrollAnimation>
+              <div className="template-info">
+                <h3>{template.name}</h3>
+                <p>{template.description}</p>
+              </div>
+            </div>
           ))}
         </div>
       </div>

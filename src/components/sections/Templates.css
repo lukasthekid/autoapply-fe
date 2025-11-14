@@ -1,12 +1,44 @@
 .templates {
   padding: 6rem 0;
   background: var(--bg-primary);
+  position: relative;
+  overflow: hidden;
 }
 
-.templates-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+.templates-carousel-wrapper {
+  overflow: hidden;
+  width: 100vw;
+  position: relative;
+  margin-top: 3rem;
+  padding: 1rem 0 2rem 0;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+.templates-carousel {
+  display: flex;
   gap: 2.5rem;
+  width: fit-content;
+  animation: scrollCarousel 40s linear infinite;
+  will-change: transform;
+  padding: 0 2.5rem;
+}
+
+.templates-carousel:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scrollCarousel {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    /* Move exactly 25% (one set of 4 templates out of 4 sets = 16 total) for seamless infinite loop */
+    /* Since we have 4 identical sets, moving -25% creates a perfect loop */
+    transform: translateX(-25%);
+  }
 }
 
 .template-card {
@@ -16,6 +48,9 @@
   border: 1px solid var(--border-color);
   transition: all 0.3s ease;
   cursor: pointer;
+  flex-shrink: 0;
+  width: 320px;
+  min-width: 320px;
 }
 
 .template-card:hover {
@@ -68,9 +103,28 @@
     padding: 4rem 0;
   }
 
-  .templates-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+  .template-card {
+    width: 280px;
+    min-width: 280px;
+  }
+
+  .templates-carousel {
+    gap: 1.5rem;
+    animation-duration: 30s;
+    padding: 0 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .templates-carousel {
+    animation: none;
+    transform: translateX(0);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .templates-carousel-wrapper {
+    overflow: visible;
   }
 }
 
