@@ -6,10 +6,14 @@ import Testimonials from '@/components/sections/Testimonials'
 import Pricing from '@/components/sections/Pricing'
 import FAQ from '@/components/sections/FAQ'
 import Footer from '@/components/layout/Footer'
+import AmbientBackground from '@/components/AmbientBackground'
+import MouseAmbientLight from '@/components/MouseAmbientLight'
 
 const LandingPage = () => {
   return (
     <div className="landing-page">
+      <AmbientBackground />
+      <MouseAmbientLight />
       <Header />
       <main>
         <Hero />

@@ -6,6 +6,9 @@ const Hero = () => {
 
   return (
     <section className="hero">
+      <div className="hero-ambient-glow hero-ambient-glow-1" />
+      <div className="hero-ambient-glow hero-ambient-glow-2" />
+      <div className="hero-ambient-glow hero-ambient-glow-3" />
       <div className="container">
         <div className="hero-content">
           <div className="hero-badge">
@@ -19,9 +22,9 @@ const Hero = () => {
             tailored to each application. Powered by RAG technology for authentic, experience-based content.
           </p>
           <div className="hero-cta">
-            <button className="btn-primary btn-large">Get Started Free</button>
+            <button className="btn-primary btn-large btn-glow">Get Started Free</button>
             <button 
-              className="btn-secondary btn-large"
+              className="btn-secondary btn-large btn-glow-secondary"
               onClick={() => scrollTo('pricing')}
             >
               View Pricing

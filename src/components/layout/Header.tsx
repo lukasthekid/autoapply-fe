@@ -17,7 +17,7 @@ const Header = () => {
             <a href="#pricing">Pricing</a>
             <a href="#testimonials">Testimonials</a>
             <a href="#faq">FAQ</a>
-            <button className="btn-primary">Get Started</button>
+            <button className="btn-primary btn-glow">Get Started</button>
           </nav>
           <button
             className="menu-toggle"

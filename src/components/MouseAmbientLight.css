@@ -1,0 +1,27 @@
+.mouse-ambient-light {
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(99, 102, 241, 0.15) 0%,
+    rgba(139, 92, 246, 0.1) 30%,
+    transparent 70%
+  );
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: left 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+              top 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 1;
+  mix-blend-mode: screen;
+  filter: blur(60px);
+  will-change: left, top;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mouse-ambient-light {
+    display: none;
+  }
+}
+
