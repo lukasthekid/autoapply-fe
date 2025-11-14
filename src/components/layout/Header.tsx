@@ -13,8 +13,10 @@ const Header = () => {
           </div>
           <nav className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
             <a href="#features">Features</a>
-            <a href="#how-it-works">How It Works</a>
-            <a href="#contact">Contact</a>
+            <a href="#templates">Templates</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#testimonials">Testimonials</a>
+            <a href="#faq">FAQ</a>
             <button className="btn-primary">Get Started</button>
           </nav>
           <button
