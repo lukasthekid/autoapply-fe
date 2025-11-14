@@ -1,4 +1,5 @@
 import './Testimonials.css'
+import ScrollAnimation from './ScrollAnimation'
 
 interface Testimonial {
   name: string
@@ -51,28 +52,36 @@ const Testimonials = () => {
   return (
     <section id="testimonials" className="testimonials">
       <div className="container">
-        <div className="section-header">
-          <h2>What Our Users Are Saying</h2>
-          <p>Join thousands of professionals who have streamlined their job search</p>
-        </div>
+        <ScrollAnimation className="scroll-slide-up">
+          <div className="section-header">
+            <h2>What Our Users Are Saying</h2>
+            <p>Join thousands of professionals who have streamlined their job search</p>
+          </div>
+        </ScrollAnimation>
         <div className="testimonials-grid">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="testimonial-card">
-              <div className="testimonial-content">
-                <p>"{testimonial.content}"</p>
-              </div>
-              <div className="testimonial-author">
-                <div className="testimonial-avatar">
-                  {testimonial.name.charAt(0)}
+            <ScrollAnimation 
+              key={index} 
+              delay={index * 100}
+              className="scroll-blur"
+            >
+              <div className="testimonial-card">
+                <div className="testimonial-content">
+                  <p>"{testimonial.content}"</p>
                 </div>
-                <div className="testimonial-info">
-                  <div className="testimonial-name">{testimonial.name}</div>
-                  <div className="testimonial-role">
-                    {testimonial.role} @ {testimonial.company}
+                <div className="testimonial-author">
+                  <div className="testimonial-avatar">
+                    {testimonial.name.charAt(0)}
+                  </div>
+                  <div className="testimonial-info">
+                    <div className="testimonial-name">{testimonial.name}</div>
+                    <div className="testimonial-role">
+                      {testimonial.role} @ {testimonial.company}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </ScrollAnimation>
           ))}
         </div>
       </div>

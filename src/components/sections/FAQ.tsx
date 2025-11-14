@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './FAQ.css'
+import ScrollAnimation from './ScrollAnimation'
 
 interface FAQItem {
   question: string
@@ -51,28 +52,35 @@ const FAQ = () => {
   return (
     <section id="faq" className="faq">
       <div className="container">
-        <div className="section-header">
-          <h2>Frequently Asked Questions</h2>
-          <p>Everything you need to know about AutoApply</p>
-        </div>
+        <ScrollAnimation className="scroll-slide-up">
+          <div className="section-header">
+            <h2>Frequently Asked Questions</h2>
+            <p>Everything you need to know about AutoApply</p>
+          </div>
+        </ScrollAnimation>
         <div className="faq-list">
           {faqs.map((faq, index) => (
-            <div
-              key={index}
-              className={`faq-item ${openIndex === index ? 'faq-item-open' : ''}`}
+            <ScrollAnimation 
+              key={index} 
+              delay={index * 80}
+              className="scroll-fade-in"
             >
-              <button
-                className="faq-question"
-                onClick={() => toggleFAQ(index)}
-                aria-expanded={openIndex === index}
+              <div
+                className={`faq-item ${openIndex === index ? 'faq-item-open' : ''}`}
               >
-                <span>{faq.question}</span>
-                <span className="faq-icon">{openIndex === index ? '−' : '+'}</span>
-              </button>
-              <div className="faq-answer">
-                <p>{faq.answer}</p>
+                <button
+                  className="faq-question"
+                  onClick={() => toggleFAQ(index)}
+                  aria-expanded={openIndex === index}
+                >
+                  <span>{faq.question}</span>
+                  <span className="faq-icon">{openIndex === index ? '−' : '+'}</span>
+                </button>
+                <div className="faq-answer">
+                  <p>{faq.answer}</p>
+                </div>
               </div>
-            </div>
+            </ScrollAnimation>
           ))}
         </div>
       </div>

@@ -1,11 +1,13 @@
 import { useState } from 'react'
+import { useScrollPosition } from '@/hooks/useScrollPosition'
 import './Header.css'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { isScrolled } = useScrollPosition()
 
   return (
-    <header className="header">
+    <header className={`header ${isScrolled ? 'header-scrolled' : ''}`}>
       <div className="container">
         <div className="header-content">
           <div className="logo">

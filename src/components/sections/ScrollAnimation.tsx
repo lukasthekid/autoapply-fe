@@ -9,7 +9,11 @@ interface ScrollAnimationProps {
 }
 
 const ScrollAnimation = ({ children, delay = 0, className = '' }: ScrollAnimationProps) => {
-  const { elementRef, isVisible } = useScrollAnimation({ triggerOnce: true })
+  const { elementRef, isVisible } = useScrollAnimation({ 
+    triggerOnce: true,
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  })
 
   return (
     <div

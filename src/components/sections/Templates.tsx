@@ -1,4 +1,5 @@
 import './Templates.css'
+import ScrollAnimation from './ScrollAnimation'
 
 interface Template {
   name: string
@@ -28,21 +29,29 @@ const Templates = () => {
   return (
     <section id="templates" className="templates">
       <div className="container">
-        <div className="section-header">
-          <h2>Professional Cover Letter Templates</h2>
-          <p>Choose from our collection of professionally designed PDF templates</p>
-        </div>
+        <ScrollAnimation className="scroll-slide-up">
+          <div className="section-header">
+            <h2>Professional Cover Letter Templates</h2>
+            <p>Choose from our collection of professionally designed PDF templates</p>
+          </div>
+        </ScrollAnimation>
         <div className="templates-grid">
           {templates.map((template, index) => (
-            <div key={index} className="template-card">
-              <div className="template-image-wrapper">
-                <img src={template.image} alt={template.name} className="template-image" />
+            <ScrollAnimation 
+              key={index} 
+              delay={index * 120}
+              className={index % 2 === 0 ? 'scroll-slide-left' : 'scroll-slide-right'}
+            >
+              <div className="template-card">
+                <div className="template-image-wrapper">
+                  <img src={template.image} alt={template.name} className="template-image" />
+                </div>
+                <div className="template-info">
+                  <h3>{template.name}</h3>
+                  <p>{template.description}</p>
+                </div>
               </div>
-              <div className="template-info">
-                <h3>{template.name}</h3>
-                <p>{template.description}</p>
-              </div>
-            </div>
+            </ScrollAnimation>
           ))}
         </div>
       </div>

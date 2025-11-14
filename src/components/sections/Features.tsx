@@ -1,4 +1,5 @@
 import './Features.css'
+import ScrollAnimation from './ScrollAnimation'
 
 interface Feature {
   title: string
@@ -43,17 +44,25 @@ const Features = () => {
   return (
     <section id="features" className="features">
       <div className="container">
-        <div className="section-header">
-          <h2>Powerful Features</h2>
-          <p>Everything you need to streamline your job application process</p>
-        </div>
+        <ScrollAnimation className="scroll-slide-up">
+          <div className="section-header">
+            <h2>Powerful Features</h2>
+            <p>Everything you need to streamline your job application process</p>
+          </div>
+        </ScrollAnimation>
         <div className="features-grid">
           {features.map((feature, index) => (
-            <div key={index} className="feature-card">
-              <div className="feature-icon">{feature.icon}</div>
-              <h3>{feature.title}</h3>
-              <p>{feature.description}</p>
-            </div>
+            <ScrollAnimation 
+              key={index} 
+              delay={index * 100}
+              className="scroll-scale"
+            >
+              <div className="feature-card">
+                <div className="feature-icon">{feature.icon}</div>
+                <h3>{feature.title}</h3>
+                <p>{feature.description}</p>
+              </div>
+            </ScrollAnimation>
           ))}
         </div>
       </div>
