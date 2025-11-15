@@ -25,7 +25,7 @@ export const authService = {
     
     // Store tokens and user
     if (response.data) {
-      apiClient.setTokens(response.data.access, response.data.refresh)
+      apiClientInstance.setTokens(response.data.access, response.data.refresh)
       if (response.data.user) {
         localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.data.user))
       }
