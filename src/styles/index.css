@@ -209,6 +209,13 @@ body {
   font-size: 1.1rem;
 }
 
+/* Animations */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .container {

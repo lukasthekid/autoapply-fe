@@ -2,7 +2,7 @@
 
 /**
  * Determines the API base URL based on environment:
- * - Development: Uses remote API URL (https://api.project100x.run.place)
+ * - Development: Uses relative URLs (empty string) - Vite proxy handles routing to local backend
  * - Production: Uses relative URLs (empty string) when deployed on same server
  * - Can be overridden with VITE_API_BASE_URL environment variable
  */
@@ -12,13 +12,9 @@ function getApiBaseUrl(): string {
     return import.meta.env.VITE_API_BASE_URL
   }
 
-  // In development mode, use remote API
-  if (import.meta.env.DEV) {
-    return 'https://api.project100x.run.place'
-  }
-
-  // In production, use relative URLs (same server)
-  // This works when FE and BE are deployed on the same server
+  // Use relative URLs in both dev and production
+  // In development, Vite proxy will route /api requests to http://127.0.0.1:8000
+  // In production, requests go to the same server
   return ''
 }
 

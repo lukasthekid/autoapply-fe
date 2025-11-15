@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { authService } from '@/services/authService'
-import type { User, LoginRequest, RegisterRequest, UserProfile } from '@/types/api'
+import type { User, LoginRequest, RegisterRequest, UserProfile, UserProfileUpdate } from '@/types/api'
 
 interface AuthContextType {
   user: User | null
@@ -10,7 +10,7 @@ interface AuthContextType {
   register: (data: RegisterRequest) => Promise<void>
   logout: () => Promise<void>
   refreshUser: () => Promise<void>
-  updateProfile: (data: Partial<UserProfile>) => Promise<void>
+  updateProfile: (data: UserProfileUpdate) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -91,7 +91,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }
 
-  const updateProfile = async (data: Partial<UserProfile>) => {
+  const updateProfile = async (data: UserProfileUpdate) => {
     const updatedProfile = await authService.updateProfile(data)
     // Update user state with new profile data
     if (user) {

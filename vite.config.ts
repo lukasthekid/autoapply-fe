@@ -22,15 +22,14 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      // Proxy API requests to remote backend during local development
+      // Proxy API requests to local backend during development
       '/api': {
-        target: 'https://api.project100x.run.place',
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
-        secure: true,
-        // Only proxy in development mode
+        secure: false,
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, res) => {
-            console.log('proxy error', err)
+            console.log('⚠️ Proxy error - Make sure your local backend is running on http://127.0.0.1:8000', err)
           })
         },
       },

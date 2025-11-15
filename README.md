@@ -77,8 +77,10 @@ The project uses CSS custom properties (variables) defined in `src/styles/index.
 ## 🔌 API Configuration
 
 ### Local Development
-- Automatically uses `https://api.project100x.run.place` as the API base URL
-- API requests are proxied through Vite dev server
+- **Requires local backend running on `http://127.0.0.1:8000`**
+- API requests are automatically proxied through Vite dev server to your local backend
+- Make sure your backend is running before starting the frontend dev server
+- Can be overridden with `VITE_API_BASE_URL` environment variable if needed
 
 ### Production Deployment
 - Automatically uses relative URLs when deployed on the same server as the backend
