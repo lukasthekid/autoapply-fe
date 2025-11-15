@@ -74,6 +74,30 @@ autoapply-fe/
 
 The project uses CSS custom properties (variables) defined in `src/styles/index.css`. You can easily customize colors, spacing, and other design tokens by modifying the `:root` variables.
 
+## 🔌 API Configuration
+
+### Local Development
+- Automatically uses `https://api.project100x.run.place` as the API base URL
+- API requests are proxied through Vite dev server
+
+### Production Deployment
+- Automatically uses relative URLs when deployed on the same server as the backend
+- Can be overridden with `VITE_API_BASE_URL` environment variable
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
+
+## 📡 Updating API Types
+
+When backend endpoints change, regenerate TypeScript types:
+
+```bash
+npm run generate:api-types
+# or
+npm run update:api
+```
+
+This fetches the latest OpenAPI spec and generates types in `src/types/api-generated.ts`.
+
 ## 📦 Path Aliases
 
 The project includes path aliases for cleaner imports:

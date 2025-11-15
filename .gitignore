@@ -28,3 +28,6 @@ dist-ssr
 .env.local
 .env.production.local
 .env.development.local
+
+# Generated API types temp files
+temp-openapi.json
