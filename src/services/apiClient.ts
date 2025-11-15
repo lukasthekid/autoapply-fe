@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios'
+import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios'
 import { API_BASE_URL, STORAGE_KEYS } from '@/config/api'
 import type { ApiError, TokenResponse } from '@/types/api'
 
@@ -26,14 +26,14 @@ class ApiClient {
         }
         return config
       },
-      (error) => {
+      (error: unknown) => {
         return Promise.reject(error)
       }
     )
 
     // Response interceptor - handle token refresh
     this.client.interceptors.response.use(
-      (response) => response,
+      (response: AxiosResponse) => response,
       async (error: AxiosError<ApiError>) => {
         const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
 

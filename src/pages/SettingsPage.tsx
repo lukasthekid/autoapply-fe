@@ -13,8 +13,17 @@ const SettingsPage = () => {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
-  // Form state
-  const [formData, setFormData] = useState<UserProfileUpdate>({
+  // Form state - using string type since all fields are required
+  const [formData, setFormData] = useState<{
+    email: string
+    first_name: string
+    last_name: string
+    phone_number: string
+    street: string
+    city: string
+    postcode: string
+    country: string
+  }>({
     email: '',
     first_name: '',
     last_name: '',
@@ -81,7 +90,7 @@ const SettingsPage = () => {
     ]
 
     const missingFields = requiredFields.filter(
-      field => !formData[field.key as keyof UserProfileUpdate]?.trim()
+      field => !formData[field.key as keyof typeof formData]?.trim()
     )
 
     if (missingFields.length > 0) {
@@ -113,15 +122,16 @@ const SettingsPage = () => {
     setIsSaving(true)
 
     try {
+      // All fields are validated and guaranteed to be strings at this point
       const updateData: UserProfileUpdate = {
-        email: formData.email.trim(),
-        first_name: formData.first_name.trim(),
-        last_name: formData.last_name.trim(),
-        phone_number: formData.phone_number.trim(),
-        street: formData.street.trim(),
-        city: formData.city.trim(),
-        postcode: formData.postcode.trim(),
-        country: formData.country.trim(),
+        email: formData.email.trim() || null,
+        first_name: formData.first_name.trim() || null,
+        last_name: formData.last_name.trim() || null,
+        phone_number: formData.phone_number.trim() || null,
+        street: formData.street.trim() || null,
+        city: formData.city.trim() || null,
+        postcode: formData.postcode.trim() || null,
+        country: formData.country.trim() || null,
       }
 
       await updateProfile(updateData)
