@@ -7,6 +7,7 @@ This directory contains all API-related services and configuration for connectin
 - `apiClient.ts` - Axios instance with interceptors for authentication and token refresh
 - `authService.ts` - Authentication service (login, register, logout, profile management)
 - `templatesService.ts` - Templates service (fetching Typst templates)
+- `jobsService.ts` - Jobs service (search jobs, manage job listings)
 
 ## Configuration
 
@@ -134,4 +135,13 @@ Based on the OpenAPI specification at: https://api.project100x.run.place/api/ope
 
 ### Templates
 - `GET /api/templates/` - Get all Typst templates (requires auth)
+- `POST /api/templates/create-cover-letter` - Create a cover letter (requires auth)
+
+### Jobs
+- `POST /api/jobs/search` - Search for jobs on LinkedIn
+- `GET /api/jobs/listings` - Get job listings from database
+- `GET /api/jobs/listings/{job_id}` - Get specific job listing
+- `GET /api/jobs/search-history` - Get recent job search history
+- `POST /api/jobs/create-from-url` - Create job listing from LinkedIn URL
+- `POST /api/jobs/enrich/{job_id}` - Enrich job details from LinkedIn
 

@@ -42,10 +42,16 @@ export const authService = {
       API_ENDPOINTS.AUTH.LOGIN,
       data
     )
-    
+
     // Store tokens and user
     if (response.data) {
       apiClientInstance.setTokens(response.data.access, response.data.refresh)
+
+      // TEMP: Log JWT access token for backend testing
+      // Remove this in production to avoid leaking tokens in logs
+      // eslint-disable-next-line no-console
+      console.log('JWT access token:', response.data.access)
+
       if (response.data.user) {
         localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.data.user))
       }

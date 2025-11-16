@@ -47,6 +47,8 @@ export const API_ENDPOINTS = {
   // Templates
   TEMPLATES: {
     LIST: '/api/templates/',
+    CREATE_COVER_LETTER: '/api/templates/create-cover-letter',
+    CREATE_COVER_LETTER_SIMPLE: '/api/templates/create-cover-letter-simple',
   },
 } as const
 

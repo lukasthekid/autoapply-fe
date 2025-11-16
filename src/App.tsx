@@ -1,7 +1,12 @@
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './contexts/AuthContext'
 import LandingPage from './pages/LandingPage'
+import DashboardPage from './pages/DashboardPage'
 import SettingsPage from './pages/SettingsPage'
-import Header from './components/layout/Header'
+import JobSearchPage from './pages/JobSearchPage'
+import LinkedInUrlPage from './pages/LinkedInUrlPage'
+import JobDescriptionPage from './pages/JobDescriptionPage'
+import DashboardLayout from './components/layout/DashboardLayout'
 import './styles/index.css'
 
 function App() {
@@ -36,18 +41,52 @@ function App() {
     )
   }
 
-  // Show settings page for authenticated users, landing page for others
   return (
-    <>
-      {isAuthenticated ? (
-        <>
-          <Header />
-          <SettingsPage />
-        </>
-      ) : (
-        <LandingPage />
-      )}
-    </>
+    <Router>
+      <Routes>
+        {/* Public routes */}
+        <Route 
+          path="/" 
+          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LandingPage />} 
+        />
+        
+        {/* Protected routes */}
+        {isAuthenticated ? (
+          <>
+            <Route path="/dashboard" element={
+              <DashboardLayout>
+                <DashboardPage />
+              </DashboardLayout>
+            } />
+            <Route path="/jobs" element={
+              <DashboardLayout>
+                <JobSearchPage />
+              </DashboardLayout>
+            } />
+            <Route path="/linkedin-url" element={
+              <DashboardLayout>
+                <LinkedInUrlPage />
+              </DashboardLayout>
+            } />
+            <Route path="/job-description" element={
+              <DashboardLayout>
+                <JobDescriptionPage />
+              </DashboardLayout>
+            } />
+            <Route path="/settings" element={
+              <DashboardLayout>
+                <SettingsPage />
+              </DashboardLayout>
+            } />
+            {/* Redirect any unknown routes to dashboard */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </>
+        ) : (
+          /* Redirect unauthenticated users to landing page */
+          <Route path="*" element={<Navigate to="/" replace />} />
+        )}
+      </Routes>
+    </Router>
   )
 }
 

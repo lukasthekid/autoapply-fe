@@ -90,3 +90,78 @@ export interface ApiError {
   errors?: Record<string, string[]>
 }
 
+// Job-related types
+
+export type JobType = 'full_time' | 'part_time' | 'contract' | 'temporary' | 'internship'
+export type ExperienceLevel = 'internship' | 'entry_level' | 'associate' | 'mid_senior_level' | 'director'
+export type DatePosted = 'any_time' | 'past_24_hours' | 'past_week' | 'past_month'
+
+export interface JobListing {
+  job_id: string
+  linkedin_url: string
+  title: string
+  company_name: string
+  location: string
+  description?: string | null
+  employment_type?: string | null
+  experience_level?: string | null
+  posted_date?: string | null
+  applicants_count?: number | null
+  company_logo_url?: string | null
+}
+
+export interface JobSearchRequest {
+  keyword: string
+  location: string
+  job_types?: JobType[] | null
+  experience_levels?: ExperienceLevel[] | null
+  date_posted?: DatePosted | null
+  limit?: number | null
+}
+
+export interface JobSearchResponse {
+  success: boolean
+  total_results: number
+  results_count: number
+  jobs: JobListing[]
+  search_params: Record<string, any>
+  message?: string | null
+}
+
+export interface ErrorResponse {
+  success: boolean
+  error: string
+  details?: string | null
+}
+
+export interface CreateJobFromUrlRequest {
+  linkedin_url: string
+}
+
+// Cover Letter types
+export interface CreateCoverLetterRequest {
+  job_id: string
+  template_id: number
+  language?: string | null
+  customer_instructions?: string | null
+}
+
+export interface CreateCoverLetterSimpleRequest {
+  template_id: number
+  position_title: string
+  company_name: string
+  job_location: string
+  job_description: string
+  language?: string | null
+  customer_instructions?: string | null
+}
+
+export interface CoverLetterResponse {
+  success: boolean
+  cover_letter_text: string
+  pdf_base64: string
+  template_name: string
+  job_title: string
+  company_name: string
+}
+
