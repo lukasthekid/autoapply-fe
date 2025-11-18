@@ -165,3 +165,25 @@ export interface CoverLetterResponse {
   company_name: string
 }
 
+// Document types
+export interface PDFUploadRequest {
+  file_base64: string
+  filename?: string | null
+}
+
+export interface UploadResponse {
+  message: string
+  success: boolean
+  uploaded_at: string
+}
+
+export interface DocumentStatus {
+  has_uploaded_document: boolean
+  last_upload_date?: string | null
+}
+
+export interface DeleteDataResponse {
+  message: string
+  success: boolean
+}
+

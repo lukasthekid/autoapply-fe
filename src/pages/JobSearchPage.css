@@ -3,6 +3,11 @@
   padding-top: 100px;
   padding-bottom: 4rem;
   background: var(--bg-primary);
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 .job-search-header {
@@ -1373,6 +1378,8 @@
 @media (max-width: 768px) {
   .job-search-page {
     padding-top: 80px;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 
   .job-search-header h1 {
@@ -1487,6 +1494,13 @@
   .generate-button {
     width: 100%;
     justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .job-search-page {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
 

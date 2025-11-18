@@ -3,6 +3,11 @@
   padding-top: 100px;
   padding-bottom: 4rem;
   background: var(--bg-primary);
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 .page-header {
@@ -688,6 +693,8 @@
 @media (max-width: 768px) {
   .linkedin-url-page {
     padding-top: 80px;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 
   .page-header h1 {
@@ -738,6 +745,13 @@
   .job-header-actions .btn-primary {
     flex: 1;
     min-width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .linkedin-url-page {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
 

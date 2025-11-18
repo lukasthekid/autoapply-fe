@@ -6,7 +6,10 @@ import SettingsPage from './pages/SettingsPage'
 import JobSearchPage from './pages/JobSearchPage'
 import LinkedInUrlPage from './pages/LinkedInUrlPage'
 import JobDescriptionPage from './pages/JobDescriptionPage'
+import DocumentUploadPage from './pages/DocumentUploadPage'
+import DocumentsPage from './pages/DocumentsPage'
 import DashboardLayout from './components/layout/DashboardLayout'
+import DocumentGate from './components/DocumentGate'
 import './styles/index.css'
 
 function App() {
@@ -53,30 +56,53 @@ function App() {
         {/* Protected routes */}
         {isAuthenticated ? (
           <>
+            {/* Document upload page (no layout, no document gate) */}
+            <Route path="/upload-documents" element={<DocumentUploadPage />} />
+            
+            {/* Documents management page (with layout, with gate) */}
+            <Route path="/documents" element={
+              <DocumentGate>
+                <DashboardLayout>
+                  <DocumentsPage />
+                </DashboardLayout>
+              </DocumentGate>
+            } />
+            
+            {/* Main app routes (all require documents) */}
             <Route path="/dashboard" element={
-              <DashboardLayout>
-                <DashboardPage />
-              </DashboardLayout>
+              <DocumentGate>
+                <DashboardLayout>
+                  <DashboardPage />
+                </DashboardLayout>
+              </DocumentGate>
             } />
             <Route path="/jobs" element={
-              <DashboardLayout>
-                <JobSearchPage />
-              </DashboardLayout>
+              <DocumentGate>
+                <DashboardLayout>
+                  <JobSearchPage />
+                </DashboardLayout>
+              </DocumentGate>
             } />
             <Route path="/linkedin-url" element={
-              <DashboardLayout>
-                <LinkedInUrlPage />
-              </DashboardLayout>
+              <DocumentGate>
+                <DashboardLayout>
+                  <LinkedInUrlPage />
+                </DashboardLayout>
+              </DocumentGate>
             } />
             <Route path="/job-description" element={
-              <DashboardLayout>
-                <JobDescriptionPage />
-              </DashboardLayout>
+              <DocumentGate>
+                <DashboardLayout>
+                  <JobDescriptionPage />
+                </DashboardLayout>
+              </DocumentGate>
             } />
             <Route path="/settings" element={
-              <DashboardLayout>
-                <SettingsPage />
-              </DashboardLayout>
+              <DocumentGate>
+                <DashboardLayout>
+                  <SettingsPage />
+                </DashboardLayout>
+              </DocumentGate>
             } />
             {/* Redirect any unknown routes to dashboard */}
             <Route path="*" element={<Navigate to="/dashboard" replace />} />

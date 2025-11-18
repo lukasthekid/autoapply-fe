@@ -50,6 +50,13 @@ export const API_ENDPOINTS = {
     CREATE_COVER_LETTER: '/api/templates/create-cover-letter',
     CREATE_COVER_LETTER_SIMPLE: '/api/templates/create-cover-letter-simple',
   },
+  
+  // Documents
+  DOCUMENTS: {
+    UPLOAD_PDF: '/api/documents/upload-pdf',
+    STATUS: '/api/documents/status',
+    DELETE_DATA: '/api/documents/delete-data',
+  },
 } as const
 
 // Token storage keys

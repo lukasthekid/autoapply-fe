@@ -344,7 +344,7 @@ const JobSearchPage = () => {
             </div>
           </div>
 
-          <details className="search-filters" open>
+          <details className="search-filters">
             <summary>🎯 Advanced Filters</summary>
             
             <div className="filters-content">

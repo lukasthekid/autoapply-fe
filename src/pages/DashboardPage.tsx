@@ -1,8 +1,24 @@
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '@/contexts/AuthContext'
 import './DashboardPage.css'
 
 const DashboardPage = () => {
   const navigate = useNavigate()
+  const { user, logout } = useAuth()
+
+  const getInitials = () => {
+    if (!user) return '?'
+    const firstInitial = user.first_name?.charAt(0)?.toUpperCase() || ''
+    const lastInitial = user.last_name?.charAt(0)?.toUpperCase() || ''
+    return firstInitial && lastInitial 
+      ? `${firstInitial}${lastInitial}`
+      : user.username?.charAt(0)?.toUpperCase() || '?'
+  }
+
+  const handleLogout = async () => {
+    await logout()
+    navigate('/')
+  }
 
   const features = [
     {
@@ -55,14 +71,76 @@ const DashboardPage = () => {
   return (
     <div className="dashboard-page">
       <div className="dashboard-container">
-        <div className="dashboard-header">
-          <h1>
-            Welcome Back! 👋
-          </h1>
-          <p>Choose how you'd like to apply for jobs today</p>
-        </div>
+        <div className="dashboard-layout">
+          {/* Left Sidebar Toolbar */}
+          <div className="dashboard-sidebar">
+            <div className="sidebar-header">
+              <div className="profile-bubble" title={user?.username}>
+                {getInitials()}
+              </div>
+              <div className="sidebar-divider"></div>
+            </div>
+            
+            <div className="sidebar-links">
+              <button 
+                className="sidebar-link"
+                onClick={() => navigate('/documents')}
+                title="Documents"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                <span className="sidebar-link-label">Documents</span>
+              </button>
 
-        <div className="features-grid">
+              <button 
+                className="sidebar-link"
+                onClick={() => navigate('/settings')}
+                title="Settings"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"></path>
+                </svg>
+                <span className="sidebar-link-label">Settings</span>
+              </button>
+            </div>
+
+            <div className="sidebar-footer">
+              <button 
+                className="sidebar-link"
+                onClick={handleLogout}
+                title="Logout"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span className="sidebar-link-label">Logout</span>
+              </button>
+              
+              <div className="sidebar-divider"></div>
+              
+              <div className="sidebar-tip">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 16v-4"></path>
+                  <path d="M12 8h.01"></path>
+                </svg>
+                <span className="sidebar-tip-text">Keep documents updated</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="dashboard-main">
+            <div className="dashboard-header">
+              <h1>Welcome back, {user?.first_name || user?.username || 'there'}! 👋</h1>
+              <p>Choose your workflow to create the perfect cover letter</p>
+            </div>
+
+            <div className="features-grid">
           {features.map((feature) => (
             <div
               key={feature.id}
@@ -91,29 +169,64 @@ const DashboardPage = () => {
           ))}
         </div>
 
-        <div className="dashboard-stats">
-          <div className="stat-card">
-            <div className="stat-icon">📊</div>
-            <div className="stat-content">
-              <h4>Track Progress</h4>
-              <p>Monitor your applications</p>
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon">⚡</div>
-            <div className="stat-content">
-              <h4>AI-Powered</h4>
-              <p>Smart cover letter generation</p>
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon">🎯</div>
-            <div className="stat-content">
-              <h4>Tailored Results</h4>
-              <p>Personalized to each job</p>
+            <div className="features-footer">
+              <div className="footer-benefits">
+                <div className="benefit-item">
+                  <div className="benefit-icon">⚡</div>
+                  <span>AI-Powered Generation</span>
+                </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon">🎯</div>
+                  <span>Tailored to Each Job</span>
+                </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon">🚀</div>
+                  <span>Generate in Seconds</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="mobile-bottom-nav">
+        <button 
+          className="mobile-nav-item"
+          onClick={() => navigate('/documents')}
+          title="Documents"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+          <span>Documents</span>
+        </button>
+
+        <button 
+          className="mobile-nav-item"
+          onClick={() => navigate('/settings')}
+          title="Settings"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"></path>
+          </svg>
+          <span>Settings</span>
+        </button>
+
+        <button 
+          className="mobile-nav-item"
+          onClick={handleLogout}
+          title="Logout"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Logout</span>
+        </button>
       </div>
     </div>
   )

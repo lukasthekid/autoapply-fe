@@ -1,8 +1,11 @@
 .settings-page {
   min-height: 100vh;
   background: var(--bg-primary);
-  padding: 2rem 0;
+  padding: 2rem;
   position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .settings-loading {
@@ -264,7 +267,7 @@
 
 @media (max-width: 768px) {
   .settings-page {
-    padding: 1.5rem 0;
+    padding: 1.5rem;
   }
 
   .settings-header h1 {
@@ -314,6 +317,10 @@
 }
 
 @media (max-width: 480px) {
+  .settings-page {
+    padding: 1rem;
+  }
+
   .settings-header h1 {
     font-size: 1.75rem;
   }
