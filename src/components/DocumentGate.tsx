@@ -14,12 +14,10 @@ export default function DocumentGate({ children }: DocumentGateProps) {
   const navigate = useNavigate()
   const location = useLocation()
   const [isCheckingStatus, setIsCheckingStatus] = useState(true)
-  const [hasDocuments, setHasDocuments] = useState(false)
 
   const checkDocumentStatus = useCallback(async () => {
     try {
       const status = await documentsService.getStatus()
-      setHasDocuments(status.has_uploaded_document)
       
       // If no documents and not already on upload or documents page, redirect
       if (!status.has_uploaded_document && 
@@ -30,7 +28,6 @@ export default function DocumentGate({ children }: DocumentGateProps) {
     } catch (error) {
       console.error('Failed to check document status:', error)
       // On error, allow access (fail open)
-      setHasDocuments(true)
     } finally {
       setIsCheckingStatus(false)
     }
