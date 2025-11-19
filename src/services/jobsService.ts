@@ -86,7 +86,7 @@ export const jobsService = {
    */
   async createCoverLetter(data: CreateCoverLetterRequest): Promise<CoverLetterResponse> {
     const response = await apiClient.post<CoverLetterResponse>(
-      API_ENDPOINTS.TEMPLATES.CREATE_COVER_LETTER,
+      API_ENDPOINTS.COVER_LETTERS.CREATE_COVER_LETTER,
       data
     )
     return response.data
@@ -97,7 +97,7 @@ export const jobsService = {
    */
   async createCoverLetterSimple(data: CreateCoverLetterSimpleRequest): Promise<CoverLetterResponse> {
     const response = await apiClient.post<CoverLetterResponse>(
-      API_ENDPOINTS.TEMPLATES.CREATE_COVER_LETTER_SIMPLE,
+      API_ENDPOINTS.COVER_LETTERS.CREATE_COVER_LETTER_SIMPLE,
       data
     )
     return response.data

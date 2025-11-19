@@ -1,0 +1,8 @@
+/* JobDetails Component Styles */
+/* Most styles are shared with JobSearchPage.css and LinkedInUrlPage.css */
+/* This file only contains component-specific overrides if needed */
+
+.job-detail-panel {
+  width: 100%;
+}
+

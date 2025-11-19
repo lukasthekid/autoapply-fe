@@ -47,8 +47,13 @@ export const API_ENDPOINTS = {
   // Templates
   TEMPLATES: {
     LIST: '/api/templates/',
-    CREATE_COVER_LETTER: '/api/templates/create-cover-letter',
-    CREATE_COVER_LETTER_SIMPLE: '/api/templates/create-cover-letter-simple',
+    CONVERT_TO_PDF: '/api/templates/convert-to-pdf',
+  },
+  
+  // Cover Letters
+  COVER_LETTERS: {
+    CREATE_COVER_LETTER: '/api/cover-letters/create-cover-letter',
+    CREATE_COVER_LETTER_SIMPLE: '/api/cover-letters/create-cover-letter-simple',
   },
   
   // Documents
@@ -56,6 +61,14 @@ export const API_ENDPOINTS = {
     UPLOAD_PDF: '/api/documents/upload-pdf',
     STATUS: '/api/documents/status',
     DELETE_DATA: '/api/documents/delete-data',
+  },
+  
+  // Applications
+  APPLICATIONS: {
+    CREATE: '/api/applications/',
+    LIST: '/api/applications/',
+    GET: (id: number) => `/api/applications/${id}`,
+    CHECK: '/api/applications/check',
   },
 } as const
 

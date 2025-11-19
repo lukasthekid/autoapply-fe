@@ -1,0 +1,164 @@
+/* Cover Letter Generator Component Styles */
+/* Most styles are shared with JobDescriptionPage.css, JobSearchPage.css, etc. */
+/* This file only contains component-specific overrides if needed */
+
+.cover-letter-generator {
+  width: 100%;
+}
+
+.generator-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.generator-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.generator-header h2 span {
+  font-size: 1.75rem;
+}
+
+.generator-header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.add-to-applications-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+  border: 2px solid rgba(34, 197, 94, 0.3);
+  border-radius: 0.75rem;
+  color: #22c55e;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.add-to-applications-button:hover:not(:disabled) {
+  border-color: #22c55e;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+}
+
+.add-to-applications-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.add-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.applied-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+  border: 2px solid rgba(34, 197, 94, 0.3);
+  border-radius: 0.75rem;
+  color: #22c55e;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.check-icon {
+  width: 20px;
+  height: 20px;
+  stroke-width: 3;
+}
+
+.checking-application-indicator {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+}
+
+.success-message {
+  padding: 1rem 1.25rem;
+  background: rgba(34, 197, 94, 0.1);
+  border: 2px solid rgba(34, 197, 94, 0.3);
+  border-radius: 0.875rem;
+  color: #22c55e;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  animation: slideInDown 0.3s ease;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: 2px solid rgba(99, 102, 241, 0.3);
+  border-radius: 0.75rem;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  border-color: var(--primary-color);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.back-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.generator-section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.section-title span {
+  font-size: 1.25rem;
+}
+
+.input-hint {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+

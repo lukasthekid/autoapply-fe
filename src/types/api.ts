@@ -141,13 +141,11 @@ export interface CreateJobFromUrlRequest {
 // Cover Letter types
 export interface CreateCoverLetterRequest {
   job_id: string
-  template_id: number
   language?: string | null
   customer_instructions?: string | null
 }
 
 export interface CreateCoverLetterSimpleRequest {
-  template_id: number
   position_title: string
   company_name: string
   job_location: string
@@ -159,10 +157,17 @@ export interface CreateCoverLetterSimpleRequest {
 export interface CoverLetterResponse {
   success: boolean
   cover_letter_text: string
-  pdf_base64: string
-  template_name: string
-  job_title: string
+}
+
+export interface ConvertToPdfRequest {
+  template_id: number
+  content: string
   company_name: string
+}
+
+export interface ConvertToPdfResponse {
+  success: boolean
+  pdf_base64: string
 }
 
 // Document types
@@ -185,5 +190,41 @@ export interface DocumentStatus {
 export interface DeleteDataResponse {
   message: string
   success: boolean
+}
+
+// Application types
+export interface CreateJobApplicationRequest {
+  job_id?: string | null
+  job_title: string
+  company_name: string
+  job_location?: string | null
+  job_url?: string | null
+  notes?: string | null
+}
+
+export interface JobApplication {
+  id: number
+  job_id: string | null
+  job_title: string
+  company_name: string
+  job_location: string | null
+  job_url: string | null
+  notes: string | null
+  applied_at: string
+  updated_at: string
+}
+
+export interface CreateJobApplicationResponse {
+  success: boolean
+  application: JobApplication
+}
+
+export interface JobApplicationListResponse {
+  applications: JobApplication[]
+  count: number
+}
+
+export interface CheckApplicationResponse {
+  has_applied: boolean
 }
 

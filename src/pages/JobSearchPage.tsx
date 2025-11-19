@@ -1,14 +1,15 @@
 import { useState, useEffect, FormEvent } from 'react'
 import { jobsService } from '@/services/jobsService'
-import { templatesService } from '@/services/templatesService'
+import { applicationsService } from '@/services/applicationsService'
+import CoverLetterGenerator from '@/components/CoverLetterGenerator'
+import JobDetails from '@/components/JobDetails'
 import type { 
   JobSearchRequest, 
   JobListing, 
   JobType, 
   ExperienceLevel, 
   DatePosted,
-  TypstTemplate,
-  CoverLetterResponse
+  JobApplication
 } from '@/types/api'
 import './JobSearchPage.css'
 
@@ -33,15 +34,9 @@ const JobSearchPage = () => {
   
   // Cover letter generation state
   const [showCoverLetterGenerator, setShowCoverLetterGenerator] = useState(false)
-  const [templates, setTemplates] = useState<TypstTemplate[]>([])
-  const [isLoadingTemplates, setIsLoadingTemplates] = useState(false)
-  const [templatesError, setTemplatesError] = useState<string | null>(null)
-  const [selectedTemplate, setSelectedTemplate] = useState<number | null>(null)
-  const [customInstructions, setCustomInstructions] = useState('')
-  const [language, setLanguage] = useState('english')
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [coverLetterResult, setCoverLetterResult] = useState<CoverLetterResponse | null>(null)
-  const [generateError, setGenerateError] = useState<string | null>(null)
+  
+  // Track which jobs the user has already applied to
+  const [userApplications, setUserApplications] = useState<JobApplication[]>([])
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -108,7 +103,6 @@ const JobSearchPage = () => {
     setJobDetailError(null)
     setSelectedJob(job) // Set immediately with basic data
     setShowCoverLetterGenerator(false) // Reset cover letter view
-    setCoverLetterResult(null)
 
     try {
       // Enrich job details from LinkedIn
@@ -125,98 +119,35 @@ const JobSearchPage = () => {
 
   const handleGenerateCoverLetter = () => {
     setShowCoverLetterGenerator(true)
-    setCoverLetterResult(null)
-    setSelectedTemplate(null)
-    setCustomInstructions('')
-    setLanguage('english')
-    setGenerateError(null)
   }
 
   const handleBackToJobDetails = () => {
     setShowCoverLetterGenerator(false)
-    setCoverLetterResult(null)
-    setGenerateError(null)
   }
 
-  // Fetch templates when cover letter generator is shown
+  // Fetch all user applications once when component mounts
   useEffect(() => {
-    if (showCoverLetterGenerator && templates.length === 0) {
-      const fetchTemplates = async () => {
-        setIsLoadingTemplates(true)
-        setTemplatesError(null)
-        try {
-          const response = await templatesService.getAllTemplates()
-          setTemplates(response.templates)
-        } catch (err: any) {
-          const errorMessage = err?.response?.data?.error || err?.message || 'Failed to load templates'
-          setTemplatesError(errorMessage)
-        } finally {
-          setIsLoadingTemplates(false)
-        }
+    const fetchApplications = async () => {
+      try {
+        const response = await applicationsService.getAllApplications()
+        setUserApplications(response.applications)
+      } catch (err) {
+        // Silently fail - don't block the UI if applications can't be loaded
+        console.warn('Failed to fetch user applications:', err)
+        setUserApplications([])
       }
-      fetchTemplates()
-    }
-  }, [showCoverLetterGenerator, templates.length])
-
-  const handleGenerateCoverLetterSubmit = async () => {
-    if (!selectedJob || !selectedTemplate) {
-      setGenerateError('Please select a template')
-      return
     }
 
-    setIsGenerating(true)
-    setGenerateError(null)
+    fetchApplications()
+  }, [])
 
-    try {
-      const result = await jobsService.createCoverLetter({
-        job_id: selectedJob.job_id,
-        template_id: selectedTemplate,
-        language: language || null,
-        customer_instructions: customInstructions || '',
-      })
-      setCoverLetterResult(result)
-    } catch (err: any) {
-      const errorMessage = err?.response?.data?.error || err?.message || 'Failed to generate cover letter'
-      setGenerateError(errorMessage)
-    } finally {
-      setIsGenerating(false)
-    }
-  }
-
-  const handleDownloadPDF = () => {
-    if (!coverLetterResult) return
-
-    try {
-      // Convert base64 to blob
-      const byteCharacters = atob(coverLetterResult.pdf_base64)
-      const byteNumbers = new Array(byteCharacters.length)
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i)
-      }
-      const byteArray = new Uint8Array(byteNumbers)
-      const blob = new Blob([byteArray], { type: 'application/pdf' })
-
-      // Create download link
-      const url = window.URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = `cover-letter-${selectedJob?.company_name || 'job'}.pdf`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      window.URL.revokeObjectURL(url)
-    } catch (err) {
-      console.error('Failed to download PDF:', err)
-      setGenerateError('Failed to download PDF')
-    }
-  }
-
-  const handleGenerateAnother = () => {
-    setCoverLetterResult(null)
-    setSelectedTemplate(null)
-    setCustomInstructions('')
-    setLanguage('english')
-    setGenerateError(null)
+  // Helper function to check if a job has been applied to
+  const hasApplied = (job: JobListing): boolean => {
+    return userApplications.some(
+      (application) =>
+        application.job_title === job.title &&
+        application.company_name === job.company_name
+    )
   }
 
   const jobTypes: { value: JobType; label: string }[] = [
@@ -439,49 +370,60 @@ const JobSearchPage = () => {
               </div>
 
               <div className="jobs-list">
-                {jobs.map(job => (
-                  <div 
-                    key={job.job_id} 
-                    className={`job-card-compact ${selectedJob?.job_id === job.job_id ? 'selected' : ''} ${isLoadingJobDetails && selectedJob?.job_id === job.job_id ? 'loading' : ''}`}
-                    onClick={() => handleViewJob(job)}
-                  >
-                    <div className="job-card-header">
-                      {job.company_logo_url && (
-                        <img
-                          src={job.company_logo_url}
-                          alt={`${job.company_name} logo`}
-                          className="company-logo-small"
-                        />
-                      )}
-                      <div className="job-title-company">
-                        <h3>{job.title}</h3>
-                        <p className="company-name">{job.company_name}</p>
+                {jobs.map(job => {
+                  const jobHasApplied = hasApplied(job)
+                  
+                  return (
+                    <div 
+                      key={job.job_id} 
+                      className={`job-card-compact ${selectedJob?.job_id === job.job_id ? 'selected' : ''} ${isLoadingJobDetails && selectedJob?.job_id === job.job_id ? 'loading' : ''} ${jobHasApplied ? 'applied' : ''}`}
+                      onClick={() => handleViewJob(job)}
+                    >
+                      <div className="job-card-header">
+                        {job.company_logo_url && (
+                          <img
+                            src={job.company_logo_url}
+                            alt={`${job.company_name} logo`}
+                            className="company-logo-small"
+                          />
+                        )}
+                        <div className="job-title-company">
+                          <div className="job-title-row">
+                            <h3>{job.title}</h3>
+                            {jobHasApplied && (
+                              <span className="applied-badge" title="You have already applied to this job">
+                                ✓ Applied
+                              </span>
+                            )}
+                          </div>
+                          <p className="company-name">{job.company_name}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="job-meta">
+                        <span className="job-location">📍 {job.location}</span>
+                        {job.applicants_count && (
+                          <span className="job-applicants">
+                            👥 {job.applicants_count}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="job-card-footer">
+                        {isLoadingJobDetails && selectedJob?.job_id === job.job_id ? (
+                          <span className="loading-text">
+                            <div className="loading-spinner-tiny"></div>
+                            Loading...
+                          </span>
+                        ) : (
+                          <span className="view-text">
+                            View Details →
+                          </span>
+                        )}
                       </div>
                     </div>
-                    
-                    <div className="job-meta">
-                      <span className="job-location">📍 {job.location}</span>
-                      {job.applicants_count && (
-                        <span className="job-applicants">
-                          👥 {job.applicants_count}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="job-card-footer">
-                      {isLoadingJobDetails && selectedJob?.job_id === job.job_id ? (
-                        <span className="loading-text">
-                          <div className="loading-spinner-tiny"></div>
-                          Loading...
-                        </span>
-                      ) : (
-                        <span className="view-text">
-                          View Details →
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
 
@@ -495,242 +437,22 @@ const JobSearchPage = () => {
                   </div>
                 </div>
               ) : showCoverLetterGenerator ? (
-                <div className="cover-letter-generator">
-                  <div className="generator-header">
-                    <h2>
-                      <span>✨</span>
-                      Generate Cover Letter
-                    </h2>
-                    <button className="back-button" onClick={handleBackToJobDetails}>
-                      <svg className="back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M19 12H5M12 19l-7-7 7-7"/>
-                      </svg>
-                      Back to Job
-                    </button>
-                  </div>
-
-                  {!coverLetterResult ? (
-                    <>
-                      {/* Template Selection */}
-                      <div className="generator-section">
-                        <h3 className="section-title">
-                          <span>📄</span>
-                          Select a Template
-                        </h3>
-                        {isLoadingTemplates ? (
-                          <div className="templates-loading">
-                            <div className="loading-spinner-small"></div>
-                            <p>Loading templates...</p>
-                          </div>
-                        ) : templatesError ? (
-                          <div className="templates-error">⚠️ {templatesError}</div>
-                        ) : (
-                          <div className="templates-grid">
-                            {templates.map((template) => (
-                              <div
-                                key={template.id}
-                                className={`template-card ${selectedTemplate === template.id ? 'selected' : ''}`}
-                                onClick={() => setSelectedTemplate(template.id)}
-                              >
-                                <img
-                                  src={`/${template.name}.png`}
-                                  alt={template.name}
-                                  className="template-preview"
-                                  onError={(e) => {
-                                    (e.target as HTMLImageElement).src = '/placeholder-template.png'
-                                  }}
-                                />
-                                <p className="template-name">{template.name}</p>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Language Selection */}
-                      <div className="generator-section">
-                        <h3 className="section-title">
-                          <span>🌐</span>
-                          Cover Letter Language
-                        </h3>
-                        <select
-                          className="language-select"
-                          value={language}
-                          onChange={(e) => setLanguage(e.target.value)}
-                        >
-                          <option value="english">English</option>
-                          <option value="german">German (Deutsch)</option>
-                          <option value="french">French (Français)</option>
-                          <option value="spanish">Spanish (Español)</option>
-                          <option value="italian">Italian (Italiano)</option>
-                        </select>
-                      </div>
-
-                      {/* Custom Instructions */}
-                      <div className="generator-section">
-                        <h3 className="section-title">
-                          <span>💬</span>
-                          Custom Instructions (Optional)
-                        </h3>
-                        <textarea
-                          className="custom-instructions-input"
-                          placeholder="Add any specific instructions for the AI to customize your cover letter..."
-                          value={customInstructions}
-                          onChange={(e) => setCustomInstructions(e.target.value)}
-                        />
-                        <p className="input-hint">
-                          Example: "Emphasize my experience with React and TypeScript" or "Mention my passion for remote work"
-                        </p>
-                      </div>
-
-                      {generateError && (
-                        <div className="templates-error">⚠️ {generateError}</div>
-                      )}
-
-                      {/* Generate Button */}
-                      {isGenerating ? (
-                        <div className="generating-overlay">
-                          <div className="generating-spinner"></div>
-                          <p className="generating-text">Generating your cover letter...</p>
-                          <p className="generating-subtext">This may take a few moments</p>
-                        </div>
-                      ) : (
-                        <button
-                          className="generate-button"
-                          onClick={handleGenerateCoverLetterSubmit}
-                          disabled={!selectedTemplate}
-                        >
-                          <svg className="generate-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
-                            <polyline points="14 2 14 8 20 8"/>
-                            <line x1="16" y1="13" x2="8" y2="13"/>
-                            <line x1="16" y1="17" x2="8" y2="17"/>
-                            <polyline points="10 9 9 9 8 9"/>
-                          </svg>
-                          Generate Cover Letter
-                        </button>
-                      )}
-                    </>
-                  ) : (
-                    /* Cover Letter Result */
-                    <div className="cover-letter-result">
-                      <div className="result-header">
-                        <h3 className="result-title">Your Cover Letter</h3>
-                        <div className="result-actions">
-                          <button className="download-button" onClick={handleDownloadPDF}>
-                            <svg className="download-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                              <polyline points="7 10 12 15 17 10"/>
-                              <line x1="12" y1="15" x2="12" y2="3"/>
-                            </svg>
-                            Download PDF
-                          </button>
-                          <button className="generate-another-button" onClick={handleGenerateAnother}>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <polyline points="23 4 23 10 17 10"/>
-                              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-                            </svg>
-                            Generate Another
-                          </button>
-                        </div>
-                      </div>
-                      <div className="cover-letter-text">
-                        {coverLetterResult.cover_letter_text}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <CoverLetterGenerator
+                  jobId={selectedJob.job_id}
+                  companyName={selectedJob.company_name}
+                  jobTitle={selectedJob.title}
+                  jobLocation={selectedJob.location}
+                  jobUrl={selectedJob.linkedin_url}
+                  onBack={handleBackToJobDetails}
+                  showBackButton={true}
+                />
               ) : (
-                <div className="job-details-content">
-                  {jobDetailError && (
-                    <div className="job-detail-error">
-                      ⚠️ {jobDetailError}
-                    </div>
-                  )}
-                  
-                  <div className="job-header-full">
-                    <div className="job-header-left">
-                      {selectedJob.company_logo_url && (
-                        <img
-                          src={selectedJob.company_logo_url}
-                          alt={`${selectedJob.company_name} logo`}
-                          className="company-logo-large"
-                        />
-                      )}
-                      <div>
-                        <h2>{selectedJob.title}</h2>
-                        <p className="company-name-large">{selectedJob.company_name}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="job-header-actions">
-                      <a
-                        href={selectedJob.linkedin_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn-secondary"
-                      >
-                        Apply
-                      </a>
-                      <button 
-                        className="btn-primary btn-glow btn-multiline"
-                        onClick={handleGenerateCoverLetter}
-                      >
-                        <span>Generate</span>
-                        <span>Cover Letter</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="job-info-grid">
-                    <div className="info-item">
-                      <span className="info-label">📍 Location</span>
-                      <span className="info-value">{selectedJob.location}</span>
-                    </div>
-                    {selectedJob.employment_type && (
-                      <div className="info-item">
-                        <span className="info-label">💼 Employment Type</span>
-                        <span className="info-value">{selectedJob.employment_type}</span>
-                      </div>
-                    )}
-                    {selectedJob.experience_level && (
-                      <div className="info-item">
-                        <span className="info-label">📊 Experience Level</span>
-                        <span className="info-value">{selectedJob.experience_level}</span>
-                      </div>
-                    )}
-                    {selectedJob.applicants_count && (
-                      <div className="info-item">
-                        <span className="info-label">👥 Applicants</span>
-                        <span className="info-value">{selectedJob.applicants_count}</span>
-                      </div>
-                    )}
-                    {selectedJob.posted_date && (
-                      <div className="info-item">
-                        <span className="info-label">📅 Posted</span>
-                        <span className="info-value">
-                          {new Date(selectedJob.posted_date).toLocaleDateString()}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {isLoadingJobDetails && (
-                    <div className="loading-indicator">
-                      <div className="loading-spinner-small"></div>
-                      <p>Loading full job description...</p>
-                    </div>
-                  )}
-
-                  {selectedJob.description && (
-                    <div className="job-description-full">
-                      <h3>Job Description</h3>
-                      <div className="description-content">
-                        {selectedJob.description}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <JobDetails
+                  job={selectedJob}
+                  isLoadingJobDetails={isLoadingJobDetails}
+                  jobDetailError={jobDetailError}
+                  onGenerateCoverLetter={handleGenerateCoverLetter}
+                />
               )}
             </div>
           </div>

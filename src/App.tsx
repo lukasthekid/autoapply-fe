@@ -8,6 +8,7 @@ import LinkedInUrlPage from './pages/LinkedInUrlPage'
 import JobDescriptionPage from './pages/JobDescriptionPage'
 import DocumentUploadPage from './pages/DocumentUploadPage'
 import DocumentsPage from './pages/DocumentsPage'
+import ApplicationsPage from './pages/ApplicationsPage'
 import DashboardLayout from './components/layout/DashboardLayout'
 import DocumentGate from './components/DocumentGate'
 import './styles/index.css'
@@ -64,6 +65,15 @@ function App() {
               <DocumentGate>
                 <DashboardLayout>
                   <DocumentsPage />
+                </DashboardLayout>
+              </DocumentGate>
+            } />
+            
+            {/* Applications page (with layout, with gate) */}
+            <Route path="/applications" element={
+              <DocumentGate>
+                <DashboardLayout>
+                  <ApplicationsPage />
                 </DashboardLayout>
               </DocumentGate>
             } />

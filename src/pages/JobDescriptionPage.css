@@ -492,6 +492,53 @@
   border-radius: 10px;
 }
 
+/* Cover Letter Editor */
+.cover-letter-editor {
+  width: 100%;
+  min-height: 400px;
+  padding: 1.5rem;
+  background: rgba(15, 23, 42, 0.8);
+  border: 2px solid rgba(99, 102, 241, 0.2);
+  border-radius: 0.875rem;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: inherit;
+  line-height: 1.8;
+  resize: vertical;
+  transition: all 0.3s ease;
+  white-space: pre-wrap;
+}
+
+.cover-letter-editor:focus {
+  outline: none;
+  border-color: rgba(99, 102, 241, 0.6);
+  box-shadow: 
+    0 0 0 4px rgba(99, 102, 241, 0.15),
+    0 0 20px rgba(99, 102, 241, 0.3);
+  background: rgba(15, 23, 42, 0.95);
+}
+
+.cover-letter-editor::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cover-letter-editor::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.cover-letter-editor::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
+  border-radius: 10px;
+}
+
+.result-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .job-description-page {
