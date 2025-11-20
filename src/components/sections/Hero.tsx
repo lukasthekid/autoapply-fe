@@ -116,7 +116,7 @@ const Hero = () => {
                 Generate as many cover letters as you need
               </h1>
               <p className="hero-subtitle">
-                Upload your resume, paste the job description, and get a personalized cover letter in seconds. 
+                Upload your resume and get a personalized cover letter in seconds. 
                 <strong> Powered by AI</strong> to create authentic, tailored content.
               </p>
               <div className="hero-cta">
@@ -134,6 +134,19 @@ const Hero = () => {
 
             {/* Main Generator Card */}
             <div className="hero-generator">
+              {/* Step Indicator */}
+              <div className="step-indicator">
+                <div className={`step-indicator-item ${currentStep === 'upload' ? 'active' : currentStep === 'job-description' ? 'completed' : ''}`}>
+                  <div className="step-indicator-number">
+                    {currentStep === 'job-description' ? '' : '1'}
+                  </div>
+                </div>
+                <div className={`step-indicator-line ${currentStep === 'job-description' ? 'completed' : ''}`}></div>
+                <div className={`step-indicator-item ${currentStep === 'job-description' ? 'active' : ''}`}>
+                  <div className="step-indicator-number">2</div>
+                </div>
+              </div>
+
               {/* Step 1: Upload CV */}
               {currentStep === 'upload' && (
                 <div className="generator-step">

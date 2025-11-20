@@ -196,6 +196,111 @@
   background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.5), transparent);
 }
 
+/* Step Indicator */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+.step-indicator-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  max-width: 200px;
+}
+
+.step-indicator-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
+  background: rgba(99, 102, 241, 0.1);
+  border: 2px solid rgba(99, 102, 241, 0.3);
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.step-indicator-item.active .step-indicator-number {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border-color: var(--primary-color);
+  color: white;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+  transform: scale(1.1);
+}
+
+.step-indicator-item.completed .step-indicator-number {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+}
+
+.step-indicator-item.completed .step-indicator-number {
+  position: relative;
+  color: transparent;
+}
+
+.step-indicator-item.completed .step-indicator-number::before {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.25rem;
+  color: white;
+  font-weight: bold;
+}
+
+.step-indicator-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.step-indicator-item.active .step-indicator-label {
+  color: var(--primary-light);
+  font-weight: 600;
+}
+
+.step-indicator-item.completed .step-indicator-label {
+  color: var(--accent-color);
+}
+
+.step-indicator-line {
+  flex: 1;
+  height: 2px;
+  background: rgba(99, 102, 241, 0.2);
+  max-width: 100px;
+  position: relative;
+  margin: 0 0.5rem;
+}
+
+.step-indicator-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  background: var(--accent-color);
+  transition: width 0.5s ease;
+}
+
+.step-indicator-line.completed::after {
+  width: 100%;
+}
+
 .generator-step {
   animation: fadeIn 0.4s ease;
 }
@@ -616,6 +721,31 @@
   .privacy-note {
     font-size: 0.75rem;
     padding: 0.75rem;
+  }
+
+  .step-indicator {
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .step-indicator-item {
+    max-width: 150px;
+  }
+
+  .step-indicator-number {
+    width: 36px;
+    height: 36px;
+    font-size: 0.875rem;
+  }
+
+  .step-indicator-label {
+    font-size: 0.75rem;
+  }
+
+  .step-indicator-line {
+    max-width: 50px;
+    margin: 0 0.25rem;
   }
 }
 
