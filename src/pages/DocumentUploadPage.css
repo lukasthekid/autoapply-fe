@@ -161,6 +161,13 @@
   background: rgba(99, 102, 241, 0.05);
 }
 
+.upload-dropzone.drag-over {
+  border-color: var(--primary-color);
+  background: rgba(99, 102, 241, 0.15);
+  border-style: solid;
+  transform: scale(1.02);
+}
+
 .upload-icon {
   margin-bottom: 1rem;
 }
