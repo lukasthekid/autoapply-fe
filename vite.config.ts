@@ -20,6 +20,32 @@ export default defineConfig({
       '@/contexts': path.resolve(__dirname, './src/contexts'),
     },
   },
+  build: {
+    // Enable code splitting
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          // Separate vendor chunks
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              return 'react-vendor'
+            }
+            return 'vendor'
+          }
+        },
+      },
+    },
+    // Optimize chunk size
+    chunkSizeWarningLimit: 1000,
+    // Enable CSS code splitting
+    cssCodeSplit: true,
+    // Minify CSS
+    cssMinify: true,
+    // Source maps for production (set to false for smaller builds)
+    sourcemap: false,
+    // Target modern browsers for smaller bundle
+    target: 'es2015',
+  },
   server: {
     proxy: {
       // Proxy API requests to local backend during development
