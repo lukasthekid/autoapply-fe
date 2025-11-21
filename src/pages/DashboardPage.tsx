@@ -31,7 +31,7 @@ const DashboardPage = () => {
           <path d="m21 21-4.35-4.35"></path>
         </svg>
       ),
-      gradient: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+      gradient: 'linear-gradient(135deg, var(--primary-color), var(--primary-light))',
       path: '/jobs',
       badge: 'Popular',
     },
@@ -45,7 +45,7 @@ const DashboardPage = () => {
           <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
         </svg>
       ),
-      gradient: 'linear-gradient(135deg, #8b5cf6, #ec4899)',
+      gradient: 'linear-gradient(135deg, var(--primary-light), var(--secondary-color))',
       path: '/linkedin-url',
       badge: 'Quick',
     },
@@ -62,7 +62,7 @@ const DashboardPage = () => {
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
       ),
-      gradient: 'linear-gradient(135deg, #ec4899, #f43f5e)',
+      gradient: 'linear-gradient(135deg, var(--secondary-color), var(--secondary-light))',
       path: '/job-description',
       badge: 'Flexible',
     },

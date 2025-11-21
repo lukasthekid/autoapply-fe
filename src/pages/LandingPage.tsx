@@ -6,11 +6,13 @@ import MouseAmbientLight from '@/components/MouseAmbientLight'
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver'
 
 // Lazy load below-the-fold components for better performance
-const Templates = lazy(() => import('@/components/sections/Templates'))
+const ProblemSolution = lazy(() => import('@/components/sections/ProblemSolution'))
+const HowItWorks = lazy(() => import('@/components/sections/HowItWorks'))
 const Features = lazy(() => import('@/components/sections/Features'))
 const Testimonials = lazy(() => import('@/components/sections/Testimonials'))
 const Pricing = lazy(() => import('@/components/sections/Pricing'))
 const FAQ = lazy(() => import('@/components/sections/FAQ'))
+const FinalCTA = lazy(() => import('@/components/sections/FinalCTA'))
 const Footer = lazy(() => import('@/components/layout/Footer'))
 
 // Lazy loaded section wrapper that only loads when visible
@@ -68,8 +70,12 @@ const LandingPage = () => {
         <main>
           <Hero />
           <LazySection>
-            <Templates />
+            <ProblemSolution />
           </LazySection>
+          <LazySection>
+            <HowItWorks />
+          </LazySection>
+
           <LazySection>
             <Features />
           </LazySection>
@@ -81,6 +87,9 @@ const LandingPage = () => {
           </LazySection>
           <LazySection>
             <FAQ />
+          </LazySection>
+          <LazySection>
+            <FinalCTA />
           </LazySection>
         </main>
         <LazySection fallback={null}>

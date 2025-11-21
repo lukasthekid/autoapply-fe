@@ -1,127 +1,115 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './Hero.css'
 import { useAuth } from '@/contexts/AuthContext'
 import AuthModal from '@/components/AuthModal'
 
-type Step = 'upload' | 'job-description'
-
 const Hero = () => {
-  const { isAuthenticated } = useAuth()
-  const [currentStep, setCurrentStep] = useState<Step>('upload')
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [jobDescription, setJobDescription] = useState('')
-  const [jobUrl, setJobUrl] = useState('')
-  const [inputMode, setInputMode] = useState<'url' | 'text'>('text')
-  const [isDragging, setIsDragging] = useState(false)
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
   const [authModalMode, setAuthModalMode] = useState<'login' | 'signup'>('signup')
+  const [isAnimated, setIsAnimated] = useState(false)
+  const heroRef = useRef<HTMLElement>(null)
+  const parallaxRef = useRef<HTMLDivElement>(null)
 
-  const isValidFileType = (file: File): boolean => {
-    const validTypes = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    ]
-    const validExtensions = ['.pdf', '.doc', '.docx']
-    const fileName = file.name.toLowerCase()
-    return validTypes.includes(file.type) || validExtensions.some(ext => fileName.endsWith(ext))
-  }
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file && isValidFileType(file)) {
-      if (file.size > 5 * 1024 * 1024) {
-        alert('File must be smaller than 5MB')
-        return
-      }
-      setSelectedFile(file)
+  // Trigger animations on mount (delayed on mobile to reduce initial motion)
+  useEffect(() => {
+    const isMobile = window.innerWidth < 768
+    if (isMobile) {
+      // Small delay on mobile to reduce initial animation overload
+      setTimeout(() => {
+        setIsAnimated(true)
+      }, 50)
     } else {
-      alert('Please upload a PDF, DOC, or DOCX file')
+      setIsAnimated(true)
     }
-  }
+  }, [])
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsDragging(true)
-  }
+  // Mouse parallax effect for background (disabled on mobile)
+  useEffect(() => {
+    // Disable parallax on mobile devices
+    if (window.innerWidth < 768) return
 
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsDragging(false)
-  }
+    const heroElement = heroRef.current
+    const parallaxElement = parallaxRef.current
+    if (!heroElement || !parallaxElement) return
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsDragging(false)
+    let targetX = 0
+    let targetY = 0
+    let currentX = 0
+    let currentY = 0
+    let rafId: number | null = null
 
-    const file = e.dataTransfer.files[0]
-    if (file && isValidFileType(file)) {
-      if (file.size > 5 * 1024 * 1024) {
-        alert('File must be smaller than 5MB')
-        return
-      }
-      setSelectedFile(file)
-    } else {
-      alert('Please upload a PDF, DOC, or DOCX file')
-    }
-  }
-
-  const handleContinue = () => {
-    if (currentStep === 'upload' && selectedFile) {
-      setCurrentStep('job-description')
-    }
-  }
-
-  const handleGenerate = () => {
-    if (currentStep === 'job-description') {
-      const hasJobInfo = inputMode === 'url' ? jobUrl.trim() : jobDescription.trim()
-      if (!hasJobInfo) {
-        alert('Please provide a job description or URL')
-        return
-      }
-
-      if (isAuthenticated) {
-        // TODO: Trigger cover letter generation
-        console.log('Generate cover letter for authenticated user')
-      } else {
-        setAuthModalMode('signup')
-        setIsAuthModalOpen(true)
+    const animate = () => {
+      // Smooth interpolation for parallax effect
+      currentX += (targetX - currentX) * 0.15
+      currentY += (targetY - currentY) * 0.15
+      
+      parallaxElement.style.transform = `translate(${currentX}%, ${currentY}%)`
+      
+      // Continue animation if there's still movement
+      if (Math.abs(targetX - currentX) > 0.01 || Math.abs(targetY - currentY) > 0.01) {
+        rafId = requestAnimationFrame(animate)
       }
     }
-  }
 
-  const formatFileSize = (bytes: number): string => {
-    if (bytes < 1024) return bytes + ' B'
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
-    return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
-  }
+    const handleMouseMove = (e: MouseEvent) => {
+      const { clientX, clientY } = e
+      const { innerWidth, innerHeight } = window
+      
+      // Calculate normalized position (-1 to 1)
+      const x = (clientX / innerWidth) * 2 - 1
+      const y = (clientY / innerHeight) * 2 - 1
+      
+      // Update target values for parallax shift (-3% to 3%)
+      targetX = x * 3
+      targetY = y * 3
+      
+      // Start animation loop if not already running
+      if (!rafId) {
+        rafId = requestAnimationFrame(animate)
+      }
+    }
+
+    const handleMouseLeave = () => {
+      targetX = 0
+      targetY = 0
+      if (!rafId) {
+        rafId = requestAnimationFrame(animate)
+      }
+    }
+
+    heroElement.addEventListener('mousemove', handleMouseMove)
+    heroElement.addEventListener('mouseleave', handleMouseLeave)
+    
+    return () => {
+      heroElement.removeEventListener('mousemove', handleMouseMove)
+      heroElement.removeEventListener('mouseleave', handleMouseLeave)
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId)
+      }
+    }
+  }, [])
 
   return (
     <>
-      <section className="hero">
-        <div className="hero-ambient-glow hero-ambient-glow-1" />
-        <div className="hero-ambient-glow hero-ambient-glow-2" />
-        <div className="hero-ambient-glow hero-ambient-glow-3" />
+      <section className="hero" ref={heroRef}>
+        <div className="hero-parallax-bg" ref={parallaxRef}>
+          <div className="hero-ambient-glow hero-ambient-glow-1" />
+          <div className="hero-ambient-glow hero-ambient-glow-2" />
+          <div className="hero-ambient-glow hero-ambient-glow-3" />
+        </div>
         <div className="container">
           <div className="hero-content">
-            {/* Hero Header */}
-            <div className="hero-header">
-              <div className="hero-badge">
-                <span>✨ Free AI Cover Letter Generator</span>
-              </div>
-              <h1 className="hero-title">
-                Generate as many cover letters as you need
+            {/* Left Side: Text Content */}
+            <div className="hero-left">
+              <h1 className={`hero-title ${isAnimated ? 'animate-in' : ''}`}>
+                Apply to dozens of jobs with personalized cover letters in hours, not days
               </h1>
-              <p className="hero-subtitle">
-                Upload your resume and get a personalized cover letter in seconds. 
-                <strong> Powered by AI</strong> to create authentic, tailored content.
+              <p className={`hero-subtitle ${isAnimated ? 'animate-in' : ''}`}>
+                Upload your resume once. Generate tailored cover letters with AI. Track all your applications instantly. No more manual copy-pasting.
               </p>
-              <div className="hero-cta">
+              <div className={`hero-cta ${isAnimated ? 'animate-in' : ''}`}>
                 <button 
-                  className="btn-primary btn-large btn-glow"
+                  className="hero-cta-primary"
                   onClick={() => {
                     setAuthModalMode('signup')
                     setIsAuthModalOpen(true)
@@ -129,173 +117,32 @@ const Hero = () => {
                 >
                   Get Started Free
                 </button>
+                <button 
+                  className="hero-cta-secondary"
+                  onClick={() => {
+                    window.location.href = '#features'
+                  }}
+                >
+                  More Information
+                </button>
+              </div>
+              <div className={`hero-trust-badge ${isAnimated ? 'animate-in' : ''}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Your data is secure. We never share it with 3rd parties.</span>
               </div>
             </div>
 
-            {/* Main Generator Card */}
-            <div className="hero-generator">
-              {/* Step Indicator */}
-              <div className="step-indicator">
-                <div className={`step-indicator-item ${currentStep === 'upload' ? 'active' : currentStep === 'job-description' ? 'completed' : ''}`}>
-                  <div className="step-indicator-number">
-                    {currentStep === 'job-description' ? '' : '1'}
-                  </div>
-                </div>
-                <div className={`step-indicator-line ${currentStep === 'job-description' ? 'completed' : ''}`}></div>
-                <div className={`step-indicator-item ${currentStep === 'job-description' ? 'active' : ''}`}>
-                  <div className="step-indicator-number">2</div>
-                </div>
+            {/* Right Side: Visual Element */}
+            <div className={`hero-right ${isAnimated ? 'animate-in' : ''}`}>
+              <div className="hero-visual">
+                <img 
+                  src="/product_screenshot_mockup.png" 
+                  alt="AutoApply Dashboard showing application tracking and statistics"
+                  className="hero-screenshot"
+                />
               </div>
-
-              {/* Step 1: Upload CV */}
-              {currentStep === 'upload' && (
-                <div className="generator-step">
-                  <div className="step-header">
-                    <h3 className="step-title">Upload your resume</h3>
-                    <p className="step-description">Drag and drop your CV or click to browse</p>
-                  </div>
-                  
-                  <div className="upload-section">
-                    <input
-                      type="file"
-                      id="cv-upload"
-                      accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                      onChange={handleFileSelect}
-                      style={{ display: 'none' }}
-                    />
-                    <label
-                      htmlFor="cv-upload"
-                      className={`upload-dropzone ${isDragging ? 'drag-over' : ''} ${selectedFile ? 'has-file' : ''}`}
-                      onDragOver={handleDragOver}
-                      onDragLeave={handleDragLeave}
-                      onDrop={handleDrop}
-                    >
-                      {selectedFile ? (
-                        <div className="file-selected">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="12" y1="18" x2="12" y2="12"></line>
-                            <line x1="9" y1="15" x2="15" y2="15"></line>
-                          </svg>
-                          <div className="file-details">
-                            <div className="file-name">{selectedFile.name}</div>
-                            <div className="file-size">{formatFileSize(selectedFile.size)}</div>
-                          </div>
-                          <button
-                            type="button"
-                            className="remove-file-btn"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setSelectedFile(null)
-                            }}
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      ) : (
-                        <>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                          </svg>
-                          <p className="upload-text">
-                            <strong>Drop your resume here</strong> or choose a file
-                          </p>
-                          <p className="upload-hint">PDF & DOCX only. Max 5MB file size.</p>
-                        </>
-                      )}
-                    </label>
-                  </div>
-
-                  <div className="privacy-note">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                    </svg>
-                    <span>Your data is secure. We never share it with 3rd parties.</span>
-                  </div>
-
-                  {selectedFile && (
-                    <button
-                      className="btn-primary btn-large btn-continue"
-                      onClick={handleContinue}
-                    >
-                      Continue
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                      </svg>
-                    </button>
-                  )}
-                </div>
-              )}
-
-              {/* Step 2: Job Description */}
-              {currentStep === 'job-description' && (
-                <div className="generator-step">
-                  <div className="step-header">
-                    <h3 className="step-title">Add the job description</h3>
-                    <p className="step-description">Paste the job posting URL or description to personalize your cover letter</p>
-                  </div>
-
-                  <div className="input-mode-toggle">
-                    <button
-                      type="button"
-                      className={`mode-btn ${inputMode === 'text' ? 'active' : ''}`}
-                      onClick={() => setInputMode('text')}
-                    >
-                      Job Description
-                    </button>
-                    <button
-                      type="button"
-                      className={`mode-btn ${inputMode === 'url' ? 'active' : ''}`}
-                      onClick={() => setInputMode('url')}
-                    >
-                      Job URL
-                    </button>
-                  </div>
-
-                  <div className="job-input-section">
-                    {inputMode === 'url' ? (
-                      <input
-                        type="url"
-                        className="job-input"
-                        placeholder="Paste the job posting URL here..."
-                        value={jobUrl}
-                        onChange={(e) => setJobUrl(e.target.value)}
-                      />
-                    ) : (
-                      <textarea
-                        className="job-textarea"
-                        placeholder="Paste the job description here..."
-                        value={jobDescription}
-                        onChange={(e) => setJobDescription(e.target.value)}
-                        rows={8}
-                      />
-                    )}
-                  </div>
-
-                  <div className="step-actions">
-                    <button
-                      type="button"
-                      className="btn-secondary"
-                      onClick={() => setCurrentStep('upload')}
-                    >
-                      ← Back
-                    </button>
-                    <button
-                      className="btn-primary btn-large btn-generate"
-                      onClick={handleGenerate}
-                      disabled={inputMode === 'url' ? !jobUrl.trim() : !jobDescription.trim()}
-                    >
-                      Generate Cover Letter
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>

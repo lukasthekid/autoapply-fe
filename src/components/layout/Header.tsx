@@ -58,9 +58,8 @@ const Header = () => {
             {!isAuthenticated && (
               <nav ref={navRef} className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
                 <a href="#features" onClick={handleNavClick}>Features</a>
-                <a href="#templates" onClick={handleNavClick}>Templates</a>
-                <a href="#pricing" onClick={handleNavClick}>Pricing</a>
                 <a href="#testimonials" onClick={handleNavClick}>Testimonials</a>
+                <a href="#pricing" onClick={handleNavClick}>Pricing</a>
                 <a href="#faq" onClick={handleNavClick}>FAQ</a>
               </nav>
             )}

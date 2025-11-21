@@ -1,6 +1,6 @@
 .document-upload-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-tertiary) 50%, var(--bg-primary) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,7 +16,7 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, transparent 70%);
   animation: rotate 30s linear infinite;
 }
 
@@ -30,14 +30,14 @@
   z-index: 1;
   max-width: 800px;
   width: 100%;
-  background: rgba(30, 41, 59, 0.8);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  border: 1px solid var(--border-color);
   border-radius: 2rem;
   padding: 3rem;
   box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 20px 60px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
   animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -63,12 +63,12 @@
   justify-content: center;
   width: 100px;
   height: 100px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   border-radius: 50%;
   margin-bottom: 1.5rem;
   box-shadow: 
-    0 0 40px rgba(99, 102, 241, 0.4),
-    0 10px 30px rgba(0, 0, 0, 0.3);
+    0 0 40px rgba(79, 70, 229, 0.4),
+    0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .icon-wrapper svg {
@@ -79,7 +79,7 @@
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 0.75rem;
-  background: linear-gradient(135deg, #818cf8, #c084fc);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -100,8 +100,8 @@
 }
 
 .info-card {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(99, 102, 241, 0.15);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 1rem;
   padding: 1.5rem;
 }
@@ -148,8 +148,8 @@
   display: block;
   width: 100%;
   padding: 3rem 2rem;
-  background: rgba(15, 23, 42, 0.8);
-  border: 2px dashed rgba(99, 102, 241, 0.3);
+  background: var(--bg-primary);
+  border: 2px dashed var(--border-color);
   border-radius: 1rem;
   text-align: center;
   cursor: pointer;
@@ -158,12 +158,12 @@
 
 .upload-dropzone:hover {
   border-color: var(--primary-color);
-  background: rgba(99, 102, 241, 0.05);
+  background: rgba(79, 70, 229, 0.05);
 }
 
 .upload-dropzone.drag-over {
   border-color: var(--primary-color);
-  background: rgba(99, 102, 241, 0.15);
+  background: rgba(79, 70, 229, 0.1);
   border-style: solid;
   transform: scale(1.02);
 }
@@ -194,7 +194,7 @@
 .selected-files {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid rgba(99, 102, 241, 0.15);
+  border-top: 1px solid var(--border-color);
 }
 
 .selected-files h3 {
@@ -215,15 +215,15 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: rgba(99, 102, 241, 0.05);
-  border: 1px solid rgba(99, 102, 241, 0.15);
+  background: rgba(79, 70, 229, 0.05);
+  border: 1px solid var(--border-color);
   border-radius: 0.75rem;
   transition: all 0.3s ease;
 }
 
 .file-item:hover {
-  background: rgba(99, 102, 241, 0.1);
-  border-color: rgba(99, 102, 241, 0.3);
+  background: rgba(79, 70, 229, 0.1);
+  border-color: var(--primary-color);
 }
 
 .file-icon {
@@ -281,7 +281,7 @@
   justify-content: center;
   gap: 0.75rem;
   padding: 1.25rem 2rem;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   border: none;
   border-radius: 1rem;
   color: white;
@@ -290,15 +290,15 @@
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 
-    0 4px 20px rgba(99, 102, 241, 0.4),
-    0 0 0 0 rgba(99, 102, 241, 0.5);
+    0 4px 20px rgba(79, 70, 229, 0.4),
+    0 0 0 0 rgba(79, 70, 229, 0.5);
 }
 
 .upload-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 
-    0 8px 30px rgba(99, 102, 241, 0.6),
-    0 0 40px rgba(99, 102, 241, 0.3);
+    0 8px 30px rgba(79, 70, 229, 0.6),
+    0 0 40px rgba(79, 70, 229, 0.3);
 }
 
 .upload-btn:disabled {
@@ -328,7 +328,7 @@
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 0.75rem;
-  color: #fca5a5;
+  color: #ef4444;
   margin-bottom: 1.5rem;
   animation: shake 0.5s ease;
 }
@@ -358,7 +358,7 @@
   width: 80px;
   height: 80px;
   margin: 0 auto 1.5rem;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark));
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -366,8 +366,8 @@
   font-size: 3rem;
   color: white;
   box-shadow: 
-    0 0 40px rgba(16, 185, 129, 0.4),
-    0 10px 30px rgba(0, 0, 0, 0.3);
+    0 0 40px rgba(20, 184, 166, 0.4),
+    0 10px 30px rgba(0, 0, 0, 0.1);
   animation: pulse 2s ease infinite;
 }
 
@@ -380,7 +380,7 @@
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  color: var(--accent-color);
+  color: var(--secondary-color);
 }
 
 .success-message p {

@@ -1,0 +1,262 @@
+.problem-solution {
+  min-height: 40vh;
+  max-height: 50vh;
+  padding: 4rem 0;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.problem-solution-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 3rem;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Problem Side */
+.problem-side {
+  position: relative;
+  will-change: transform;
+  transition: transform 0.1s ease-out;
+}
+
+.problem-headline {
+  font-size: 2.25rem; /* 36px */
+  font-weight: 700;
+  color: var(--text-color); /* Dark gray */
+  margin: 0 0 2rem 0;
+  line-height: 1.2;
+}
+
+.problem-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.problem-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 600ms ease-out, transform 600ms ease-out;
+  position: relative;
+  padding: 0.5rem 0;
+}
+
+.problem-item.animate-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.problem-item .bullet {
+  color: #ef4444; /* Red accent */
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.problem-item::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(to right, rgba(239, 68, 68, 0.2), transparent);
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+}
+
+.problem-item.animate-in::after {
+  opacity: 1;
+}
+
+/* Solution Side */
+.solution-side {
+  position: relative;
+  will-change: transform;
+  transition: transform 0.1s ease-out;
+}
+
+.solution-headline {
+  font-size: 2.25rem; /* 36px */
+  font-weight: 700;
+  color: #14b8a6; /* Teal-500 */
+  margin: 0 0 2rem 0;
+  line-height: 1.2;
+}
+
+.solution-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.solution-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 600ms ease-out, transform 600ms ease-out;
+  position: relative;
+  padding: 0.5rem 0;
+}
+
+.solution-item.animate-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.solution-item .bullet {
+  color: #14b8a6; /* Teal-500 */
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.solution-item::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(to right, rgba(20, 184, 166, 0.2), transparent);
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+}
+
+.solution-item.animate-in::after {
+  opacity: 1;
+}
+
+/* Vertical Divider Line */
+.divider-line {
+  position: relative;
+  width: 2px;
+  height: 100%;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.line-draw {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 0;
+  background: linear-gradient(to bottom, #e5e7eb, #d1d5db);
+  animation: drawLineVertical 400ms ease-out forwards;
+}
+
+.line-draw.animate-draw {
+  animation: drawLineVertical 400ms ease-out forwards;
+}
+
+@keyframes drawLineVertical {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: 100%;
+    opacity: 1;
+  }
+}
+
+/* Tablet: Stack vertically */
+@media (max-width: 968px) {
+  .problem-solution {
+    min-height: auto;
+    max-height: none;
+    padding: 3rem 0;
+  }
+
+  .problem-solution-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .divider-line {
+    width: 100%;
+    height: 2px;
+    min-height: 2px;
+    transform: rotate(0deg);
+  }
+
+  .line-draw {
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 2px;
+    animation: drawLineHorizontal 400ms ease-out forwards;
+  }
+
+  @keyframes drawLineHorizontal {
+    from {
+      width: 0;
+      opacity: 0;
+    }
+    to {
+      width: 100%;
+      opacity: 1;
+    }
+  }
+
+  .problem-side,
+  .solution-side {
+    transform: none !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .problem-solution {
+    padding: 2rem 0;
+  }
+
+  .problem-headline,
+  .solution-headline {
+    font-size: 1.75rem;
+  }
+
+  .problem-item,
+  .solution-item {
+    font-size: 0.9375rem;
+  }
+
+  .problem-item {
+    transform: translateX(-20px);
+  }
+
+  .solution-item {
+    transform: translateX(20px);
+  }
+}
+

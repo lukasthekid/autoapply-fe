@@ -1,0 +1,201 @@
+.final-cta {
+  padding: 6rem 0;
+  background: linear-gradient(180deg, #4f46e5 0%, #4338ca 100%); /* Indigo-600 → Indigo-700 */
+  min-height: 30vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.final-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.final-cta-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.final-cta-headline {
+  font-size: 2.5rem; /* 40px */
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  line-height: 1.2;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 600ms cubic-bezier(0.33, 1, 0.68, 1),
+              transform 600ms cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.final-cta-headline.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0ms;
+}
+
+.final-cta-subheadline {
+  font-size: 1.125rem; /* 18px */
+  color: #e0e7ff; /* Indigo-100 */
+  margin: 0;
+  line-height: 1.6;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 600ms cubic-bezier(0.33, 1, 0.68, 1),
+              transform 600ms cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.final-cta-subheadline.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 200ms;
+}
+
+.final-cta-button {
+  height: 56px;
+  width: 240px;
+  padding: 16px 32px;
+  background: #14b8a6; /* Teal-500 */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+  opacity: 0;
+  transform: scale(0.8);
+  position: relative;
+  overflow: hidden;
+  transition: background-color 200ms ease-in-out,
+              transform 200ms ease-in-out,
+              box-shadow 200ms ease-in-out;
+}
+
+/* Entrance animation */
+.final-cta-button.animate-in {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 600ms cubic-bezier(0.33, 1, 0.68, 1),
+              transform 600ms cubic-bezier(0.33, 1, 0.68, 1);
+  transition-delay: 400ms;
+}
+
+/* Continuous pulse animation (stops on hover) */
+.final-cta-button.animate-in:not(:hover):not(.clicking) {
+  animation: buttonPulse 2s ease-in-out infinite;
+}
+
+@keyframes buttonPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.95;
+  }
+}
+
+/* Hover state - pulse pauses */
+.final-cta-button:hover {
+  background: #0d9488; /* Teal-600 */
+  transform: scale(1.08) !important; /* 8% growth, overrides pulse */
+  box-shadow: 
+    0 8px 20px rgba(20, 184, 166, 0.4),
+    0 0 40px rgba(52, 211, 153, 0.5); /* Teal-400 glow */
+  animation: none; /* Stop pulse on hover */
+  opacity: 1;
+}
+
+/* Click animation */
+.final-cta-button.clicking {
+  animation: buttonClick 150ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes buttonClick {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.final-cta-button:active {
+  transform: scale(0.95);
+  transition: transform 0ms;
+}
+
+/* Tablet */
+@media (max-width: 968px) {
+  .final-cta {
+    padding: 4rem 0;
+    min-height: auto;
+  }
+
+  .final-cta-headline {
+    font-size: 2rem;
+  }
+
+  .final-cta-subheadline {
+    font-size: 1rem;
+  }
+
+  .final-cta-button {
+    width: 220px;
+    height: 52px;
+    font-size: 1rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .final-cta {
+    padding: 3rem 0;
+  }
+
+  .final-cta-content {
+    gap: 1.25rem;
+  }
+
+  .final-cta-headline {
+    font-size: 1.75rem;
+  }
+
+  .final-cta-subheadline {
+    font-size: 0.9375rem;
+  }
+
+  .final-cta-button {
+    width: 100%;
+    max-width: 280px;
+    height: 52px;
+    font-size: 1rem;
+  }
+}
+

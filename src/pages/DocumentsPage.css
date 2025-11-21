@@ -1,5 +1,5 @@
 .documents-page {
-  padding: 2rem;
+  padding: var(--spacing-lg);
   max-width: 1000px;
   margin: 0 auto;
 }
@@ -7,7 +7,7 @@
 .documents-container {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: var(--spacing-lg);
 }
 
 .page-header h1 {
@@ -25,11 +25,11 @@
 .status-card,
 .upload-section,
 .danger-zone {
-  background: rgba(30, 41, 59, 0.6);
+  background: var(--bg-card);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(99, 102, 241, 0.2);
-  border-radius: 1.5rem;
-  padding: 2rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
 }
 
 .status-card h2,
@@ -37,26 +37,26 @@
 .danger-zone h2 {
   font-size: 1.5rem;
   font-weight: 600;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-md);
   color: var(--text-primary);
 }
 
 .section-subtitle {
   color: var(--text-secondary);
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .status-info {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  border-radius: 1rem;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
 }
 
 .status-info.success {
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.3);
 }
 
 .status-info.warning {
@@ -70,19 +70,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   font-size: 1.5rem;
   flex-shrink: 0;
 }
 
 .status-info.success .status-icon {
-  background: rgba(16, 185, 129, 0.2);
-  color: #10b981;
+  background: rgba(20, 184, 166, 0.2);
+  color: var(--secondary-color);
 }
 
 .status-info.warning .status-icon {
   background: rgba(245, 158, 11, 0.2);
-  color: #f59e0b;
+  color: var(--accent-color);
 }
 
 .status-title {
@@ -100,23 +100,23 @@
 .upload-dropzone {
   display: block;
   width: 100%;
-  padding: 2.5rem 2rem;
-  background: rgba(15, 23, 42, 0.8);
-  border: 2px dashed rgba(99, 102, 241, 0.3);
-  border-radius: 1rem;
+  padding: 2.5rem var(--spacing-lg);
+  background: var(--bg-primary);
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-lg);
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .upload-dropzone:hover {
   border-color: var(--primary-color);
-  background: rgba(99, 102, 241, 0.05);
+  background: rgba(79, 70, 229, 0.05);
 }
 
 .upload-icon {
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-sm);
 }
 
 .upload-icon svg {
@@ -125,7 +125,7 @@
 
 .upload-text {
   font-size: 1rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-xs);
   color: var(--text-primary);
 }
 
@@ -139,16 +139,16 @@
 }
 
 .selected-files {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(99, 102, 241, 0.15);
-  border-radius: 1rem;
-  padding: 1.5rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
 }
 
 .selected-files h3 {
   font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-sm);
   color: var(--text-primary);
 }
 
@@ -156,23 +156,23 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .file-item {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: rgba(99, 102, 241, 0.05);
-  border: 1px solid rgba(99, 102, 241, 0.15);
-  border-radius: 0.75rem;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background: rgba(79, 70, 229, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
   transition: all 0.3s ease;
 }
 
 .file-item:hover {
-  background: rgba(99, 102, 241, 0.1);
-  border-color: rgba(99, 102, 241, 0.3);
+  background: rgba(79, 70, 229, 0.1);
+  border-color: var(--primary-color);
 }
 
 .file-icon {
@@ -205,7 +205,7 @@
   justify-content: center;
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   color: #ef4444;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -229,11 +229,11 @@
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  padding: 1rem 2rem;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   border: none;
-  border-radius: 0.875rem;
-  color: white;
+  border-radius: var(--radius-lg);
+  color: var(--white);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -242,7 +242,7 @@
 
 .upload-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+  box-shadow: var(--shadow-lg), 0 8px 30px rgba(79, 70, 229, 0.4);
 }
 
 .upload-btn:disabled {
@@ -261,10 +261,10 @@
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  padding: 1rem 2rem;
+  padding: var(--spacing-sm) var(--spacing-lg);
   background: rgba(239, 68, 68, 0.1);
   border: 2px solid rgba(239, 68, 68, 0.3);
-  border-radius: 0.875rem;
+  border-radius: var(--radius-lg);
   color: #ef4444;
   font-size: 1rem;
   font-weight: 600;
@@ -289,20 +289,16 @@
   height: 18px;
   border: 3px solid rgba(255, 255, 255, 0.3);
   border-top-color: currentColor;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 
 .message {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 1rem 1.25rem;
-  border-radius: 0.75rem;
+  padding: var(--spacing-sm) 1.25rem;
+  border-radius: var(--radius-md);
   animation: slideIn 0.3s ease;
 }
 
@@ -324,9 +320,9 @@
 }
 
 .success-message {
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  color: #6ee7b7;
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.3);
+  color: var(--secondary-light);
 }
 
 .message svg {
@@ -345,13 +341,13 @@
 /* Responsive */
 @media (max-width: 768px) {
   .documents-page {
-    padding: 1.5rem;
+    padding: var(--spacing-md);
   }
 
   .status-card,
   .upload-section,
   .danger-zone {
-    padding: 1.5rem;
+    padding: var(--spacing-md);
   }
 
   .page-header h1 {

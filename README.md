@@ -74,6 +74,15 @@ autoapply-fe/
 
 The project uses CSS custom properties (variables) defined in `src/styles/index.css`. You can easily customize colors, spacing, and other design tokens by modifying the `:root` variables.
 
+### Brand Color System
+
+- **Primary – Indigo 600 `#4F46E5`**: trust-building hue for navigation, hero CTAs, and focus states.
+- **Secondary – Teal 500 `#14B8A6`**: growth/automation accent for highlights, chips, and illustrations.
+- **Accent – Amber 500 `#F59E0B`**: limited-use urgency color for limited-time or “save hours” messaging.
+- **Base Neutrals**: light surfaces (`#F9FAFB`, `#FFFFFF`) with typography in `#1F2937`/`#111827`, borders at `#E5E7EB`.
+
+All landing-page sections consume these tokens so swapping palettes only requires updating the variables. Use the accent sparingly (critical stats, deadline chips) to preserve its urgency.
+
 ## 🔌 API Configuration
 
 ### Local Development
