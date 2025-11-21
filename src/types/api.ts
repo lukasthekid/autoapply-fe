@@ -193,6 +193,8 @@ export interface DeleteDataResponse {
 }
 
 // Application types
+export type ApplicationStatus = 'applied' | 'declined' | 'phone_screening' | 'first_round' | 'second_round' | 'third_round' | 'offer'
+
 export interface CreateJobApplicationRequest {
   job_id?: string | null
   job_title: string
@@ -210,6 +212,7 @@ export interface JobApplication {
   job_location: string | null
   job_url: string | null
   notes: string | null
+  status: ApplicationStatus
   applied_at: string
   updated_at: string
 }
@@ -226,5 +229,14 @@ export interface JobApplicationListResponse {
 
 export interface CheckApplicationResponse {
   has_applied: boolean
+}
+
+export interface UpdateApplicationStatusRequest {
+  status: ApplicationStatus
+}
+
+export interface UpdateApplicationStatusResponse {
+  success: boolean
+  application: JobApplication
 }
 

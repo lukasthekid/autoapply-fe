@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { applicationsService } from '@/services/applicationsService'
-import type { JobApplication } from '@/types/api'
+import type { JobApplication, ApplicationStatus } from '@/types/api'
 import './ApplicationsPage.css'
 
 export default function ApplicationsPage() {
   const [applications, setApplications] = useState<JobApplication[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [updatingId, setUpdatingId] = useState<number | null>(null)
 
   useEffect(() => {
     fetchApplications()
@@ -33,6 +34,54 @@ export default function ApplicationsPage() {
       day: 'numeric',
     })
   }
+
+  const handleStatusChange = async (applicationId: number, newStatus: ApplicationStatus) => {
+    try {
+      setUpdatingId(applicationId)
+      const response = await applicationsService.updateApplicationStatus(applicationId, newStatus)
+      setApplications(prev =>
+        prev.map(app =>
+          app.id === applicationId ? response.application : app
+        )
+      )
+    } catch (err: any) {
+      setError('Failed to update application status')
+      console.error('Error updating application status:', err)
+    } finally {
+      setUpdatingId(null)
+    }
+  }
+
+  const getStatusColor = (status: ApplicationStatus) => {
+    const colors: Record<ApplicationStatus, string> = {
+      applied: 'var(--primary-color)',
+      declined: '#ef4444',
+      phone_screening: '#f59e0b',
+      first_round: '#3b82f6',
+      second_round: '#8b5cf6',
+      third_round: '#ec4899',
+      offer: '#10b981',
+    }
+    return colors[status]
+  }
+
+  // Calculate KPIs
+  const calculateKPIs = () => {
+    const total = applications.length
+    const active = applications.filter(app => 
+      ['phone_screening', 'first_round', 'second_round', 'third_round'].includes(app.status)
+    ).length
+    const offers = applications.filter(app => app.status === 'offer').length
+    const declined = applications.filter(app => app.status === 'declined').length
+    const applied = applications.filter(app => app.status === 'applied').length
+    const responseRate = total > 0 
+      ? Math.round(((total - applied) / total) * 100) 
+      : 0
+
+    return { total, active, offers, declined, applied, responseRate }
+  }
+
+  const kpis = calculateKPIs()
 
   if (isLoading) {
     return (
@@ -65,6 +114,72 @@ export default function ApplicationsPage() {
           </div>
         )}
 
+        {applications.length > 0 && !error && (
+          <div className="kpi-section">
+            <div className="kpi-card">
+              <div className="kpi-icon" style={{ background: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary-color)' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+              </div>
+              <div className="kpi-content">
+                <div className="kpi-value">{kpis.total}</div>
+                <div className="kpi-label">Total Applications</div>
+              </div>
+            </div>
+
+            <div className="kpi-card">
+              <div className="kpi-icon" style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                </svg>
+              </div>
+              <div className="kpi-content">
+                <div className="kpi-value">{kpis.active}</div>
+                <div className="kpi-label">In Progress</div>
+              </div>
+            </div>
+
+            <div className="kpi-card">
+              <div className="kpi-icon" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <div className="kpi-content">
+                <div className="kpi-value">{kpis.offers}</div>
+                <div className="kpi-label">Offers</div>
+              </div>
+            </div>
+
+            <div className="kpi-card">
+              <div className="kpi-icon" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </div>
+              <div className="kpi-content">
+                <div className="kpi-value">{kpis.declined}</div>
+                <div className="kpi-label">Declined</div>
+              </div>
+            </div>
+
+            <div className="kpi-card">
+              <div className="kpi-icon" style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+              </div>
+              <div className="kpi-content">
+                <div className="kpi-value">{kpis.responseRate}%</div>
+                <div className="kpi-label">Response Rate</div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {applications.length === 0 && !error ? (
           <div className="empty-state">
             <div className="empty-icon">
@@ -94,6 +209,7 @@ export default function ApplicationsPage() {
                     <th>Company</th>
                     <th>Position</th>
                     <th>Location</th>
+                    <th>Status</th>
                     <th>Applied Date</th>
                     <th>Actions</th>
                   </tr>
@@ -117,6 +233,28 @@ export default function ApplicationsPage() {
                             <span className="location-text">{app.job_location}</span>
                           ) : (
                             <span className="location-empty">—</span>
+                          )}
+                        </div>
+                      </td>
+                      <td>
+                        <div className="status-cell">
+                          <select
+                            value={app.status}
+                            onChange={(e) => handleStatusChange(app.id, e.target.value as ApplicationStatus)}
+                            disabled={updatingId === app.id}
+                            className="status-select"
+                            style={{ '--status-color': getStatusColor(app.status) } as React.CSSProperties}
+                          >
+                            <option value="applied">Applied</option>
+                            <option value="phone_screening">Phone Screening</option>
+                            <option value="first_round">First Round</option>
+                            <option value="second_round">Second Round</option>
+                            <option value="third_round">Third Round</option>
+                            <option value="offer">Offer</option>
+                            <option value="declined">Declined</option>
+                          </select>
+                          {updatingId === app.id && (
+                            <span className="status-updating">Updating...</span>
                           )}
                         </div>
                       </td>

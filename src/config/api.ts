@@ -69,6 +69,7 @@ export const API_ENDPOINTS = {
     LIST: '/api/applications/',
     GET: (id: number) => `/api/applications/${id}`,
     CHECK: '/api/applications/check',
+    UPDATE_STATUS: (id: number) => `/api/applications/${id}/status`,
   },
 } as const
 
