@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState, MutableRefObject } from 'react'
 
 interface UseIntersectionObserverOptions {
   threshold?: number
@@ -6,13 +6,19 @@ interface UseIntersectionObserverOptions {
   triggerOnce?: boolean
 }
 
-export const useIntersectionObserver = (
+export const useIntersectionObserver = <T extends HTMLElement = HTMLElement>(
   options: UseIntersectionObserverOptions = {}
-) => {
+): {
+  elementRef: MutableRefObject<T | null>
+  isIntersecting: boolean
+  hasIntersected: boolean
+} => {
   const { threshold = 0.1, rootMargin = '50px', triggerOnce = true } = options
   const [isIntersecting, setIsIntersecting] = useState(false)
   const [hasIntersected, setHasIntersected] = useState(false)
-  const elementRef = useRef<HTMLDivElement>(null)
+  
+  // Create a mutable ref object that can be assigned (not using useRef to avoid read-only type)
+  const elementRef: MutableRefObject<T | null> = { current: null }
 
   useEffect(() => {
     const element = elementRef.current
@@ -38,7 +44,7 @@ export const useIntersectionObserver = (
     return () => {
       observer.disconnect()
     }
-  }, [threshold, rootMargin, triggerOnce])
+  }, [threshold, rootMargin, triggerOnce, elementRef])
 
   return { elementRef, isIntersecting, hasIntersected }
 }

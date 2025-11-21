@@ -17,13 +17,13 @@ const solutionItems = [
 ]
 
 const ProblemSolution = () => {
-  const { elementRef, hasIntersected } = useIntersectionObserver({
+  const { elementRef, hasIntersected } = useIntersectionObserver<HTMLElement>({
     threshold: 0.2,
     rootMargin: '0px',
     triggerOnce: true,
   })
   
-  const sectionRef = useRef<HTMLElement>(null)
+  const sectionRef = useRef<HTMLElement | null>(null)
   const [isAnimated, setIsAnimated] = useState(false)
 
   useEffect(() => {
@@ -109,7 +109,7 @@ const ProblemSolution = () => {
       ref={(node) => {
         if (node) {
           sectionRef.current = node
-          ;(elementRef as React.MutableRefObject<HTMLElement>).current = node
+          ;(elementRef as React.MutableRefObject<HTMLElement | null>).current = node
         }
       }}
     >

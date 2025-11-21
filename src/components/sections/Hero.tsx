@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
 import './Hero.css'
-import { useAuth } from '@/contexts/AuthContext'
 import AuthModal from '@/components/AuthModal'
 
 const Hero = () => {

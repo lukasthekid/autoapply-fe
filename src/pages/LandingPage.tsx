@@ -23,7 +23,7 @@ const LazySection = ({
   children: React.ReactNode
   fallback?: React.ReactNode | null
 }) => {
-  const { elementRef, hasIntersected } = useIntersectionObserver({
+  const { elementRef, hasIntersected } = useIntersectionObserver<HTMLDivElement>({
     threshold: 0.01,
     rootMargin: '100px',
     triggerOnce: true,
