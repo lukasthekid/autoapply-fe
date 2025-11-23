@@ -35,17 +35,8 @@ export default defineConfig({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            // Bundle React and all React-dependent packages together
-            // This ensures React is loaded before any code that depends on it
-            if (
-              id.includes('react') || 
-              id.includes('react-dom') || 
-              id.includes('react-router') ||
-              id.includes('scheduler') ||
-              id.includes('recharts')
-            ) {
-              return 'react-vendor'
-            }
+            // Bundle all vendor dependencies together to avoid React loading order issues
+            // This ensures React is available when any vendor code executes
             return 'vendor'
           }
         },
