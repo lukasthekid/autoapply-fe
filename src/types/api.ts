@@ -240,3 +240,18 @@ export interface UpdateApplicationStatusResponse {
   application: JobApplication
 }
 
+export interface ApplicationStatsResponse {
+  total_applications: number
+  applications_this_week: number
+  applications_last_7_days: Record<string, number>
+  status_counts: {
+    applied: number
+    declined: number
+    phone_screening: number
+    first_round: number
+    second_round: number
+    third_round: number
+    offer: number
+  }
+}
+

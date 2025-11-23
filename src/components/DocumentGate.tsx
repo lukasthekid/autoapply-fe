@@ -19,11 +19,11 @@ export default function DocumentGate({ children }: DocumentGateProps) {
     try {
       const status = await documentsService.getStatus()
       
-      // If no documents and not already on upload or documents page, redirect
+      // If no documents and not already on onboarding or documents page, redirect
       if (!status.has_uploaded_document && 
-          location.pathname !== '/upload-documents' && 
+          location.pathname !== '/onboarding' && 
           location.pathname !== '/documents') {
-        navigate('/upload-documents', { replace: true })
+        navigate('/onboarding', { replace: true })
       }
     } catch (error) {
       console.error('Failed to check document status:', error)

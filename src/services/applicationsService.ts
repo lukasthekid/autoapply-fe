@@ -1,6 +1,6 @@
 import apiClient from './apiClient'
 import { API_ENDPOINTS } from '@/config/api'
-import type { CreateJobApplicationRequest, CreateJobApplicationResponse, JobApplicationListResponse, JobApplication, CheckApplicationResponse, UpdateApplicationStatusResponse, ApplicationStatus } from '@/types/api'
+import type { CreateJobApplicationRequest, CreateJobApplicationResponse, JobApplicationListResponse, JobApplication, CheckApplicationResponse, UpdateApplicationStatusResponse, ApplicationStatus, ApplicationStatsResponse } from '@/types/api'
 
 /**
  * Service for job application-related API operations
@@ -66,6 +66,17 @@ export const applicationsService = {
     const response = await apiClient.patch<UpdateApplicationStatusResponse>(
       API_ENDPOINTS.APPLICATIONS.UPDATE_STATUS(id),
       { status }
+    )
+    return response.data
+  },
+
+  /**
+   * Get application statistics
+   * Requires authentication
+   */
+  async getStats(): Promise<ApplicationStatsResponse> {
+    const response = await apiClient.get<ApplicationStatsResponse>(
+      API_ENDPOINTS.APPLICATIONS.STATS
     )
     return response.data
   },

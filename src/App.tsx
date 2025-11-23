@@ -7,6 +7,7 @@ import JobSearchPage from './pages/JobSearchPage'
 import LinkedInUrlPage from './pages/LinkedInUrlPage'
 import JobDescriptionPage from './pages/JobDescriptionPage'
 import DocumentUploadPage from './pages/DocumentUploadPage'
+import OnboardingPage from './pages/OnboardingPage'
 import DocumentsPage from './pages/DocumentsPage'
 import ApplicationsPage from './pages/ApplicationsPage'
 import DashboardLayout from './components/layout/DashboardLayout'
@@ -57,7 +58,10 @@ function App() {
         {/* Protected routes */}
         {isAuthenticated ? (
           <>
-            {/* Document upload page (no layout, no document gate) */}
+            {/* Onboarding flow (no layout, no document gate) */}
+            <Route path="/onboarding" element={<OnboardingPage />} />
+            
+            {/* Document upload page (no layout, no document gate) - kept for backward compatibility */}
             <Route path="/upload-documents" element={<DocumentUploadPage />} />
             
             {/* Documents management page (with layout, with gate) */}
