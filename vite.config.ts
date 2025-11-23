@@ -3,7 +3,14 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      jsxRuntime: 'automatic',
+    }),
+  ],
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom'],
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -28,7 +35,15 @@ export default defineConfig({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+            // Bundle React and all React-dependent packages together
+            // This ensures React is loaded before any code that depends on it
+            if (
+              id.includes('react') || 
+              id.includes('react-dom') || 
+              id.includes('react-router') ||
+              id.includes('scheduler') ||
+              id.includes('recharts')
+            ) {
               return 'react-vendor'
             }
             return 'vendor'
@@ -41,6 +56,10 @@ export default defineConfig({
     cssMinify: true,
     sourcemap: false,
     target: 'es2015',
+    commonjsOptions: {
+      include: [/node_modules/],
+      transformMixedEsModules: true,
+    },
   },
   server: {
     proxy: {
