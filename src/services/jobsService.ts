@@ -2,6 +2,7 @@ import apiClient from './apiClient'
 import { API_ENDPOINTS } from '@/config/api'
 import type { 
   JobSearchRequest,
+  ProfileSearchRequest,
   JobSearchResponse,
   JobListing,
   CreateJobFromUrlRequest,
@@ -15,7 +16,20 @@ import type {
  */
 export const jobsService = {
   /**
-   * Search for jobs on LinkedIn
+   * Search for jobs on LinkedIn using saved search profiles
+   * This endpoint automatically uses all user's search profiles
+   */
+  async searchJobsWithProfiles(data: ProfileSearchRequest): Promise<JobSearchResponse> {
+    const response = await apiClient.post<JobSearchResponse>(
+      '/api/jobs/search',
+      data
+    )
+    return response.data
+  },
+
+  /**
+   * Search for jobs on LinkedIn (legacy method - kept for backward compatibility)
+   * @deprecated Use searchJobsWithProfiles instead
    */
   async searchJobs(data: JobSearchRequest): Promise<JobSearchResponse> {
     const response = await apiClient.post<JobSearchResponse>(

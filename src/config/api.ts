@@ -72,6 +72,15 @@ export const API_ENDPOINTS = {
     UPDATE_STATUS: (id: number) => `/api/applications/${id}/status`,
     STATS: '/api/applications/stats',
   },
+  
+  // Search Profiles
+  SEARCH_PROFILES: {
+    LIST: '/api/jobs/search-profiles',
+    CREATE: '/api/jobs/search-profiles',
+    GET: (id: number) => `/api/jobs/search-profiles/${id}`,
+    UPDATE: (id: number) => `/api/jobs/search-profiles/${id}`,
+    DELETE: (id: number) => `/api/jobs/search-profiles/${id}`,
+  },
 } as const
 
 // Token storage keys

@@ -119,6 +119,11 @@ export interface JobSearchRequest {
   limit?: number | null
 }
 
+export interface ProfileSearchRequest {
+  date_posted?: DatePosted | null
+  limit?: number | null
+}
+
 export interface JobSearchResponse {
   success: boolean
   total_results: number
@@ -253,5 +258,38 @@ export interface ApplicationStatsResponse {
     third_round: number
     offer: number
   }
+}
+
+// Search Profile types
+export interface SearchProfile {
+  id: number
+  name: string | null
+  keyword: string
+  location: string
+  job_types: JobType[]
+  experience_levels: ExperienceLevel[]
+  created_at: string
+  updated_at: string
+}
+
+export interface CreateSearchProfileRequest {
+  name?: string | null
+  keyword: string
+  location: string
+  job_types?: JobType[] | null
+  experience_levels?: ExperienceLevel[] | null
+}
+
+export interface UpdateSearchProfileRequest {
+  name?: string | null
+  keyword?: string | null
+  location?: string | null
+  job_types?: JobType[] | null
+  experience_levels?: ExperienceLevel[] | null
+}
+
+export interface SearchProfileListResponse {
+  profiles: SearchProfile[]
+  count: number
 }
 

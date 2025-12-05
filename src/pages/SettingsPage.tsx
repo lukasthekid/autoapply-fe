@@ -1,7 +1,17 @@
 import { useState, useEffect, FormEvent } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { authService } from '@/services/authService'
-import type { UserProfile, UserProfileUpdate, CountryOption } from '@/types/api'
+import { searchProfilesService } from '@/services/searchProfilesService'
+import type {
+  UserProfile,
+  UserProfileUpdate,
+  CountryOption,
+  SearchProfile,
+  CreateSearchProfileRequest,
+  UpdateSearchProfileRequest,
+  JobType,
+  ExperienceLevel,
+} from '@/types/api'
 import './SettingsPage.css'
 
 const SettingsPage = () => {
@@ -12,6 +22,15 @@ const SettingsPage = () => {
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+
+  // Search Profiles state
+  const [searchProfiles, setSearchProfiles] = useState<SearchProfile[]>([])
+  const [isLoadingProfiles, setIsLoadingProfiles] = useState(false)
+  const [isSavingProfile, setIsSavingProfile] = useState(false)
+  const [editingProfileId, setEditingProfileId] = useState<number | null>(null)
+  const [showProfileForm, setShowProfileForm] = useState(false)
+  const [profileError, setProfileError] = useState<string | null>(null)
+  const [profileSuccess, setProfileSuccess] = useState(false)
 
   // Form state - using string type since all fields are required
   const [formData, setFormData] = useState<{
@@ -34,18 +53,35 @@ const SettingsPage = () => {
     country: '',
   })
 
-  // Load profile and countries on mount
+  // Search Profile form state
+  const [profileFormData, setProfileFormData] = useState<{
+    name: string
+    keyword: string
+    location: string
+    job_types: JobType[]
+    experience_levels: ExperienceLevel[]
+  }>({
+    name: '',
+    keyword: '',
+    location: '',
+    job_types: [],
+    experience_levels: [],
+  })
+
+  // Load profile, countries, and search profiles on mount
   useEffect(() => {
     const loadData = async () => {
       try {
         setIsLoading(true)
-        const [profileData, countriesData] = await Promise.all([
+        const [profileData, countriesData, profilesData] = await Promise.all([
           authService.getProfile(),
           authService.getCountries(),
+          searchProfilesService.getAllSearchProfiles().catch(() => ({ profiles: [], count: 0 })),
         ])
         
         setProfile(profileData)
         setCountries(countriesData.countries)
+        setSearchProfiles(profilesData.profiles || [])
         
         // Initialize form with profile data
         setFormData({
@@ -67,6 +103,19 @@ const SettingsPage = () => {
 
     loadData()
   }, [])
+
+  // Load search profiles
+  const loadSearchProfiles = async () => {
+    try {
+      setIsLoadingProfiles(true)
+      const data = await searchProfilesService.getAllSearchProfiles()
+      setSearchProfiles(data.profiles)
+    } catch (err: any) {
+      setProfileError(err?.response?.data?.message || 'Failed to load search profiles')
+    } finally {
+      setIsLoadingProfiles(false)
+    }
+  }
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -119,6 +168,12 @@ const SettingsPage = () => {
       return
     }
 
+    // Validate that user has at least one search profile
+    if (searchProfiles.length === 0) {
+      setError('You must have at least one search profile to save your settings.')
+      return
+    }
+
     setIsSaving(true)
 
     try {
@@ -164,6 +219,169 @@ const SettingsPage = () => {
       )
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  // Search Profile handlers
+  const handleProfileInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target
+    setProfileFormData(prev => ({ ...prev, [name]: value }))
+    setProfileError(null)
+    setProfileSuccess(false)
+  }
+
+  const handleJobTypeChange = (jobType: JobType, checked: boolean) => {
+    setProfileFormData(prev => ({
+      ...prev,
+      job_types: checked
+        ? [...prev.job_types, jobType]
+        : prev.job_types.filter(t => t !== jobType),
+    }))
+  }
+
+  const handleExperienceLevelChange = (level: ExperienceLevel, checked: boolean) => {
+    setProfileFormData(prev => ({
+      ...prev,
+      experience_levels: checked
+        ? [...prev.experience_levels, level]
+        : prev.experience_levels.filter(l => l !== level),
+    }))
+  }
+
+  const handleEditProfile = (profile: SearchProfile) => {
+    setEditingProfileId(profile.id)
+    setProfileFormData({
+      name: profile.name || '',
+      keyword: profile.keyword,
+      location: profile.location,
+      job_types: profile.job_types || [],
+      experience_levels: profile.experience_levels || [],
+    })
+    setShowProfileForm(true)
+    setProfileError(null)
+    setProfileSuccess(false)
+  }
+
+  const handleNewProfile = () => {
+    setEditingProfileId(null)
+    setProfileFormData({
+      name: '',
+      keyword: '',
+      location: '',
+      job_types: [],
+      experience_levels: [],
+    })
+    setShowProfileForm(true)
+    setProfileError(null)
+    setProfileSuccess(false)
+  }
+
+  const handleCancelProfileForm = () => {
+    setShowProfileForm(false)
+    setEditingProfileId(null)
+    setProfileFormData({
+      name: '',
+      keyword: '',
+      location: '',
+      job_types: [],
+      experience_levels: [],
+    })
+    setProfileError(null)
+  }
+
+  const handleSaveProfile = async (e: FormEvent) => {
+    e.preventDefault()
+    setProfileError(null)
+    setProfileSuccess(false)
+
+    // Validate required fields
+    if (!profileFormData.keyword.trim() || !profileFormData.location.trim()) {
+      setProfileError('Keyword and Location are required fields.')
+      return
+    }
+
+    setIsSavingProfile(true)
+
+    try {
+      if (editingProfileId) {
+        // Update existing profile
+        const updateData: UpdateSearchProfileRequest = {
+          name: profileFormData.name.trim() || null,
+          keyword: profileFormData.keyword.trim() || null,
+          location: profileFormData.location.trim() || null,
+          job_types: profileFormData.job_types.length > 0 ? profileFormData.job_types : null,
+          experience_levels:
+            profileFormData.experience_levels.length > 0
+              ? profileFormData.experience_levels
+              : null,
+        }
+        await searchProfilesService.updateSearchProfile(editingProfileId, updateData)
+      } else {
+        // Create new profile
+        const createData: CreateSearchProfileRequest = {
+          name: profileFormData.name.trim() || null,
+          keyword: profileFormData.keyword.trim(),
+          location: profileFormData.location.trim(),
+          job_types: profileFormData.job_types.length > 0 ? profileFormData.job_types : null,
+          experience_levels:
+            profileFormData.experience_levels.length > 0
+              ? profileFormData.experience_levels
+              : null,
+        }
+        await searchProfilesService.createSearchProfile(createData)
+      }
+
+      setProfileSuccess(true)
+      await loadSearchProfiles()
+      handleCancelProfileForm()
+
+      // Clear success message after 3 seconds
+      setTimeout(() => setProfileSuccess(false), 3000)
+    } catch (err: any) {
+      const errorData = err?.response?.data
+      let errorMessage = ''
+
+      if (errorData?.errors) {
+        const fieldErrors = Object.entries(errorData.errors)
+          .map(([field, messages]: [string, any]) => {
+            const fieldName = field.replace(/_/g, ' ')
+            return `${fieldName}: ${Array.isArray(messages) ? messages.join(', ') : messages}`
+          })
+          .join('\n')
+        errorMessage = fieldErrors
+      } else {
+        errorMessage = errorData?.message || errorData?.detail || err?.message
+      }
+
+      setProfileError(errorMessage || 'Failed to save search profile. Please try again.')
+    } finally {
+      setIsSavingProfile(false)
+    }
+  }
+
+  const handleDeleteProfile = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this search profile?')) {
+      return
+    }
+
+    // Prevent deletion if it's the last profile
+    if (searchProfiles.length === 1) {
+      setProfileError('You must have at least one search profile. Cannot delete the last profile.')
+      return
+    }
+
+    try {
+      await searchProfilesService.deleteSearchProfile(id)
+      await loadSearchProfiles()
+      setProfileSuccess(true)
+      setTimeout(() => setProfileSuccess(false), 3000)
+    } catch (err: any) {
+      const errorData = err?.response?.data
+      setProfileError(
+        errorData?.message || errorData?.detail || err?.message || 'Failed to delete search profile.'
+      )
     }
   }
 
@@ -366,6 +584,241 @@ const SettingsPage = () => {
               </button>
             </div>
           </form>
+
+          {/* Search Profiles Section */}
+          <div className="settings-section">
+            <div className="settings-section-header">
+              <h2>Search Profiles</h2>
+              {!showProfileForm && (
+                <button
+                  type="button"
+                  className="btn-secondary btn-small"
+                  onClick={handleNewProfile}
+                >
+                  + Add Profile
+                </button>
+              )}
+            </div>
+
+            {profileError && (
+              <div className="settings-error" style={{ marginBottom: '1rem' }}>
+                {profileError}
+              </div>
+            )}
+
+            {profileSuccess && (
+              <div className="settings-success" style={{ marginBottom: '1rem' }}>
+                ✓ Search profile {editingProfileId ? 'updated' : 'created'} successfully!
+              </div>
+            )}
+
+            {showProfileForm ? (
+              <form onSubmit={handleSaveProfile} className="settings-form">
+                <div className="form-group">
+                  <label htmlFor="profile_name">Profile Name (Optional)</label>
+                  <input
+                    type="text"
+                    id="profile_name"
+                    name="name"
+                    value={profileFormData.name}
+                    onChange={handleProfileInputChange}
+                    placeholder="e.g., Software Engineer - Remote"
+                  />
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="profile_keyword">Keyword *</label>
+                    <input
+                      type="text"
+                      id="profile_keyword"
+                      name="keyword"
+                      value={profileFormData.keyword}
+                      onChange={handleProfileInputChange}
+                      placeholder="e.g., Software Engineer"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="profile_location">Location *</label>
+                    <input
+                      type="text"
+                      id="profile_location"
+                      name="location"
+                      value={profileFormData.location}
+                      onChange={handleProfileInputChange}
+                      placeholder="e.g., New York, NY"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Job Types (Optional)</label>
+                  <div className="checkbox-group">
+                    {(['full_time', 'part_time', 'contract', 'temporary', 'internship'] as JobType[]).map(
+                      (jobType) => (
+                        <label key={jobType} className="checkbox-label">
+                          <input
+                            type="checkbox"
+                            checked={profileFormData.job_types.includes(jobType)}
+                            onChange={(e) =>
+                              handleJobTypeChange(jobType, e.target.checked)
+                            }
+                          />
+                          <span>
+                            {jobType
+                              .split('_')
+                              .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                              .join(' ')}
+                          </span>
+                        </label>
+                      )
+                    )}
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Experience Levels (Optional)</label>
+                  <div className="checkbox-group">
+                    {([
+                      'internship',
+                      'entry_level',
+                      'associate',
+                      'mid_senior_level',
+                      'director',
+                    ] as ExperienceLevel[]).map((level) => (
+                      <label key={level} className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={profileFormData.experience_levels.includes(level)}
+                          onChange={(e) =>
+                            handleExperienceLevelChange(level, e.target.checked)
+                          }
+                        />
+                        <span>
+                          {level
+                            .split('_')
+                            .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                            .join(' ')}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="settings-actions">
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={handleCancelProfileForm}
+                    disabled={isSavingProfile}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn-primary btn-glow"
+                    disabled={isSavingProfile}
+                  >
+                    {isSavingProfile
+                      ? 'Saving...'
+                      : editingProfileId
+                      ? 'Update Profile'
+                      : 'Create Profile'}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <>
+                {isLoadingProfiles ? (
+                  <div className="settings-loading" style={{ minHeight: '200px' }}>
+                    <div className="loading-spinner"></div>
+                    <p>Loading search profiles...</p>
+                  </div>
+                ) : searchProfiles.length === 0 ? (
+                  <div className="empty-state">
+                    <p>No search profiles yet. Create your first one to get started!</p>
+                  </div>
+                ) : (
+                  <div className="profiles-list">
+                    {searchProfiles.map((profile) => (
+                      <div key={profile.id} className="profile-card">
+                        <div className="profile-card-content">
+                          <div className="profile-card-header">
+                            <h3>{profile.name || 'Unnamed Profile'}</h3>
+                            <div className="profile-card-actions">
+                              <button
+                                type="button"
+                                className="btn-link"
+                                onClick={() => handleEditProfile(profile)}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                type="button"
+                                className="btn-link btn-link-danger"
+                                onClick={() => handleDeleteProfile(profile.id)}
+                                disabled={searchProfiles.length === 1}
+                                title={
+                                  searchProfiles.length === 1
+                                    ? 'You must have at least one search profile'
+                                    : 'Delete profile'
+                                }
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                          <div className="profile-card-details">
+                            <div className="profile-detail">
+                              <span className="profile-detail-label">Keyword:</span>
+                              <span className="profile-detail-value">{profile.keyword}</span>
+                            </div>
+                            <div className="profile-detail">
+                              <span className="profile-detail-label">Location:</span>
+                              <span className="profile-detail-value">{profile.location}</span>
+                            </div>
+                            {profile.job_types && profile.job_types.length > 0 && (
+                              <div className="profile-detail">
+                                <span className="profile-detail-label">Job Types:</span>
+                                <span className="profile-detail-value">
+                                  {profile.job_types
+                                    .map((t) =>
+                                      t
+                                        .split('_')
+                                        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                                        .join(' ')
+                                    )
+                                    .join(', ')}
+                                </span>
+                              </div>
+                            )}
+                            {profile.experience_levels &&
+                              profile.experience_levels.length > 0 && (
+                                <div className="profile-detail">
+                                  <span className="profile-detail-label">Experience:</span>
+                                  <span className="profile-detail-value">
+                                    {profile.experience_levels
+                                      .map((l) =>
+                                        l
+                                          .split('_')
+                                          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                                          .join(' ')
+                                      )
+                                      .join(', ')}
+                                  </span>
+                                </div>
+                              )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>
