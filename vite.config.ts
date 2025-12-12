@@ -13,10 +13,15 @@ export default defineConfig({
       'react',
       'react-dom',
       'react-router-dom',
-      '@myriaddreamin/typst.ts',
-      '@myriaddreamin/typst-ts-renderer',
-      '@myriaddreamin/typst-ts-web-compiler',
     ],
+    // Exclude typst from pre-bundling but allow normal resolution
+    exclude: [
+      '@myriaddreamin/typst.ts',
+    ],
+    // Force include the dependencies so they're available
+    esbuildOptions: {
+      target: 'esnext',
+    }
   },
   resolve: {
     alias: {
@@ -31,7 +36,6 @@ export default defineConfig({
       '@/services': path.resolve(__dirname, './src/services'),
       '@/config': path.resolve(__dirname, './src/config'),
       '@/contexts': path.resolve(__dirname, './src/contexts'),
-      // Force single React instance
       'react': path.resolve(__dirname, './node_modules/react'),
       'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
     },
@@ -42,12 +46,10 @@ export default defineConfig({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            // Don't bundle typst packages with other vendors
+            // Keep typst in separate chunk
             if (id.includes('@myriaddreamin/typst')) {
               return 'typst'
             }
-            // Bundle all vendor dependencies together to avoid React loading order issues
-            // This ensures React is available when any vendor code executes
             return 'vendor'
           }
         },
@@ -57,13 +59,16 @@ export default defineConfig({
     cssCodeSplit: true,
     cssMinify: true,
     sourcemap: false,
-    target: 'es2015',
+    target: 'esnext',
     commonjsOptions: {
       include: [/node_modules/],
       transformMixedEsModules: true,
     },
   },
   assetsInclude: ['**/*.wasm'],
+  worker: {
+    format: 'es',
+  },
   server: {
     proxy: {
       '/api': {
