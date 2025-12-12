@@ -110,6 +110,14 @@ export interface JobListing {
   company_logo_url?: string | null
 }
 
+export interface CreateJobListingRequest {
+  title?: string | null
+  company_name?: string | null
+  linkedin_url?: string | null
+  location?: string | null
+  description?: string | null
+}
+
 export interface JobSearchRequest {
   keyword: string
   location: string

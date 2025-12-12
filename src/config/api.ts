@@ -56,6 +56,11 @@ export const API_ENDPOINTS = {
     CREATE_COVER_LETTER_SIMPLE: '/api/cover-letters/create-cover-letter-simple',
   },
   
+  // Resumes
+  RESUMES: {
+    CREATE_RESUME: '/api/resumes/create-resume',
+  },
+  
   // Documents
   DOCUMENTS: {
     UPLOAD_PDF: '/api/documents/upload-pdf',
@@ -68,6 +73,7 @@ export const API_ENDPOINTS = {
     CREATE: '/api/applications/',
     LIST: '/api/applications/',
     GET: (id: number) => `/api/applications/${id}`,
+    DELETE: (id: number) => `/api/applications/${id}`,
     CHECK: '/api/applications/check',
     UPDATE_STATUS: (id: number) => `/api/applications/${id}/status`,
     STATS: '/api/applications/stats',

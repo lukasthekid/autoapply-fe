@@ -1,5 +1,5 @@
 import { useState, useEffect, FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { jobsService } from '@/services/jobsService'
 import { applicationsService } from '@/services/applicationsService'
 import { searchProfilesService } from '@/services/searchProfilesService'
@@ -82,6 +82,7 @@ const JobDetailsSkeleton = () => {
 
 const JobSearchPage = () => {
   const navigate = useNavigate()
+  const location = useLocation()
   const [searchParams, setSearchParams] = useState<ProfileSearchRequest>({
     date_posted: 'past_24_hours',
     limit: 25,
@@ -154,10 +155,6 @@ const JobSearchPage = () => {
     setShowCoverLetterGenerator(false) // Reset cover letter view
   }
 
-  const handleGenerateCoverLetter = () => {
-    setShowCoverLetterGenerator(true)
-  }
-
   const handleBackToJobDetails = () => {
     setShowCoverLetterGenerator(false)
   }
@@ -184,12 +181,75 @@ const JobSearchPage = () => {
     fetchData()
   }, [])
 
+  // Restore job and search state from navigation state (when returning from cover letter page)
+  useEffect(() => {
+    const state = location.state as { 
+      selectedJob?: JobListing
+      restoreJob?: boolean
+      searchState?: {
+        jobs?: JobListing[]
+        searchParams?: ProfileSearchRequest
+        hasSearched?: boolean
+        totalResults?: number
+      }
+    } | null
+    
+    if (state?.restoreJob) {
+      // Restore search state if available
+      if (state.searchState) {
+        if (state.searchState.jobs && state.searchState.jobs.length > 0) {
+          setJobs(state.searchState.jobs)
+        }
+        if (state.searchState.searchParams) {
+          setSearchParams(state.searchState.searchParams)
+        }
+        if (state.searchState.hasSearched !== undefined) {
+          setHasSearched(state.searchState.hasSearched)
+        }
+        if (state.searchState.totalResults !== undefined) {
+          setTotalResults(state.searchState.totalResults)
+        }
+      }
+      
+      // Restore selected job
+      if (state.selectedJob) {
+        // If we have jobs loaded (either from state or already loaded), try to find the job in the list
+        const currentJobs = state.searchState?.jobs || jobs
+        if (currentJobs.length > 0) {
+          const foundJob = currentJobs.find(j => j.job_id === state.selectedJob?.job_id)
+          if (foundJob) {
+            setSelectedJob(foundJob)
+          } else {
+            // If job not in current list, add it to the list and select it
+            setSelectedJob(state.selectedJob)
+            if (state.searchState?.jobs) {
+              setJobs([...state.searchState.jobs, state.selectedJob])
+            } else {
+              setJobs(prev => [...prev, state.selectedJob!])
+            }
+          }
+        } else {
+          // If no jobs loaded yet, set the job directly and mark as searched
+          setSelectedJob(state.selectedJob)
+          setHasSearched(true)
+        }
+      }
+      
+      // Clear the state to prevent re-triggering
+      window.history.replaceState({}, document.title)
+    }
+  }, [location.state])
+
   // Auto-select first job when jobs are loaded and no job is currently selected
   useEffect(() => {
     if (jobs.length > 0 && !selectedJob && hasSearched && !isSearching) {
-      setSelectedJob(jobs[0])
+      // Check if we're restoring a job first
+      const state = location.state as { restoreJob?: boolean } | null
+      if (!state?.restoreJob) {
+        setSelectedJob(jobs[0])
+      }
     }
-  }, [jobs, selectedJob, hasSearched, isSearching])
+  }, [jobs, selectedJob, hasSearched, isSearching, location.state])
 
   // Helper function to check if a job has been applied to
   const hasApplied = (job: JobListing): boolean => {
@@ -481,7 +541,12 @@ const JobSearchPage = () => {
                   job={selectedJob}
                   isLoadingJobDetails={false}
                   jobDetailError={null}
-                  onGenerateCoverLetter={handleGenerateCoverLetter}
+                  searchState={{
+                    jobs: jobs,
+                    searchParams: searchParams,
+                    hasSearched: hasSearched,
+                    totalResults: totalResults,
+                  }}
                 />
               )}
             </div>

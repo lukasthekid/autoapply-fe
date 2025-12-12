@@ -41,6 +41,14 @@ export const applicationsService = {
   },
 
   /**
+   * Delete a job application by ID
+   * Requires authentication
+   */
+  async deleteApplication(id: number): Promise<void> {
+    await apiClient.delete(API_ENDPOINTS.APPLICATIONS.DELETE(id))
+  },
+
+  /**
    * Check if user has already applied to a job
    * Checks in priority order: job_id → job_url → job_title + company_name
    * Requires authentication

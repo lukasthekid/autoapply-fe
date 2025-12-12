@@ -6,6 +6,8 @@ import SettingsPage from './pages/SettingsPage'
 import JobSearchPage from './pages/JobSearchPage'
 import LinkedInUrlPage from './pages/LinkedInUrlPage'
 import JobDescriptionPage from './pages/JobDescriptionPage'
+import CoverLetterPage from './pages/CoverLetterPage'
+import ResumePage from './pages/ResumePage'
 import DocumentUploadPage from './pages/DocumentUploadPage'
 import OnboardingPage from './pages/OnboardingPage'
 import DocumentsPage from './pages/DocumentsPage'
@@ -108,6 +110,20 @@ function App() {
               <DocumentGate>
                 <DashboardLayout>
                   <JobDescriptionPage />
+                </DashboardLayout>
+              </DocumentGate>
+            } />
+            <Route path="/cover-letter" element={
+              <DocumentGate>
+                <DashboardLayout>
+                  <CoverLetterPage />
+                </DashboardLayout>
+              </DocumentGate>
+            } />
+            <Route path="/resume" element={
+              <DocumentGate>
+                <DashboardLayout>
+                  <ResumePage />
                 </DashboardLayout>
               </DocumentGate>
             } />

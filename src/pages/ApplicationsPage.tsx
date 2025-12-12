@@ -8,6 +8,7 @@ export default function ApplicationsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [updatingId, setUpdatingId] = useState<number | null>(null)
+  const [deletingId, setDeletingId] = useState<number | null>(null)
 
   useEffect(() => {
     fetchApplications()
@@ -49,6 +50,20 @@ export default function ApplicationsPage() {
       console.error('Error updating application status:', err)
     } finally {
       setUpdatingId(null)
+    }
+  }
+
+  const handleDelete = async (applicationId: number) => {
+    try {
+      setDeletingId(applicationId)
+      setError(null)
+      await applicationsService.deleteApplication(applicationId)
+      setApplications(prev => prev.filter(app => app.id !== applicationId))
+    } catch (err: any) {
+      setError('Failed to delete application')
+      console.error('Error deleting application:', err)
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -280,6 +295,22 @@ export default function ApplicationsPage() {
                               </svg>
                             </a>
                           )}
+                          <button
+                            onClick={() => handleDelete(app.id)}
+                            className="action-link delete-button"
+                            title="Remove Application"
+                            aria-label="Remove Application"
+                            disabled={deletingId === app.id}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="3 6 5 6 21 6"></polyline>
+                              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                              <path d="M10 11v6"></path>
+                              <path d="M14 11v6"></path>
+                              <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+                            </svg>
+                            {deletingId === app.id && <span className="status-updating">Removing...</span>}
+                          </button>
                         </div>
                       </td>
                     </tr>

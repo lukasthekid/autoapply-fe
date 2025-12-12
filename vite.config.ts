@@ -9,7 +9,14 @@ export default defineConfig({
     }),
   ],
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom'],
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+      '@myriaddreamin/typst.ts',
+      '@myriaddreamin/typst-ts-renderer',
+      '@myriaddreamin/typst-ts-web-compiler',
+    ],
   },
   resolve: {
     alias: {
@@ -28,13 +35,17 @@ export default defineConfig({
       'react': path.resolve(__dirname, './node_modules/react'),
       'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
     },
-    dedupe: ['react', 'react-dom'], // Add this line
+    dedupe: ['react', 'react-dom'],
   },
   build: {
     rollupOptions: {
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
+            // Don't bundle typst packages with other vendors
+            if (id.includes('@myriaddreamin/typst')) {
+              return 'typst'
+            }
             // Bundle all vendor dependencies together to avoid React loading order issues
             // This ensures React is available when any vendor code executes
             return 'vendor'
@@ -52,6 +63,7 @@ export default defineConfig({
       transformMixedEsModules: true,
     },
   },
+  assetsInclude: ['**/*.wasm'],
   server: {
     proxy: {
       '/api': {

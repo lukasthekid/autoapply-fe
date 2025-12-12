@@ -5,6 +5,7 @@ import type {
   ProfileSearchRequest,
   JobSearchResponse,
   JobListing,
+  CreateJobListingRequest,
   CreateJobFromUrlRequest,
   CreateCoverLetterRequest,
   CreateCoverLetterSimpleRequest,
@@ -51,6 +52,17 @@ export const jobsService = {
     const response = await apiClient.get<JobListing[]>('/api/jobs/listings', {
       params,
     })
+    return response.data
+  },
+
+  /**
+   * Create a job listing manually
+   */
+  async createJobListing(data: CreateJobListingRequest): Promise<JobListing> {
+    const response = await apiClient.post<JobListing>(
+      '/api/jobs/listings',
+      data
+    )
     return response.data
   },
 

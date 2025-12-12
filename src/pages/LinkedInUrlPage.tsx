@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { jobsService } from '@/services/jobsService'
 import CoverLetterGenerator from '@/components/CoverLetterGenerator'
 import JobDetails from '@/components/JobDetails'
@@ -6,6 +7,7 @@ import type { JobListing } from '@/types/api'
 import './LinkedInUrlPage.css'
 
 const LinkedInUrlPage = () => {
+  const location = useLocation()
   const [linkedinUrl, setLinkedinUrl] = useState('')
   const [isCreatingJob, setIsCreatingJob] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -13,6 +15,16 @@ const LinkedInUrlPage = () => {
   
   // Cover letter generation state
   const [showCoverLetterGenerator, setShowCoverLetterGenerator] = useState(false)
+
+  // Restore job from navigation state (when returning from cover letter page)
+  useEffect(() => {
+    const state = location.state as { selectedJob?: JobListing; restoreJob?: boolean } | null
+    if (state?.restoreJob && state?.selectedJob) {
+      setJob(state.selectedJob)
+      // Clear the state to prevent re-triggering
+      window.history.replaceState({}, document.title)
+    }
+  }, [location.state])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,10 +55,6 @@ const LinkedInUrlPage = () => {
     } finally {
       setIsCreatingJob(false)
     }
-  }
-
-  const handleGenerateCoverLetter = () => {
-    setShowCoverLetterGenerator(true)
   }
 
   const handleBackToJobDetails = () => {
@@ -131,7 +139,6 @@ const LinkedInUrlPage = () => {
         ) : (
           <JobDetails
             job={job}
-            onGenerateCoverLetter={handleGenerateCoverLetter}
             onStartOver={handleStartOver}
             showStartOverButton={true}
           />
