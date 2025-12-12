@@ -11,78 +11,47 @@ let $typst: any = null
 let typstInitialized = false
 
 const initTypst = async () => {
-  console.log('[Typst Init] Starting initialization...')
-  console.log('[Typst Init] Current state - typstInitialized:', typstInitialized, '$typst exists:', !!$typst)
-  
-  if (typstInitialized && $typst) {
-    console.log('[Typst Init] Already initialized, skipping')
-    return
-  }
+  if (typstInitialized && $typst) return
   
   try {
-    console.log('[Typst Init] Attempting to import @myriaddreamin/typst.ts...')
-    
-    // Use direct import without trying different modules
     const typstModule = await import('@myriaddreamin/typst.ts/dist/esm/contrib/all-in-one-lite.mjs')
-    console.log('[Typst Init] Module imported successfully')
-    console.log('[Typst Init] Module keys:', Object.keys(typstModule))
     
     if (!typstModule || !typstModule.$typst) {
-      console.error('[Typst Init] Module structure:', typstModule)
       throw new Error('Typst module did not export $typst correctly')
     }
     
     $typst = typstModule.$typst
-    console.log('[Typst Init] $typst assigned, type:', typeof $typst)
-    console.log('[Typst Init] $typst methods:', Object.keys($typst))
     
     // Configure WASM module paths
     if (typeof window !== 'undefined' && $typst) {
-      console.log('[Typst Init] Configuring WASM paths...')
-      
-      // Compiler initialization
       if (!$typst._compilerInitialized) {
         try {
-          console.log('[Typst Init] Setting compiler options...')
           await $typst.setCompilerInitOptions({
             getModule: () =>
               'https://cdn.jsdelivr.net/npm/@myriaddreamin/typst-ts-web-compiler@0.6.1-rc5/pkg/typst_ts_web_compiler_bg.wasm',
           })
           $typst._compilerInitialized = true
-          console.log('[Typst Init] ✅ Compiler initialized')
         } catch (e) {
-          console.log('[Typst Init] ⚠️ Compiler init skipped:', e instanceof Error ? e.message : String(e))
+          // Compiler already initialized
         }
-      } else {
-        console.log('[Typst Init] Compiler already initialized')
       }
       
-      // Renderer initialization
       if (!$typst._rendererInitialized) {
         try {
-          console.log('[Typst Init] Setting renderer options...')
           await $typst.setRendererInitOptions({
             getModule: () =>
               'https://cdn.jsdelivr.net/npm/@myriaddreamin/typst-ts-renderer@0.6.1-rc5/pkg/typst_ts_renderer_bg.wasm',
           })
           $typst._rendererInitialized = true
-          console.log('[Typst Init] ✅ Renderer initialized')
         } catch (e) {
-          console.log('[Typst Init] ⚠️ Renderer init skipped:', e instanceof Error ? e.message : String(e))
+          // Renderer already initialized
         }
-      } else {
-        console.log('[Typst Init] Renderer already initialized')
       }
     }
     
     typstInitialized = true
-    console.log('[Typst Init] ✅ Initialization complete!')
   } catch (error) {
-    console.error('[Typst Init] ❌ Failed to initialize Typst')
-    console.error('[Typst Init] Error type:', error instanceof Error ? error.constructor.name : typeof error)
-    console.error('[Typst Init] Error message:', error instanceof Error ? error.message : String(error))
-    console.error('[Typst Init] Error stack:', error instanceof Error ? error.stack : 'N/A')
-    console.error('[Typst Init] Full error object:', error)
+    console.error('Failed to initialize Typst:', error)
     throw error
   }
 }
@@ -129,18 +98,14 @@ const TystEditor = ({
 
   // Initialize Typst on mount
   useEffect(() => {
-    console.log('[TystEditor] Component mounted, starting initialization')
     initTypst()
       .then(() => {
-        console.log('[TystEditor] Initialization successful')
         setIsInitializing(false)
         if (typstCode) {
-          console.log('[TystEditor] Compiling initial code')
           compileTypst(typstCode)
         }
       })
       .catch((err) => {
-        console.error('[TystEditor] Initialization failed:', err)
         setError(`Failed to initialize Typst: ${err.message}`)
         setIsInitializing(false)
       })
@@ -149,7 +114,6 @@ const TystEditor = ({
   // Update internal state when initialValue changes
   useEffect(() => {
     if (initialValue && initialValue !== typstCode) {
-      console.log('[TystEditor] Initial value changed, updating code')
       setTypstCode(initialValue)
       if (typstInitialized) {
         compileTypst(initialValue)
@@ -158,13 +122,7 @@ const TystEditor = ({
   }, [initialValue])
 
   const compileTypst = useCallback(async (code: string) => {
-    console.log('[Typst Compile] Starting compilation')
-    console.log('[Typst Compile] Code length:', code.length)
-    console.log('[Typst Compile] $typst exists:', !!$typst)
-    console.log('[Typst Compile] $typst.svg exists:', !!$typst?.svg)
-    
     if (!code.trim() || !$typst) {
-      console.log('[Typst Compile] Skipping - empty code or $typst not available')
       setPreviewHtml('')
       return
     }
@@ -173,26 +131,13 @@ const TystEditor = ({
     setError(null)
 
     try {
-      console.log('[Typst Compile] Calling $typst.svg...')
-      const startTime = performance.now()
       const svg = await $typst.svg({ mainContent: code })
-      const endTime = performance.now()
-      
-      console.log('[Typst Compile] ✅ Compilation successful')
-      console.log('[Typst Compile] Time taken:', (endTime - startTime).toFixed(2), 'ms')
-      console.log('[Typst Compile] SVG length:', svg?.length || 0)
-      
       setPreviewHtml(svg)
     } catch (err: any) {
-      console.error('[Typst Compile] ❌ Compilation failed')
-      console.error('[Typst Compile] Error type:', err?.constructor?.name)
-      console.error('[Typst Compile] Error message:', err?.message)
-      console.error('[Typst Compile] Error stack:', err?.stack)
-      console.error('[Typst Compile] Full error object:', err)
-      
       const errorMessage = err?.message || 'Failed to compile Typst code'
       setError(errorMessage)
       setPreviewHtml('')
+      console.error('Typst compilation error:', err)
     } finally {
       setIsCompiling(false)
     }
@@ -200,16 +145,12 @@ const TystEditor = ({
 
   // Debounced compilation on code change
   useEffect(() => {
-    if (!typstInitialized) {
-      console.log('[TystEditor] Skipping compilation - Typst not initialized yet')
-      return
-    }
+    if (!typstInitialized) return
 
     if (compileTimeoutRef.current) {
       clearTimeout(compileTimeoutRef.current)
     }
 
-    console.log('[TystEditor] Scheduling compilation (500ms debounce)')
     compileTimeoutRef.current = setTimeout(() => {
       compileTypst(typstCode)
     }, 500)
@@ -222,16 +163,12 @@ const TystEditor = ({
   }, [typstCode, compileTypst])
 
   const handleDownloadPDF = async () => {
-    console.log('[PDF Download] Starting PDF generation')
-    
     if (!typstCode.trim()) {
-      console.error('[PDF Download] Code is empty')
       setError('Typst code is empty')
       return
     }
 
     if (!$typst) {
-      console.error('[PDF Download] $typst not initialized')
       setError('Typst is not initialized')
       return
     }
@@ -240,15 +177,7 @@ const TystEditor = ({
     setError(null)
 
     try {
-      console.log('[PDF Download] Calling $typst.pdf...')
-      const startTime = performance.now()
       const pdfBytes = await $typst.pdf({ mainContent: typstCode })
-      const endTime = performance.now()
-      
-      console.log('[PDF Download] PDF generated successfully')
-      console.log('[PDF Download] Time taken:', (endTime - startTime).toFixed(2), 'ms')
-      console.log('[PDF Download] PDF size:', pdfBytes?.length || 0, 'bytes')
-      
       const blob = new Blob([pdfBytes], { type: 'application/pdf' })
       const url = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
@@ -258,32 +187,14 @@ const TystEditor = ({
       link.click()
       document.body.removeChild(link)
       window.URL.revokeObjectURL(url)
-      
-      console.log('[PDF Download] ✅ PDF downloaded successfully')
     } catch (err: any) {
-      console.error('[PDF Download] ❌ PDF generation failed')
-      console.error('[PDF Download] Error type:', err?.constructor?.name)
-      console.error('[PDF Download] Error message:', err?.message)
-      console.error('[PDF Download] Error stack:', err?.stack)
-      console.error('[PDF Download] Full error object:', err)
-      
       const errorMessage = err?.message || 'Failed to generate PDF'
       setError(errorMessage)
+      console.error('PDF generation error:', err)
     } finally {
       setIsLoading(false)
     }
   }
-
-  // Log environment info on mount
-  useEffect(() => {
-    console.log('[TystEditor] Environment Info:')
-    console.log('- User Agent:', navigator.userAgent)
-    console.log('- Platform:', navigator.platform)
-    console.log('- Language:', navigator.language)
-    console.log('- Online:', navigator.onLine)
-    console.log('- Host:', window.location.host)
-    console.log('- Protocol:', window.location.protocol)
-  }, [])
 
   return (
     <div className="tyst-editor">

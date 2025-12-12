@@ -118,7 +118,7 @@ const MOCK_RESUME_RESPONSE: CreateResumeResponse = {
  * Check if mock mode is enabled via environment variable
  */
 function isMockMode(): boolean {
-  return true
+  return false
 }
 
 /**
