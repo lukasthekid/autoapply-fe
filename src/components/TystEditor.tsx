@@ -51,7 +51,7 @@ const initTypst = async () => {
           $typst._compilerInitialized = true
           console.log('[Typst Init] ✅ Compiler initialized')
         } catch (e) {
-          console.log('[Typst Init] ⚠️ Compiler init skipped:', e.message)
+          console.log('[Typst Init] ⚠️ Compiler init skipped:', e instanceof Error ? e.message : String(e))
         }
       } else {
         console.log('[Typst Init] Compiler already initialized')
@@ -68,7 +68,7 @@ const initTypst = async () => {
           $typst._rendererInitialized = true
           console.log('[Typst Init] ✅ Renderer initialized')
         } catch (e) {
-          console.log('[Typst Init] ⚠️ Renderer init skipped:', e.message)
+          console.log('[Typst Init] ⚠️ Renderer init skipped:', e instanceof Error ? e.message : String(e))
         }
       } else {
         console.log('[Typst Init] Renderer already initialized')
@@ -79,9 +79,9 @@ const initTypst = async () => {
     console.log('[Typst Init] ✅ Initialization complete!')
   } catch (error) {
     console.error('[Typst Init] ❌ Failed to initialize Typst')
-    console.error('[Typst Init] Error type:', error.constructor.name)
-    console.error('[Typst Init] Error message:', error.message)
-    console.error('[Typst Init] Error stack:', error.stack)
+    console.error('[Typst Init] Error type:', error instanceof Error ? error.constructor.name : typeof error)
+    console.error('[Typst Init] Error message:', error instanceof Error ? error.message : String(error))
+    console.error('[Typst Init] Error stack:', error instanceof Error ? error.stack : 'N/A')
     console.error('[Typst Init] Full error object:', error)
     throw error
   }
