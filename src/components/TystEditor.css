@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-height: calc(100vh - 260px);
+  max-height: calc(100vh - 220px);
   min-height: 620px;
   width: 100%;
   background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
@@ -131,8 +131,9 @@
 
 .tyst-editor .editor-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.9rem;
+  column-gap: 0;
+  row-gap: 0.9rem;
+  grid-template-areas: "editor resizer preview";
   flex: 1;
   min-height: 0;
   max-height: 100%;
@@ -143,7 +144,7 @@
 @media (max-width: 1024px) {
   .tyst-editor .editor-container {
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: auto;
   }
 }
 
@@ -156,6 +157,7 @@
   overflow: hidden;
   background-color: var(--bg-secondary, #fff);
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  min-width: 0;
 }
 
 .tyst-editor .panel-label {
@@ -168,6 +170,56 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.tyst-editor .panel-label-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tyst-editor .zoom-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.tyst-editor .zoom-button {
+  border: 1px solid var(--border-color, #e5e7eb);
+  background: #fff;
+  color: #0f172a;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+}
+
+.tyst-editor .zoom-button:hover:not(:disabled) {
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.tyst-editor .zoom-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.tyst-editor .zoom-button.reset {
+  width: 36px;
+}
+
+.tyst-editor .zoom-level {
+  min-width: 54px;
+  text-align: center;
+  font-weight: 600;
+  color: #0f172a;
 }
 
 .tyst-editor .compiling-indicator {
@@ -235,13 +287,21 @@
 
 .tyst-editor .preview-content {
   flex: 1;
-  padding: 1.25rem;
+  padding: 1rem;
   overflow: auto;
   background-color: #f1f5f9;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   min-height: 0;
+  position: relative;
+  user-select: none;
+}
+
+.tyst-editor .preview-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tyst-editor .preview-content svg {
@@ -270,4 +330,92 @@
   border: 1px dashed #cbd5e1;
   margin: 1rem;
   border-radius: 12px;
+}
+
+.tyst-editor .panel-resizer {
+  width: 12px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 100%);
+  border: 1px solid #cbd5e1;
+  box-shadow: inset 0 0 0 1px #e2e8f0;
+  cursor: col-resize;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tyst-editor .panel-resizer::after {
+  content: '';
+  display: block;
+  height: 36px;
+  width: 4px;
+  margin: 0 auto;
+  border-radius: 999px;
+  background: #94a3b8;
+  opacity: 0.8;
+  transform: translateY(6px);
+}
+
+.tyst-editor .panel-resizer:hover {
+  background: linear-gradient(180deg, #e0e7ff 0%, #c7d2fe 100%);
+  border-color: #a5b4fc;
+  box-shadow: 0 0 0 1px #c7d2fe;
+}
+
+.tyst-editor .panel-resizer.resizing {
+  background: linear-gradient(180deg, #c7d2fe 0%, #a5b4fc 100%);
+  border-color: #818cf8;
+  box-shadow: 0 0 0 1px #a5b4fc;
+}
+
+@media (max-width: 1024px) {
+  .tyst-editor .panel-resizer {
+    display: none;
+  }
+}
+
+/* Mobile-first layout improvements */
+@media (max-width: 900px) {
+  .tyst-editor {
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .tyst-editor .panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .tyst-editor .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .tyst-editor .download-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tyst-editor .editor-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "preview"
+      "editor";
+    row-gap: 0.75rem;
+  }
+
+  .tyst-editor .preview-panel {
+    max-height: 70vh;
+  }
+
+  .tyst-editor .preview-content {
+    max-height: 70vh;
+  }
+
+  .tyst-editor .editor-panel {
+    min-height: 320px;
+  }
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, MouseEvent as ReactMouseEvent } from 'react'
 import CodeMirror from '@uiw/react-codemirror'
 import { EditorView } from '@codemirror/view'
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
@@ -9,6 +9,12 @@ import './TystEditor.css'
 // Dynamically import typst.ts to handle WASM loading
 let $typst: any = null
 let typstInitialized = false
+
+const MIN_ZOOM = 0.5
+const MAX_ZOOM = 2.5
+const ZOOM_STEP = 0.1
+const MIN_RATIO = 0.2
+const MAX_RATIO = 0.8
 
 const initTypst = async () => {
   if (typstInitialized && $typst) return
@@ -93,8 +99,16 @@ const TystEditor = ({
   const [isLoading, setIsLoading] = useState(false)
   const [isInitializing, setIsInitializing] = useState(true)
   const [isCompiling, setIsCompiling] = useState(false)
+  const [zoom, setZoom] = useState(1)
+  const [offset, setOffset] = useState({ x: 0, y: 0 })
+  const [isDragging, setIsDragging] = useState(false)
+  const [panelRatio, setPanelRatio] = useState(0.5)
+  const [isResizing, setIsResizing] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const previewRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const compileTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const dragStartRef = useRef<{ x: number; y: number } | null>(null)
 
   // Initialize Typst on mount
   useEffect(() => {
@@ -142,6 +156,103 @@ const TystEditor = ({
       setIsCompiling(false)
     }
   }, [])
+
+  const adjustZoom = (delta: number) => {
+    setZoom((prev) => {
+      const next = parseFloat((prev + delta).toFixed(2))
+      return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, next))
+    })
+  }
+
+  const resetView = () => {
+    setZoom(1)
+    setOffset({ x: 0, y: 0 })
+    if (previewRef.current) {
+      previewRef.current.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+    }
+  }
+
+  const handleMouseDown = (e: ReactMouseEvent<HTMLDivElement>) => {
+    if (!previewHtml) return
+    setIsDragging(true)
+    dragStartRef.current = {
+      x: e.clientX - offset.x,
+      y: e.clientY - offset.y,
+    }
+    e.preventDefault()
+  }
+
+  const handleMouseMove = (e: ReactMouseEvent<HTMLDivElement>) => {
+    if (!isDragging || !dragStartRef.current) return
+    setOffset({
+      x: e.clientX - dragStartRef.current.x,
+      y: e.clientY - dragStartRef.current.y,
+    })
+  }
+
+  const handleMouseUp = () => {
+    if (!isDragging) return
+    setIsDragging(false)
+    dragStartRef.current = null
+  }
+
+  const handleResizeMove = useCallback((event: MouseEvent) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    const rawRatio = (event.clientX - rect.left) / rect.width
+    const clamped = Math.min(MAX_RATIO, Math.max(MIN_RATIO, rawRatio))
+    setPanelRatio(Number(clamped.toFixed(3)))
+  }, [])
+
+  const handleResizeEnd = useCallback(() => {
+    setIsResizing(false)
+    window.removeEventListener('mousemove', handleResizeMove)
+    window.removeEventListener('mouseup', handleResizeEnd)
+  }, [handleResizeMove])
+
+  const handleResizeStart = (event: ReactMouseEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    setIsResizing(true)
+    window.addEventListener('mousemove', handleResizeMove)
+    window.addEventListener('mouseup', handleResizeEnd)
+  }
+
+  useEffect(() => {
+    return () => {
+      window.removeEventListener('mousemove', handleResizeMove)
+      window.removeEventListener('mouseup', handleResizeEnd)
+    }
+  }, [handleResizeEnd, handleResizeMove])
+
+  // Track mobile viewport to switch layout
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const mediaQuery = window.matchMedia('(max-width: 900px)')
+    const updateIsMobile = (event?: MediaQueryListEvent | MediaQueryList) => {
+      setIsMobile(event ? event.matches : mediaQuery.matches)
+    }
+
+    updateIsMobile(mediaQuery)
+    mediaQuery.addEventListener('change', updateIsMobile)
+
+    return () => {
+      mediaQuery.removeEventListener('change', updateIsMobile)
+    }
+  }, [])
+
+  const editorGridStyle = isMobile
+    ? {
+        gridTemplateColumns: '1fr',
+        gridTemplateRows: 'auto auto',
+        gridTemplateAreas: '"preview" "editor"',
+        rowGap: '0.75rem',
+        columnGap: 0,
+      }
+    : {
+        gridTemplateColumns: `${panelRatio}fr 12px ${1 - panelRatio}fr`,
+        gridTemplateAreas: '"editor resizer preview"',
+      }
 
   // Debounced compilation on code change
   useEffect(() => {
@@ -242,8 +353,8 @@ const TystEditor = ({
         <div className="loading-message">🔄 Initializing Typst...</div>
       )}
 
-      <div className="editor-container">
-        <div className="editor-panel">
+      <div className="editor-container" ref={containerRef} style={editorGridStyle}>
+        <div className="editor-panel" style={{ gridArea: 'editor' }}>
           <div className="panel-label">Editor</div>
           <CodeMirror
             value={typstCode}
@@ -289,22 +400,77 @@ const TystEditor = ({
           />
         </div>
         
-        <div className="preview-panel">
+        {!isMobile && (
+          <div
+            className={`panel-resizer${isResizing ? ' resizing' : ''}`}
+            onMouseDown={handleResizeStart}
+            role="separator"
+            aria-orientation="vertical"
+            aria-label="Resize panels"
+            style={{ gridArea: 'resizer' }}
+          />
+        )}
+
+        <div className="preview-panel" style={{ gridArea: 'preview' }}>
           <div className="panel-label">
-            Preview
-            {isCompiling && <span className="compiling-indicator">🔄 Compiling...</span>}
+            <div className="panel-label-left">
+              <span>Preview</span>
+              {isCompiling && <span className="compiling-indicator">🔄 Compiling...</span>}
+            </div>
+            <div className="zoom-controls">
+              <button
+                className="zoom-button"
+                onClick={() => adjustZoom(-ZOOM_STEP)}
+                disabled={!previewHtml}
+                aria-label="Zoom out"
+              >
+                −
+              </button>
+              <span className="zoom-level">{Math.round(zoom * 100)}%</span>
+              <button
+                className="zoom-button"
+                onClick={() => adjustZoom(ZOOM_STEP)}
+                disabled={!previewHtml}
+                aria-label="Zoom in"
+              >
+                +
+              </button>
+              <button
+                className="zoom-button reset"
+                onClick={resetView}
+                disabled={!previewHtml && zoom === 1 && offset.x === 0 && offset.y === 0}
+                aria-label="Reset zoom and position"
+              >
+                ⟳
+              </button>
+            </div>
           </div>
-          <div 
+          <div
             ref={previewRef}
             className="preview-content"
-            dangerouslySetInnerHTML={{ __html: previewHtml }}
-          />
-          {!previewHtml && !isCompiling && typstCode.trim() && (
-            <div className="preview-placeholder">Type Typst code to see preview...</div>
-          )}
-          {!previewHtml && !isCompiling && !typstCode.trim() && (
-            <div className="preview-placeholder">Start typing to see the preview...</div>
-          )}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            style={{ cursor: previewHtml ? (isDragging ? 'grabbing' : 'grab') : 'default' }}
+          >
+            {previewHtml && (
+              <div
+                className="preview-inner"
+                style={{
+                  transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
+                  transformOrigin: 'top left',
+                }}
+                dangerouslySetInnerHTML={{ __html: previewHtml }}
+              />
+            )}
+            {!previewHtml && !isCompiling && typstCode.trim() && (
+              <div className="preview-placeholder">Type Typst code to see preview...</div>
+            )}
+            {!previewHtml && !isCompiling && !typstCode.trim() && (
+              <div className="preview-placeholder">Start typing to see the preview...</div>
+            )}
+          </div>
         </div>
       </div>
     </div>

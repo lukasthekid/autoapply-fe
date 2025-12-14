@@ -307,3 +307,43 @@
   margin-bottom: 1.5rem;
 }
 
+/* Mobile tweaks */
+@media (max-width: 900px) {
+  .resume-page {
+    padding: 0.5rem 0;
+  }
+
+  .resume-page .container-full-width {
+    padding: 0 0.5rem;
+  }
+
+  .resume-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .generate-another-button,
+  .back-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .resume-text-panel {
+    padding: 0;
+    min-height: 0;
+    box-shadow: none;
+  }
+
+  .resume-content {
+    margin-top: 1rem;
+  }
+}
+

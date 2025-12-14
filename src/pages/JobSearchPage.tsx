@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from 'react'
+import { useState, useEffect, FormEvent, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { jobsService } from '@/services/jobsService'
 import { applicationsService } from '@/services/applicationsService'
@@ -95,6 +95,9 @@ const JobSearchPage = () => {
   const [hasSearched, setHasSearched] = useState(false)
   const [selectedJob, setSelectedJob] = useState<JobListing | null>(null)
   const [isLoadingResults, setIsLoadingResults] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const [mobileView, setMobileView] = useState<'list' | 'details'>('list')
+  const jobDetailsRef = useRef<HTMLDivElement | null>(null)
   
   // Cover letter generation state
   const [showCoverLetterGenerator, setShowCoverLetterGenerator] = useState(false)
@@ -120,6 +123,8 @@ const JobSearchPage = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
+    setShowCoverLetterGenerator(false)
+    setMobileView('list')
     
     if (searchProfiles.length === 0) {
       setError('Please create at least one search profile in Settings before searching for jobs.')
@@ -153,14 +158,37 @@ const JobSearchPage = () => {
     // Jobs are already enriched, so we can show them directly
     setSelectedJob(job)
     setShowCoverLetterGenerator(false) // Reset cover letter view
+
+    if (isMobile) {
+      setMobileView('details')
+      requestAnimationFrame(() => {
+        jobDetailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
+    }
   }
 
   const handleBackToJobDetails = () => {
     setShowCoverLetterGenerator(false)
+    if (isMobile) {
+      setMobileView('details')
+    }
+  }
+
+  const handleBackToList = () => {
+    setShowCoverLetterGenerator(false)
+    setMobileView('list')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   // Fetch search profiles and user applications when component mounts
   useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 900)
+    }
+
+    checkIsMobile()
+    window.addEventListener('resize', checkIsMobile)
+
     const fetchData = async () => {
       try {
         const [profilesResponse, applicationsResponse] = await Promise.all([
@@ -179,7 +207,16 @@ const JobSearchPage = () => {
     }
 
     fetchData()
+    return () => {
+      window.removeEventListener('resize', checkIsMobile)
+    }
   }, [])
+
+  useEffect(() => {
+    if (!isMobile) {
+      setMobileView('list')
+    }
+  }, [isMobile])
 
   // Restore job and search state from navigation state (when returning from cover letter page)
   useEffect(() => {
@@ -233,6 +270,7 @@ const JobSearchPage = () => {
           setSelectedJob(state.selectedJob)
           setHasSearched(true)
         }
+        setMobileView('details')
       }
       
       // Clear the state to prevent re-triggering
@@ -242,14 +280,14 @@ const JobSearchPage = () => {
 
   // Auto-select first job when jobs are loaded and no job is currently selected
   useEffect(() => {
-    if (jobs.length > 0 && !selectedJob && hasSearched && !isSearching) {
+    if (jobs.length > 0 && !selectedJob && hasSearched && !isSearching && !isMobile) {
       // Check if we're restoring a job first
       const state = location.state as { restoreJob?: boolean } | null
       if (!state?.restoreJob) {
         setSelectedJob(jobs[0])
       }
     }
-  }, [jobs, selectedJob, hasSearched, isSearching, location.state])
+  }, [jobs, selectedJob, hasSearched, isSearching, location.state, isMobile])
 
   // Helper function to check if a job has been applied to
   const hasApplied = (job: JobListing): boolean => {
@@ -314,6 +352,9 @@ const JobSearchPage = () => {
                 <div className="search-filters-simple">
                   <div className="filter-controls-compact">
                     <div className="custom-select compact-select">
+                      <label className="compact-select-label" htmlFor="date_posted">
+                        Date posted
+                      </label>
                       <select
                         id="date_posted"
                         name="date_posted"
@@ -329,6 +370,9 @@ const JobSearchPage = () => {
                       </select>
                     </div>
                     <div className="custom-select compact-select">
+                      <label className="compact-select-label" htmlFor="limit">
+                        Results
+                      </label>
                       <select
                         id="limit"
                         name="limit"
@@ -398,8 +442,8 @@ const JobSearchPage = () => {
         )}
 
         {hasSearched && (
-          <div className="search-results-container">
-            <div className="results-sidebar">
+          <div className={`search-results-container ${isMobile ? 'mobile-stack' : ''}`}>
+            <div className={`results-sidebar ${isMobile && mobileView === 'details' ? 'mobile-hidden' : ''}`}>
               <div className="results-header">
                 <h2>
                   {isLoadingResults
@@ -409,7 +453,18 @@ const JobSearchPage = () => {
                       : 'No jobs found'}
                 </h2>
                 {!isLoadingResults && (
-                  <p className="results-count">Showing {jobs.length}</p>
+                  <div className="results-header-meta">
+                    <p className="results-count">Showing {jobs.length}</p>
+                    {isMobile && selectedJob && (
+                      <button
+                        type="button"
+                        className="btn-secondary btn-small view-details-button"
+                        onClick={() => setMobileView('details')}
+                      >
+                        View details
+                      </button>
+                    )}
+                  </div>
                 )}
               </div>
 
@@ -515,7 +570,27 @@ const JobSearchPage = () => {
               </div>
             </div>
 
-            <div className="job-details-panel">
+            <div
+              ref={jobDetailsRef}
+              className={`job-details-panel ${isMobile ? (mobileView === 'details' ? 'mobile-visible' : 'mobile-hidden') : ''}`}
+            >
+              {isMobile && (
+                <div className="mobile-detail-header">
+                  <button
+                    type="button"
+                    className="mobile-back-button"
+                    onClick={handleBackToList}
+                  >
+                    Back to results
+                  </button>
+                  {selectedJob && (
+                    <div className="mobile-detail-title">
+                      <span className="mobile-job-title">{selectedJob.title}</span>
+                      <span className="mobile-job-company">{selectedJob.company_name}</span>
+                    </div>
+                  )}
+                </div>
+              )}
               {isLoadingResults ? (
                 <JobDetailsSkeleton />
               ) : !selectedJob ? (
