@@ -12,25 +12,24 @@ import type {
   JobApplication,
   SearchProfile
 } from '@/types/api'
-import './JobSearchPage.css'
 
 const JobCardSkeleton = () => {
   return (
-    <div className="job-card-compact skeleton-card">
-      <div className="job-card-header">
-        <div className="skeleton skeleton-logo-small" />
-        <div className="job-title-company">
-          <div className="skeleton skeleton-text skeleton-text-lg" />
-          <div className="skeleton skeleton-text skeleton-text-md" />
-          <div className="skeleton skeleton-text skeleton-text-sm" />
+    <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+      <div className="flex gap-4 mb-4">
+        <div className="w-12 h-12 bg-gray-200 rounded-lg animate-pulse flex-shrink-0" />
+        <div className="flex-1 space-y-2">
+          <div className="h-5 bg-gray-200 rounded-lg w-3/4 animate-pulse" />
+          <div className="h-4 bg-gray-200 rounded-lg w-1/2 animate-pulse" />
+          <div className="h-3 bg-gray-200 rounded-lg w-2/3 animate-pulse" />
         </div>
       </div>
 
-      <div className="job-meta">
-        <span className="skeleton skeleton-pill" />
-        <span className="skeleton skeleton-pill" />
-        <span className="skeleton skeleton-pill" />
-        <span className="skeleton skeleton-pill" />
+      <div className="flex gap-2 flex-wrap">
+        <span className="h-6 w-24 bg-gray-200 rounded-full animate-pulse" />
+        <span className="h-6 w-20 bg-gray-200 rounded-full animate-pulse" />
+        <span className="h-6 w-28 bg-gray-200 rounded-full animate-pulse" />
+        <span className="h-6 w-16 bg-gray-200 rounded-full animate-pulse" />
       </div>
     </div>
   )
@@ -38,43 +37,43 @@ const JobCardSkeleton = () => {
 
 const JobDetailsSkeleton = () => {
   return (
-    <div className="job-details-skeleton job-details-content">
-      <div className="job-summary-block">
-        <div className="job-summary-header">
-          <div className="job-header-left">
-            <div className="skeleton skeleton-logo-large" />
-            <div>
-              <div className="skeleton skeleton-text skeleton-title-line" />
-              <div className="skeleton skeleton-text skeleton-title-line short" />
-              <div className="skeleton skeleton-text skeleton-company-line" />
+    <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
+      <div className="mb-8">
+        <div className="flex items-start justify-between mb-6">
+          <div className="flex gap-4">
+            <div className="w-16 h-16 bg-gray-200 rounded-xl animate-pulse flex-shrink-0" />
+            <div className="space-y-3">
+              <div className="h-7 bg-gray-200 rounded-lg w-64 animate-pulse" />
+              <div className="h-6 bg-gray-200 rounded-lg w-48 animate-pulse" />
+              <div className="h-5 bg-gray-200 rounded-lg w-56 animate-pulse" />
             </div>
           </div>
-          <div className="job-summary-actions">
-            <div className="skeleton skeleton-button" />
-            <div className="skeleton skeleton-button" />
+          <div className="flex gap-3">
+            <div className="h-11 w-32 bg-gray-200 rounded-lg animate-pulse" />
+            <div className="h-11 w-32 bg-gray-200 rounded-lg animate-pulse" />
           </div>
         </div>
 
-        <div className="job-summary-meta">
+        <div className="grid grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="job-summary-meta-item">
-              <div className="skeleton skeleton-meta-label" />
-              <div className="skeleton skeleton-meta-value" />
+            <div key={index} className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-20 animate-pulse" />
+              <div className="h-5 bg-gray-200 rounded w-full animate-pulse" />
             </div>
           ))}
         </div>
       </div>
 
-      <div className="job-description-full">
-        <div className="skeleton skeleton-section-title" />
-        <div className="skeleton skeleton-paragraph-line" />
-        <div className="skeleton skeleton-paragraph-line" />
-        <div className="skeleton skeleton-paragraph-line short" />
+      <div className="space-y-4">
+        <div className="h-6 bg-gray-200 rounded-lg w-48 animate-pulse" />
+        <div className="h-4 bg-gray-200 rounded-lg w-full animate-pulse" />
+        <div className="h-4 bg-gray-200 rounded-lg w-full animate-pulse" />
+        <div className="h-4 bg-gray-200 rounded-lg w-3/4 animate-pulse" />
 
-        <div className="skeleton skeleton-section-title section-spacing" />
-        <div className="skeleton skeleton-paragraph-line" />
-        <div className="skeleton skeleton-paragraph-line" />
-        <div className="skeleton skeleton-paragraph-line short" />
+        <div className="h-6 bg-gray-200 rounded-lg w-56 animate-pulse mt-6" />
+        <div className="h-4 bg-gray-200 rounded-lg w-full animate-pulse" />
+        <div className="h-4 bg-gray-200 rounded-lg w-full animate-pulse" />
+        <div className="h-4 bg-gray-200 rounded-lg w-2/3 animate-pulse" />
       </div>
     </div>
   )
@@ -306,129 +305,178 @@ const JobSearchPage = () => {
   ]
 
   return (
-    <div className="job-search-page">
-      <div className="container">
-        <div className="job-search-header">
-          <h1>Find Your Next Opportunity</h1>
-          <p>Search thousands of Jobs using your saved search profiles</p>
-        </div>
+    <div className="max-w-[1600px] mx-auto">
+      {/* Page Header */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-gray-900 mb-3">Find Your Next Opportunity</h1>
+        <p className="text-lg text-gray-600">Search thousands of jobs using your saved search profiles</p>
+      </div>
 
-        {isLoadingProfiles ? (
-          <div className="search-profiles-loading">
-            <div className="loading-spinner"></div>
-            <p>Loading your search profiles...</p>
-          </div>
-        ) : searchProfiles.length === 0 ? (
-          <div className="search-profiles-notice search-profiles-error">
-            <div className="notice-icon">⚠️</div>
-            <div className="notice-content">
-              <h3>No Search Profiles Found</h3>
-              <p>
+      {isLoadingProfiles ? (
+        <div className="flex flex-col items-center justify-center py-12 bg-white rounded-xl border border-gray-200 shadow-sm">
+          <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
+          <p className="text-gray-600">Loading your search profiles...</p>
+        </div>
+      ) : searchProfiles.length === 0 ? (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 shadow-sm">
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center text-2xl">
+              ⚠️
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-amber-900 mb-2">No Search Profiles Found</h3>
+              <p className="text-amber-800 mb-4 leading-relaxed">
                 You need to create at least one search profile in Settings before you can search for jobs. 
                 Your search profiles define the keywords, locations, job types, and experience levels for your searches.
               </p>
               <button
                 type="button"
-                className="btn-primary btn-small"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
                 onClick={() => navigate('/settings')}
-                style={{ marginTop: '0.75rem' }}
               >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"></path>
+                </svg>
                 Go to Settings
               </button>
             </div>
           </div>
-        ) : (
-          <>
-            <div className="search-profiles-notice">
-              <div className="notice-icon">ℹ️</div>
-              <div className="notice-content">
-                <h3>Searching with Your Profiles</h3>
-                <a href="/settings">View your search profiles</a>
+        </div>
+      ) : (
+        <>
+          {/* Search Profiles Notice */}
+          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-5 mb-6 shadow-sm">
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-xl">
+                ℹ️
+              </div>
+              <div className="flex-1">
+                <h3 className="text-base font-semibold text-indigo-900 mb-1">Searching with Your Profiles</h3>
+                <p className="text-sm text-indigo-800 mb-2">
+                  Jobs will be searched using all your active search profiles from Settings.
+                </p>
+                <a 
+                  href="/settings" 
+                  className="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:underline transition-colors"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"></path>
+                  </svg>
+                  Manage search profiles
+                </a>
               </div>
             </div>
+          </div>
 
-            <form onSubmit={handleSubmit} className="job-search-form">
-              <div className="search-main">
-                <div className="search-filters-simple">
-                  <div className="filter-controls-compact">
-                    <div className="custom-select compact-select">
-                      <label className="compact-select-label" htmlFor="date_posted">
-                        Date posted
-                      </label>
-                      <select
-                        id="date_posted"
-                        name="date_posted"
-                        value={searchParams.date_posted || 'any_time'}
-                        onChange={handleInputChange}
-                        className="compact-select-input"
-                      >
-                        {datePostedOptions.map(option => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="custom-select compact-select">
-                      <label className="compact-select-label" htmlFor="limit">
-                        Results
-                      </label>
-                      <select
-                        id="limit"
-                        name="limit"
-                        value={searchParams.limit || 25}
-                        onChange={handleInputChange}
-                        className="compact-select-input"
-                      >
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="search-button-wrapper">
-                    <button
-                      type="submit"
-                      className="btn-search-modern"
-                      disabled={isSearching}
-                      title={isSearching ? 'Searching...' : 'Search Jobs'}
-                    >
-                      {isSearching ? (
-                        <>
-                          <div className="loading-spinner-search"></div>
-                          <span>Searching</span>
-                        </>
-                      ) : (
-                        <>
-                          <svg 
-                            viewBox="0 0 24 24" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            strokeWidth="2.5" 
-                            strokeLinecap="round" 
-                            strokeLinejoin="round"
-                            className="search-icon"
-                          >
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <path d="m21 21-4.35-4.35"></path>
-                          </svg>
-                          <span>Search</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
+          {/* Search Form */}
+          <form onSubmit={handleSubmit} className="mb-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+              <div className="flex items-end gap-4 max-md:flex-col max-md:items-stretch">
+                {/* Date Posted Filter */}
+                <div className="flex-1">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2" htmlFor="date_posted">
+                    <svg className="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    Date Posted
+                  </label>
+                  <select
+                    id="date_posted"
+                    name="date_posted"
+                    value={searchParams.date_posted || 'any_time'}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  >
+                    {datePostedOptions.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Results Limit Filter */}
+                <div className="flex-1">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2" htmlFor="limit">
+                    <svg className="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="4" y1="9" x2="20" y2="9"></line>
+                      <line x1="4" y1="15" x2="20" y2="15"></line>
+                      <line x1="10" y1="3" x2="8" y2="21"></line>
+                      <line x1="16" y1="3" x2="14" y2="21"></line>
+                    </svg>
+                    Results Limit
+                  </label>
+                  <select
+                    id="limit"
+                    name="limit"
+                    value={searchParams.limit || 25}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  >
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                </div>
+
+                {/* Search Button */}
+                <div className="flex-1">
+                  <button
+                    type="submit"
+                    className="w-full inline-flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
+                    disabled={isSearching}
+                    title={isSearching ? 'Searching...' : 'Search Jobs'}
+                  >
+                    {isSearching ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        <span>Searching</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg 
+                          className="w-5 h-5"
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          strokeWidth="2.5" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        >
+                          <circle cx="11" cy="11" r="8"></circle>
+                          <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        <span>Search Jobs</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
-            </form>
-          </>
-        )}
+            </div>
+          </form>
+        </>
+      )}
 
-        {error && (
-          <div className="search-error">
-            <span>{error}</span>
+      {/* Error Message */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-5 mb-6 shadow-sm">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <span className="text-red-800 font-medium">{error}</span>
+            </div>
             <button 
-              className="error-reset" 
+              className="px-4 py-2 bg-red-100 text-red-700 font-medium rounded-lg hover:bg-red-200 transition-colors flex-shrink-0"
               onClick={() => {
                 setError(null)
                 setHasSearched(false)
@@ -439,195 +487,241 @@ const JobSearchPage = () => {
               Reset
             </button>
           </div>
-        )}
+        </div>
+      )}
 
-        {hasSearched && (
-          <div className={`search-results-container ${isMobile ? 'mobile-stack' : ''}`}>
-            <div className={`results-sidebar ${isMobile && mobileView === 'details' ? 'mobile-hidden' : ''}`}>
-              <div className="results-header">
-                <h2>
+      {/* Search Results */}
+      {hasSearched && (
+        <div className={`grid gap-6 ${isMobile ? 'grid-cols-1' : 'grid-cols-[400px_1fr] xl:grid-cols-[450px_1fr]'}`}>
+          {/* Jobs List Sidebar */}
+          <div className={`${isMobile && mobileView === 'details' ? 'hidden' : 'block'}`}>
+            {/* Results Header */}
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 mb-4">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-xl font-bold text-gray-900">
                   {isLoadingResults
                     ? 'Loading jobs...'
                     : jobs.length > 0
-                      ? `${totalResults.toLocaleString()} jobs`
+                      ? `${totalResults.toLocaleString()} jobs found`
                       : 'No jobs found'}
                 </h2>
-                {!isLoadingResults && (
-                  <div className="results-header-meta">
-                    <p className="results-count">Showing {jobs.length}</p>
-                    {isMobile && selectedJob && (
-                      <button
-                        type="button"
-                        className="btn-secondary btn-small view-details-button"
-                        onClick={() => setMobileView('details')}
-                      >
-                        View details
-                      </button>
-                    )}
-                  </div>
-                )}
               </div>
-
-              {!isLoadingResults && jobs.length > 0 && (
-                <div className="active-filters">
-                  <div className="filter-chip">
-                    <span className="chip-label">Date:</span>
-                    <span>{datePostedOptions.find(o => o.value === searchParams.date_posted)?.label || 'Any time'}</span>
-                  </div>
-                  <div className="filter-chip">
-                    <span className="chip-label">Limit:</span>
-                    <span>{searchParams.limit || 25}</span>
-                  </div>
-                </div>
-              )}
-
-              {!isLoadingResults && jobs.length === 0 && (
-                <div className="no-jobs-empty" style={{ padding: '2rem 1.25rem', textAlign: 'center' }}>
-                  <div style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.5 }}>🔍</div>
-                  <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem', fontSize: '1.125rem' }}>
-                    No jobs match these filters
-                  </h3>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '1rem' }}>
-                    Try adjusting your search criteria or date range
-                  </p>
-                  <button
-                    className="btn-secondary"
-                    onClick={() => {
-                      setSearchParams({
-                        date_posted: 'past_24_hours',
-                        limit: 25,
-                      })
-                      setHasSearched(false)
-                      setJobs([])
-                      setSelectedJob(null)
-                    }}
-                    style={{ padding: '0.625rem 1.25rem', fontSize: '0.875rem' }}
-                  >
-                    Reset Filters
-                  </button>
-                </div>
-              )}
-
-              <div className="jobs-list">
-                {isLoadingResults
-                  ? Array.from({ length: 5 }).map((_, index) => (
-                      <JobCardSkeleton key={index} />
-                    ))
-                  : jobs.map(job => {
-                      const jobHasApplied = hasApplied(job)
-                      
-                      return (
-                        <div 
-                          key={job.job_id} 
-                          className={`job-card-compact ${selectedJob?.job_id === job.job_id ? 'selected' : ''} ${jobHasApplied ? 'applied' : ''}`}
-                          onClick={() => handleViewJob(job)}
-                        >
-                          <div className="job-card-header">
-                            {job.company_logo_url && (
-                              <img
-                                src={job.company_logo_url}
-                                alt={`${job.company_name} logo`}
-                                className="company-logo-small"
-                              />
-                            )}
-                            <div className="job-title-company">
-                              <div className="job-title-row">
-                                <h3>{job.title}</h3>
-                                {jobHasApplied && (
-                                  <span className="applied-badge" title="You have already applied to this job">
-                                    ✓ Applied
-                                  </span>
-                                )}
-                              </div>
-                              <p className="company-name">{job.company_name}</p>
-                            </div>
-                          </div>
-                          
-                          <div className="job-meta">
-                            <span className="job-location">📍 {job.location}</span>
-                            {job.applicants_count && (
-                              <span className="job-applicants">
-                                👥 {job.applicants_count}
-                              </span>
-                            )}
-                          </div>
-                          
-                          <div className="job-meta-tags">
-                            {job.employment_type && (
-                              <span className="job-tag">
-                                {job.employment_type.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
-                              </span>
-                            )}
-                            {job.experience_level && (
-                              <span className="job-tag">
-                                {job.experience_level.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      )
-                    })}
-              </div>
-            </div>
-
-            <div
-              ref={jobDetailsRef}
-              className={`job-details-panel ${isMobile ? (mobileView === 'details' ? 'mobile-visible' : 'mobile-hidden') : ''}`}
-            >
-              {isMobile && (
-                <div className="mobile-detail-header">
-                  <button
-                    type="button"
-                    className="mobile-back-button"
-                    onClick={handleBackToList}
-                  >
-                    Back to results
-                  </button>
-                  {selectedJob && (
-                    <div className="mobile-detail-title">
-                      <span className="mobile-job-title">{selectedJob.title}</span>
-                      <span className="mobile-job-company">{selectedJob.company_name}</span>
-                    </div>
+              {!isLoadingResults && (
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-600">Showing {jobs.length} results</p>
+                  {isMobile && selectedJob && (
+                    <button
+                      type="button"
+                      className="px-3 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                      onClick={() => setMobileView('details')}
+                    >
+                      View details
+                    </button>
                   )}
                 </div>
               )}
-              {isLoadingResults ? (
-                <JobDetailsSkeleton />
-              ) : !selectedJob ? (
-                <div className="no-job-selected">
-                  <div className="empty-state">
-                    <div className="empty-icon">🔍</div>
-                    <h3>Select a job to view details</h3>
-                    <p>Click "View" on any job to see the full description and details</p>
-                  </div>
+            </div>
+
+            {/* Active Filters */}
+            {!isLoadingResults && jobs.length > 0 && (
+              <div className="flex gap-2 mb-4 flex-wrap">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full border border-gray-200">
+                  <svg className="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  <span>{datePostedOptions.find(o => o.value === searchParams.date_posted)?.label || 'Any time'}</span>
                 </div>
-              ) : showCoverLetterGenerator ? (
-                <CoverLetterGenerator
-                  jobId={selectedJob.job_id}
-                  companyName={selectedJob.company_name}
-                  jobTitle={selectedJob.title}
-                  jobLocation={selectedJob.location}
-                  jobUrl={selectedJob.linkedin_url}
-                  onBack={handleBackToJobDetails}
-                  showBackButton={true}
-                />
-              ) : (
-                <JobDetails
-                  job={selectedJob}
-                  isLoadingJobDetails={false}
-                  jobDetailError={null}
-                  searchState={{
-                    jobs: jobs,
-                    searchParams: searchParams,
-                    hasSearched: hasSearched,
-                    totalResults: totalResults,
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full border border-gray-200">
+                  <svg className="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="4" y1="9" x2="20" y2="9"></line>
+                    <line x1="4" y1="15" x2="20" y2="15"></line>
+                    <line x1="10" y1="3" x2="8" y2="21"></line>
+                    <line x1="16" y1="3" x2="14" y2="21"></line>
+                  </svg>
+                  <span>Limit: {searchParams.limit || 25}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Empty State */}
+            {!isLoadingResults && jobs.length === 0 && (
+              <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8 text-center">
+                <div className="text-6xl mb-4 opacity-50">🔍</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  No jobs match these filters
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Try adjusting your search criteria or date range
+                </p>
+                <button
+                  className="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                  onClick={() => {
+                    setSearchParams({
+                      date_posted: 'past_24_hours',
+                      limit: 25,
+                    })
+                    setHasSearched(false)
+                    setJobs([])
+                    setSelectedJob(null)
                   }}
-                />
-              )}
+                >
+                  Reset Filters
+                </button>
+              </div>
+            )}
+
+            {/* Jobs List */}
+            <div className="space-y-3">
+              {isLoadingResults
+                ? Array.from({ length: 5 }).map((_, index) => (
+                    <JobCardSkeleton key={index} />
+                  ))
+                : jobs.map(job => {
+                    const jobHasApplied = hasApplied(job)
+                    const isSelected = selectedJob?.job_id === job.job_id
+                    
+                    return (
+                      <div 
+                        key={job.job_id} 
+                        className={`
+                          bg-white rounded-xl border-2 p-5 cursor-pointer transition-all duration-200 shadow-sm
+                          ${isSelected 
+                            ? 'border-indigo-600 bg-indigo-50 shadow-md' 
+                            : 'border-gray-200 hover:border-indigo-300 hover:shadow-md'
+                          }
+                          ${jobHasApplied ? 'opacity-75' : ''}
+                        `}
+                        onClick={() => handleViewJob(job)}
+                      >
+                        {/* Job Header */}
+                        <div className="flex gap-4 mb-4">
+                          {job.company_logo_url && (
+                            <img
+                              src={job.company_logo_url}
+                              alt={`${job.company_name} logo`}
+                              className="w-12 h-12 rounded-lg object-contain flex-shrink-0 bg-gray-50 border border-gray-200"
+                            />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2 mb-1">
+                              <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">{job.title}</h3>
+                              {jobHasApplied && (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full whitespace-nowrap flex-shrink-0" title="You have already applied to this job">
+                                  <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                  </svg>
+                                  Applied
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-sm font-medium text-gray-700 mb-1">{job.company_name}</p>
+                          </div>
+                        </div>
+                        
+                        {/* Job Meta */}
+                        <div className="flex items-center gap-3 text-sm text-gray-600 mb-3 flex-wrap">
+                          <span className="flex items-center gap-1">
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                              <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            {job.location}
+                          </span>
+                          {job.applicants_count && (
+                            <span className="flex items-center gap-1">
+                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                              </svg>
+                              {job.applicants_count}
+                            </span>
+                          )}
+                        </div>
+                        
+                        {/* Job Tags */}
+                        <div className="flex gap-2 flex-wrap">
+                          {job.employment_type && (
+                            <span className="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-medium rounded-full">
+                              {job.employment_type.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                            </span>
+                          )}
+                          {job.experience_level && (
+                            <span className="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-medium rounded-full">
+                              {job.experience_level.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })}
             </div>
           </div>
-        )}
-      </div>
+
+          {/* Job Details Panel */}
+          <div
+            ref={jobDetailsRef}
+            className={`${isMobile ? (mobileView === 'details' ? 'block' : 'hidden') : 'block'}`}
+          >
+            {isMobile && (
+              <div className="bg-white rounded-t-xl border border-gray-200 border-b-0 p-4 sticky top-0 z-10 shadow-sm">
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 text-indigo-600 font-medium hover:text-indigo-700 transition-colors"
+                  onClick={handleBackToList}
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                  </svg>
+                  Back to results
+                </button>
+                {selectedJob && (
+                  <div className="mt-3">
+                    <span className="block text-base font-semibold text-gray-900 line-clamp-1">{selectedJob.title}</span>
+                    <span className="block text-sm text-gray-600 line-clamp-1">{selectedJob.company_name}</span>
+                  </div>
+                )}
+              </div>
+            )}
+            {isLoadingResults ? (
+              <JobDetailsSkeleton />
+            ) : !selectedJob ? (
+              <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center">
+                <div className="text-6xl mb-4 opacity-50">🔍</div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Select a job to view details</h3>
+                <p className="text-gray-600">Click on any job card to see the full description and details</p>
+              </div>
+            ) : showCoverLetterGenerator ? (
+              <CoverLetterGenerator
+                jobId={selectedJob.job_id}
+                companyName={selectedJob.company_name}
+                jobTitle={selectedJob.title}
+                jobLocation={selectedJob.location}
+                jobUrl={selectedJob.linkedin_url}
+                onBack={handleBackToJobDetails}
+                showBackButton={true}
+              />
+            ) : (
+              <JobDetails
+                job={selectedJob}
+                isLoadingJobDetails={false}
+                jobDetailError={null}
+                searchState={{
+                  jobs: jobs,
+                  searchParams: searchParams,
+                  hasSearched: hasSearched,
+                  totalResults: totalResults,
+                }}
+              />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

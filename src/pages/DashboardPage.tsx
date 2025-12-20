@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import YourProgress from '@/components/YourProgress'
-import './DashboardPage.css'
 
 const DashboardPage = () => {
   const navigate = useNavigate()
@@ -66,18 +65,22 @@ const DashboardPage = () => {
   ]
 
   return (
-    <div className="dashboard-page">
+    <div className="max-w-[1400px] mx-auto">
       {/* Top section: Hero + Stats */}
-      <div className="dashboard-hero-section">
+      <div className="grid grid-cols-2 gap-8 mb-12 items-start max-lg:grid-cols-1">
         {/* Left side: DashboardHero CTA */}
         <div 
-          className="dashboard-hero-cta"
+          className="relative bg-white/90 backdrop-blur-xl border border-gray-200 rounded-3xl p-8 cursor-pointer transition-all duration-300 overflow-visible shadow-lg flex flex-col items-center text-center gap-4 min-h-[200px] hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/20 hover:border-indigo-300 group max-md:p-6"
           onClick={() => navigate('/jobs')}
         >
-          <div className="dashboard-hero-cta-icon-wrapper">
-            <div className="dashboard-hero-cta-icon-glow"></div>
+          {/* Ambient background glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle,_rgba(99,102,241,0.15)_0%,_rgba(139,92,246,0.1)_30%,_transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0 animate-pulse-soft" />
+
+          <div className="relative flex items-center justify-center w-20 h-20 mb-0 z-10 max-md:w-16 max-md:h-16">
+            {/* Icon glow effect */}
+            <div className="absolute w-full h-full rounded-full bg-[radial-gradient(circle,_rgba(99,102,241,0.4)_0%,_rgba(139,92,246,0.3)_40%,_transparent_70%)] animate-icon-glow blur-[20px] z-0" />
             <svg 
-              className="dashboard-hero-cta-icon"
+              className="relative w-14 h-14 text-indigo-500 z-10 drop-shadow-[0_4px_12px_rgba(99,102,241,0.3)] animate-float max-md:w-12 max-md:h-12"
               viewBox="0 0 24 24" 
               fill="none" 
               stroke="currentColor" 
@@ -89,13 +92,16 @@ const DashboardPage = () => {
               <path d="m21 21-4.35-4.35"></path>
             </svg>
           </div>
-          <h2 className="dashboard-hero-cta-title">Find Your Next Opportunity</h2>
-          <p className="dashboard-hero-cta-description">
+          <h2 className="text-2xl font-bold text-gray-900 m-0 leading-tight relative z-10 max-md:text-xl">Find Your Next Opportunity</h2>
+          <p className="text-[15px] text-gray-600 leading-relaxed m-0 max-w-[500px] relative z-10 max-md:text-sm">
             Search thousands of jobs and discover your perfect match.
             Apply with AI-powered cover letters.
           </p>
-          <button className="btn-dashboard-hero-cta" onClick={(e) => { e.stopPropagation(); navigate('/jobs'); }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <button 
+            className="inline-flex items-center gap-2 px-5 py-3 text-[15px] font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 border-none rounded-xl cursor-pointer transition-all duration-300 mt-0 relative z-10 shadow-lg shadow-indigo-500/30 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-indigo-500/40 active:translate-y-0 max-md:w-full max-md:justify-center" 
+            onClick={(e) => { e.stopPropagation(); navigate('/jobs'); }}
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"></circle>
               <path d="m21 21-4.35-4.35"></path>
             </svg>
@@ -104,24 +110,27 @@ const DashboardPage = () => {
         </div>
 
         {/* Right side: Stats widget */}
-        <YourProgress className="stats-widget" />
+        <YourProgress />
       </div>
 
       {/* Bottom section: Feature cards */}
-      <div className="dashboard-features">
-        <h2 className="dashboard-features-title">Quick Actions</h2>
-        <div className="dashboard-features-grid">
+      <div className="mt-12">
+        <h2 className="text-2xl font-semibold text-gray-900 mb-6">Quick Actions</h2>
+        <div className="grid grid-cols-4 gap-6 max-lg:grid-cols-2 max-md:gap-4 max-sm:grid-cols-1">
           {featureCards.map((card) => (
             <div
               key={card.id}
-              className="dashboard-feature-card"
+              className="bg-white/90 backdrop-blur-xl border border-gray-200 rounded-2xl p-6 cursor-pointer transition-all duration-300 relative overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-gray-900/10 hover:border-indigo-200 max-md:p-5"
               onClick={() => navigate(card.path)}
             >
-              <div className="dashboard-feature-icon" style={{ background: card.gradient }}>
+              <div 
+                className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-white shadow-lg shadow-gray-900/15" 
+                style={{ background: card.gradient }}
+              >
                 {card.icon}
               </div>
-              <h3 className="dashboard-feature-title">{card.title}</h3>
-              <p className="dashboard-feature-description">{card.description}</p>
+              <h3 className="text-lg font-semibold mb-2 text-gray-900">{card.title}</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">{card.description}</p>
             </div>
           ))}
         </div>

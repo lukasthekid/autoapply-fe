@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { applicationsService } from '@/services/applicationsService'
 import type { ApplicationStatsResponse } from '@/types/api'
-import './YourProgress.css'
 
 interface YourProgressProps {
   className?: string
@@ -53,35 +52,35 @@ const YourProgress = ({ className }: YourProgressProps) => {
     : []
 
   return (
-    <div className={`your-progress ${className || ''}`}>
-      <h3 className="your-progress-title">Your Progress</h3>
+    <div className={`bg-white/90 backdrop-blur-xl border border-gray-200 rounded-3xl p-8 shadow-lg ${className || ''}`}>
+      <h3 className="text-lg font-semibold text-gray-900 mb-6">Your Progress</h3>
       {loading ? (
-        <div className="your-progress-loading">
-          <div className="spinner"></div>
+        <div className="flex items-center justify-center py-8">
+          <div className="w-8 h-8 border-3 border-gray-200 border-t-primary rounded-full animate-spin"></div>
         </div>
       ) : (
-        <div className="your-progress-content">
-          <div className="your-progress-stats-grid">
-            <div className="your-progress-stat-item">
-              <div className="your-progress-stat-value">
+        <div className="grid grid-cols-[120px_1fr] gap-0 items-start max-md:grid-cols-1 max-md:gap-6">
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-1">
+              <div className="text-[1.75rem] font-bold text-primary leading-none">
                 {stats?.total_applications ?? 0}
               </div>
-              <div className="your-progress-stat-label">Jobs Tracked</div>
+              <div className="text-sm text-gray-600 font-medium">Jobs Tracked</div>
             </div>
-            <div className="your-progress-stat-item">
-              <div className="your-progress-stat-value">{interviewsCount}</div>
-              <div className="your-progress-stat-label">Interviews</div>
+            <div className="flex flex-col gap-1">
+              <div className="text-[1.75rem] font-bold text-primary leading-none">{interviewsCount}</div>
+              <div className="text-sm text-gray-600 font-medium">Interviews</div>
             </div>
-            <div className="your-progress-stat-item">
-              <div className="your-progress-stat-value">
+            <div className="flex flex-col gap-1">
+              <div className="text-[1.75rem] font-bold text-primary leading-none">
                 {stats?.applications_this_week ?? 0}
               </div>
-              <div className="your-progress-stat-label">This Week</div>
+              <div className="text-sm text-gray-600 font-medium">This Week</div>
             </div>
           </div>
 
           {chartData.length > 0 && (
-            <div className="your-progress-chart">
+            <div className="flex-1 min-w-0 max-md:border-t max-md:border-gray-200 max-md:pt-6">
               <ResponsiveContainer width="100%" height={200}>
                 <LineChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 0, 0, 0.05)" />
@@ -122,4 +121,3 @@ const YourProgress = ({ className }: YourProgressProps) => {
 }
 
 export default YourProgress
-

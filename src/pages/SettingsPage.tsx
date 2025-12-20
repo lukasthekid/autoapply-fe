@@ -12,7 +12,6 @@ import type {
   JobType,
   ExperienceLevel,
 } from '@/types/api'
-import './SettingsPage.css'
 
 const SettingsPage = () => {
   const { user, updateProfile } = useAuth()
@@ -387,438 +386,498 @@ const SettingsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="settings-page">
-        <div className="container">
-          <div className="settings-loading">
-            <div className="loading-spinner"></div>
-            <p>Loading your profile...</p>
-          </div>
+      <div className="max-w-[1200px] mx-auto">
+        <div className="flex flex-col items-center justify-center py-16">
+          <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
+          <p className="text-gray-600">Loading your profile...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="settings-page">
-      <div className="container">
-        <div className="settings-header">
-          <h1>Settings</h1>
-          <p>Manage your personal information and preferences</p>
+    <div className="max-w-[1200px] mx-auto">
+      {/* Page Header */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-gray-900 mb-3">Settings</h1>
+        <p className="text-lg text-gray-600">Manage your personal information and preferences</p>
+      </div>
+
+      {/* Global Messages */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-5 mb-6 shadow-sm">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span className="text-red-800 whitespace-pre-wrap">{error}</span>
+          </div>
+        </div>
+      )}
+
+      {success && (
+        <div className="bg-green-50 border border-green-200 rounded-xl p-5 mb-6 shadow-sm animate-fade-in">
+          <div className="flex items-center gap-3">
+            <svg className="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span className="text-green-800 font-medium">✓ Profile updated successfully!</span>
+          </div>
+        </div>
+      )}
+
+      {/* Notice Card */}
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8 shadow-sm">
+        <div className="flex items-start gap-4">
+          <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-xl">
+            📝
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-blue-900 mb-2">Complete Your Profile</h3>
+            <p className="text-blue-800 leading-relaxed">
+              All fields below are required to generate professional cover letters. 
+              This information will be used in the sender section of your cover letters, 
+              including your name, contact details, and address. Please fill in all fields 
+              to ensure your cover letters are properly formatted and professional.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-8">
+        {/* Account Information Section */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Account Information</h2>
+          <div className="grid grid-cols-3 gap-6 max-md:grid-cols-1">
+            <div className="flex flex-col">
+              <span className="text-sm font-medium text-gray-600 mb-1">Username</span>
+              <span className="text-base text-gray-900 font-medium">{user?.username}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-medium text-gray-600 mb-1">User ID</span>
+              <span className="text-base text-gray-900 font-medium">{user?.id}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-medium text-gray-600 mb-1">Member since</span>
+              <span className="text-base text-gray-900 font-medium">
+                {profile?.date_joined
+                  ? new Date(profile.date_joined).toLocaleDateString()
+                  : 'N/A'}
+              </span>
+            </div>
+          </div>
         </div>
 
-        {error && (
-          <div className="settings-error">
-            {error}
-          </div>
-        )}
+        {/* Personal Information Form */}
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Personal Information</h2>
+            
+            <div className="grid grid-cols-2 gap-6 max-md:grid-cols-1">
+              <div>
+                <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-2">
+                  First Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="first_name"
+                  name="first_name"
+                  value={formData.first_name}
+                  onChange={handleInputChange}
+                  placeholder="John"
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                />
+              </div>
+              <div>
+                <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-2">
+                  Last Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="last_name"
+                  name="last_name"
+                  value={formData.last_name}
+                  onChange={handleInputChange}
+                  placeholder="Doe"
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                />
+              </div>
+            </div>
 
-        {success && (
-          <div className="settings-success">
-            ✓ Profile updated successfully!
-          </div>
-        )}
+            <div className="mt-6">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                Email <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="john@example.com"
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              />
+            </div>
 
-        <div className="settings-content">
-          <div className="settings-notice">
-            <div className="notice-icon">📝</div>
-            <div className="notice-content">
-              <h3>Complete Your Profile</h3>
-              <p>
-                All fields below are required to generate professional cover letters. 
-                This information will be used in the sender section of your cover letters, 
-                including your name, contact details, and address. Please fill in all fields 
-                to ensure your cover letters are properly formatted and professional.
-              </p>
+            <div className="mt-6">
+              <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700 mb-2">
+                Phone Number <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="tel"
+                id="phone_number"
+                name="phone_number"
+                value={formData.phone_number}
+                onChange={handleInputChange}
+                placeholder="+1 234 567 8900"
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              />
             </div>
           </div>
 
-          <div className="settings-section">
-            <h2>Account Information</h2>
-            <div className="settings-info">
-              <div className="info-item">
-                <span className="info-label">Username:</span>
-                <span className="info-value">{user?.username}</span>
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Address Information</h2>
+            
+            <div className="mb-6">
+              <label htmlFor="street" className="block text-sm font-medium text-gray-700 mb-2">
+                Street Address <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="street"
+                name="street"
+                value={formData.street}
+                onChange={handleInputChange}
+                placeholder="123 Main Street"
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-6 max-md:grid-cols-1">
+              <div>
+                <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-2">
+                  City <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  placeholder="New York"
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                />
               </div>
-              <div className="info-item">
-                <span className="info-label">User ID:</span>
-                <span className="info-value">{user?.id}</span>
+              <div>
+                <label htmlFor="postcode" className="block text-sm font-medium text-gray-700 mb-2">
+                  Postal Code <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="postcode"
+                  name="postcode"
+                  value={formData.postcode}
+                  onChange={handleInputChange}
+                  placeholder="10001"
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                />
               </div>
-              <div className="info-item">
-                <span className="info-label">Member since:</span>
-                <span className="info-value">
-                  {profile?.date_joined
-                    ? new Date(profile.date_joined).toLocaleDateString()
-                    : 'N/A'}
+            </div>
+
+            <div className="mt-6">
+              <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
+                Country <span className="text-red-500">*</span>
+              </label>
+              <select
+                id="country"
+                name="country"
+                value={formData.country || ''}
+                onChange={handleInputChange}
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              >
+                <option value="">Select a country</option>
+                {countries.map((country) => (
+                  <option key={country.code} value={country.code}>
+                    {country.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
+              disabled={isSaving}
+            >
+              {isSaving ? 'Saving...' : 'Save Changes'}
+            </button>
+          </div>
+        </form>
+
+        {/* Search Profiles Section */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Search Profiles</h2>
+            {!showProfileForm && (
+              <button
+                type="button"
+                className="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg text-sm hover:bg-gray-50 transition-colors"
+                onClick={handleNewProfile}
+              >
+                + Add Profile
+              </button>
+            )}
+          </div>
+
+          {profileError && (
+            <div className="bg-red-50 border border-red-200 rounded-xl p-5 mb-6 shadow-sm">
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span className="text-red-800 whitespace-pre-wrap">{profileError}</span>
+              </div>
+            </div>
+          )}
+
+          {profileSuccess && (
+            <div className="bg-green-50 border border-green-200 rounded-xl p-5 mb-6 shadow-sm animate-fade-in">
+              <div className="flex items-center gap-3">
+                <svg className="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span className="text-green-800 font-medium">
+                  ✓ Search profile {editingProfileId ? 'updated' : 'created'} successfully!
                 </span>
               </div>
             </div>
-          </div>
+          )}
 
-          <form onSubmit={handleSubmit} className="settings-form">
-            <div className="settings-section">
-              <h2>Personal Information</h2>
-              
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="first_name">First Name *</label>
-                  <input
-                    type="text"
-                    id="first_name"
-                    name="first_name"
-                    value={formData.first_name}
-                    onChange={handleInputChange}
-                    placeholder="John"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="last_name">Last Name *</label>
-                  <input
-                    type="text"
-                    id="last_name"
-                    name="last_name"
-                    value={formData.last_name}
-                    onChange={handleInputChange}
-                    placeholder="Doe"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="email">Email *</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="john@example.com"
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="phone_number">Phone Number *</label>
-                <input
-                  type="tel"
-                  id="phone_number"
-                  name="phone_number"
-                  value={formData.phone_number}
-                  onChange={handleInputChange}
-                  placeholder="+1 234 567 8900"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="settings-section">
-              <h2>Address Information</h2>
-              
-              <div className="form-group">
-                <label htmlFor="street">Street Address *</label>
+          {showProfileForm ? (
+            <form onSubmit={handleSaveProfile} className="space-y-6">
+              <div>
+                <label htmlFor="profile_name" className="block text-sm font-medium text-gray-700 mb-2">
+                  Profile Name (Optional)
+                </label>
                 <input
                   type="text"
-                  id="street"
-                  name="street"
-                  value={formData.street}
-                  onChange={handleInputChange}
-                  placeholder="123 Main Street"
-                  required
+                  id="profile_name"
+                  name="name"
+                  value={profileFormData.name}
+                  onChange={handleProfileInputChange}
+                  placeholder="e.g., Software Engineer - Remote"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 />
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="city">City *</label>
+              <div className="grid grid-cols-2 gap-6 max-md:grid-cols-1">
+                <div>
+                  <label htmlFor="profile_keyword" className="block text-sm font-medium text-gray-700 mb-2">
+                    Keyword <span className="text-red-500">*</span>
+                  </label>
                   <input
                     type="text"
-                    id="city"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleInputChange}
-                    placeholder="New York"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="postcode">Postal Code *</label>
-                  <input
-                    type="text"
-                    id="postcode"
-                    name="postcode"
-                    value={formData.postcode}
-                    onChange={handleInputChange}
-                    placeholder="10001"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="country">Country *</label>
-                <select
-                  id="country"
-                  name="country"
-                  value={formData.country || ''}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="">Select a country</option>
-                  {countries.map((country) => (
-                    <option key={country.code} value={country.code}>
-                      {country.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className="settings-actions">
-              <button
-                type="submit"
-                className="btn-primary btn-large btn-glow"
-                disabled={isSaving}
-              >
-                {isSaving ? 'Saving...' : 'Save Changes'}
-              </button>
-            </div>
-          </form>
-
-          {/* Search Profiles Section */}
-          <div className="settings-section">
-            <div className="settings-section-header">
-              <h2>Search Profiles</h2>
-              {!showProfileForm && (
-                <button
-                  type="button"
-                  className="btn-secondary btn-small"
-                  onClick={handleNewProfile}
-                >
-                  + Add Profile
-                </button>
-              )}
-            </div>
-
-            {profileError && (
-              <div className="settings-error" style={{ marginBottom: '1rem' }}>
-                {profileError}
-              </div>
-            )}
-
-            {profileSuccess && (
-              <div className="settings-success" style={{ marginBottom: '1rem' }}>
-                ✓ Search profile {editingProfileId ? 'updated' : 'created'} successfully!
-              </div>
-            )}
-
-            {showProfileForm ? (
-              <form onSubmit={handleSaveProfile} className="settings-form">
-                <div className="form-group">
-                  <label htmlFor="profile_name">Profile Name (Optional)</label>
-                  <input
-                    type="text"
-                    id="profile_name"
-                    name="name"
-                    value={profileFormData.name}
+                    id="profile_keyword"
+                    name="keyword"
+                    value={profileFormData.keyword}
                     onChange={handleProfileInputChange}
-                    placeholder="e.g., Software Engineer - Remote"
+                    placeholder="e.g., Software Engineer"
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   />
                 </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="profile_keyword">Keyword *</label>
-                    <input
-                      type="text"
-                      id="profile_keyword"
-                      name="keyword"
-                      value={profileFormData.keyword}
-                      onChange={handleProfileInputChange}
-                      placeholder="e.g., Software Engineer"
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="profile_location">Location *</label>
-                    <input
-                      type="text"
-                      id="profile_location"
-                      name="location"
-                      value={profileFormData.location}
-                      onChange={handleProfileInputChange}
-                      placeholder="e.g., New York, NY"
-                      required
-                    />
-                  </div>
+                <div>
+                  <label htmlFor="profile_location" className="block text-sm font-medium text-gray-700 mb-2">
+                    Location <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="profile_location"
+                    name="location"
+                    value={profileFormData.location}
+                    onChange={handleProfileInputChange}
+                    placeholder="e.g., New York, NY"
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  />
                 </div>
+              </div>
 
-                <div className="form-group">
-                  <label>Job Types (Optional)</label>
-                  <div className="checkbox-group">
-                    {(['full_time', 'part_time', 'contract', 'temporary', 'internship'] as JobType[]).map(
-                      (jobType) => (
-                        <label key={jobType} className="checkbox-label">
-                          <input
-                            type="checkbox"
-                            checked={profileFormData.job_types.includes(jobType)}
-                            onChange={(e) =>
-                              handleJobTypeChange(jobType, e.target.checked)
-                            }
-                          />
-                          <span>
-                            {jobType
-                              .split('_')
-                              .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-                              .join(' ')}
-                          </span>
-                        </label>
-                      )
-                    )}
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label>Experience Levels (Optional)</label>
-                  <div className="checkbox-group">
-                    {([
-                      'internship',
-                      'entry_level',
-                      'associate',
-                      'mid_senior_level',
-                      'director',
-                    ] as ExperienceLevel[]).map((level) => (
-                      <label key={level} className="checkbox-label">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">Job Types (Optional)</label>
+                <div className="flex flex-wrap gap-4">
+                  {(['full_time', 'part_time', 'contract', 'temporary', 'internship'] as JobType[]).map(
+                    (jobType) => (
+                      <label key={jobType} className="flex items-center gap-2 cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={profileFormData.experience_levels.includes(level)}
-                          onChange={(e) =>
-                            handleExperienceLevelChange(level, e.target.checked)
-                          }
+                          checked={profileFormData.job_types.includes(jobType)}
+                          onChange={(e) => handleJobTypeChange(jobType, e.target.checked)}
+                          className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                         />
-                        <span>
-                          {level
+                        <span className="text-sm text-gray-700">
+                          {jobType
                             .split('_')
                             .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
                             .join(' ')}
                         </span>
                       </label>
-                    ))}
-                  </div>
+                    )
+                  )}
                 </div>
+              </div>
 
-                <div className="settings-actions">
-                  <button
-                    type="button"
-                    className="btn-secondary"
-                    onClick={handleCancelProfileForm}
-                    disabled={isSavingProfile}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn-primary btn-glow"
-                    disabled={isSavingProfile}
-                  >
-                    {isSavingProfile
-                      ? 'Saving...'
-                      : editingProfileId
-                      ? 'Update Profile'
-                      : 'Create Profile'}
-                  </button>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">Experience Levels (Optional)</label>
+                <div className="flex flex-wrap gap-4">
+                  {([
+                    'internship',
+                    'entry_level',
+                    'associate',
+                    'mid_senior_level',
+                    'director',
+                  ] as ExperienceLevel[]).map((level) => (
+                    <label key={level} className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={profileFormData.experience_levels.includes(level)}
+                        onChange={(e) => handleExperienceLevelChange(level, e.target.checked)}
+                        className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                      />
+                      <span className="text-sm text-gray-700">
+                        {level
+                          .split('_')
+                          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                          .join(' ')}
+                      </span>
+                    </label>
+                  ))}
                 </div>
-              </form>
-            ) : (
-              <>
-                {isLoadingProfiles ? (
-                  <div className="settings-loading" style={{ minHeight: '200px' }}>
-                    <div className="loading-spinner"></div>
-                    <p>Loading search profiles...</p>
-                  </div>
-                ) : searchProfiles.length === 0 ? (
-                  <div className="empty-state">
-                    <p>No search profiles yet. Create your first one to get started!</p>
-                  </div>
-                ) : (
-                  <div className="profiles-list">
-                    {searchProfiles.map((profile) => (
-                      <div key={profile.id} className="profile-card">
-                        <div className="profile-card-content">
-                          <div className="profile-card-header">
-                            <h3>{profile.name || 'Unnamed Profile'}</h3>
-                            <div className="profile-card-actions">
-                              <button
-                                type="button"
-                                className="btn-link"
-                                onClick={() => handleEditProfile(profile)}
-                              >
-                                Edit
-                              </button>
-                              <button
-                                type="button"
-                                className="btn-link btn-link-danger"
-                                onClick={() => handleDeleteProfile(profile.id)}
-                                disabled={searchProfiles.length === 1}
-                                title={
-                                  searchProfiles.length === 1
-                                    ? 'You must have at least one search profile'
-                                    : 'Delete profile'
-                                }
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </div>
-                          <div className="profile-card-details">
-                            <div className="profile-detail">
-                              <span className="profile-detail-label">Keyword:</span>
-                              <span className="profile-detail-value">{profile.keyword}</span>
-                            </div>
-                            <div className="profile-detail">
-                              <span className="profile-detail-label">Location:</span>
-                              <span className="profile-detail-value">{profile.location}</span>
-                            </div>
-                            {profile.job_types && profile.job_types.length > 0 && (
-                              <div className="profile-detail">
-                                <span className="profile-detail-label">Job Types:</span>
-                                <span className="profile-detail-value">
-                                  {profile.job_types
-                                    .map((t) =>
-                                      t
-                                        .split('_')
-                                        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-                                        .join(' ')
-                                    )
-                                    .join(', ')}
-                                </span>
-                              </div>
-                            )}
-                            {profile.experience_levels &&
-                              profile.experience_levels.length > 0 && (
-                                <div className="profile-detail">
-                                  <span className="profile-detail-label">Experience:</span>
-                                  <span className="profile-detail-value">
-                                    {profile.experience_levels
-                                      .map((l) =>
-                                        l
-                                          .split('_')
-                                          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-                                          .join(' ')
-                                      )
-                                      .join(', ')}
-                                  </span>
-                                </div>
-                              )}
-                          </div>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4">
+                <button
+                  type="button"
+                  className="px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={handleCancelProfileForm}
+                  disabled={isSavingProfile}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
+                  disabled={isSavingProfile}
+                >
+                  {isSavingProfile
+                    ? 'Saving...'
+                    : editingProfileId
+                    ? 'Update Profile'
+                    : 'Create Profile'}
+                </button>
+              </div>
+            </form>
+          ) : (
+            <>
+              {isLoadingProfiles ? (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
+                  <p className="text-gray-600">Loading search profiles...</p>
+                </div>
+              ) : searchProfiles.length === 0 ? (
+                <div className="text-center py-12 text-gray-600">
+                  <p>No search profiles yet. Create your first one to get started!</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {searchProfiles.map((profile) => (
+                    <div key={profile.id} className="border border-gray-200 rounded-xl p-6 hover:border-indigo-300 hover:shadow-md transition-all duration-200">
+                      <div className="flex items-start justify-between mb-4">
+                        <h3 className="text-lg font-semibold text-gray-900">{profile.name || 'Unnamed Profile'}</h3>
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            className="text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
+                            onClick={() => handleEditProfile(profile)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="text-sm font-medium text-red-600 hover:text-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={() => handleDeleteProfile(profile.id)}
+                            disabled={searchProfiles.length === 1}
+                            title={
+                              searchProfiles.length === 1
+                                ? 'You must have at least one search profile'
+                                : 'Delete profile'
+                            }
+                          >
+                            Delete
+                          </button>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+                      <div className="space-y-2">
+                        <div className="flex items-start">
+                          <span className="text-sm font-medium text-gray-600 min-w-[100px]">Keyword:</span>
+                          <span className="text-sm text-gray-900">{profile.keyword}</span>
+                        </div>
+                        <div className="flex items-start">
+                          <span className="text-sm font-medium text-gray-600 min-w-[100px]">Location:</span>
+                          <span className="text-sm text-gray-900">{profile.location}</span>
+                        </div>
+                        {profile.job_types && profile.job_types.length > 0 && (
+                          <div className="flex items-start">
+                            <span className="text-sm font-medium text-gray-600 min-w-[100px]">Job Types:</span>
+                            <span className="text-sm text-gray-900">
+                              {profile.job_types
+                                .map((t) =>
+                                  t
+                                    .split('_')
+                                    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                                    .join(' ')
+                                )
+                                .join(', ')}
+                            </span>
+                          </div>
+                        )}
+                        {profile.experience_levels &&
+                          profile.experience_levels.length > 0 && (
+                            <div className="flex items-start">
+                              <span className="text-sm font-medium text-gray-600 min-w-[100px]">Experience:</span>
+                              <span className="text-sm text-gray-900">
+                                {profile.experience_levels
+                                  .map((l) =>
+                                    l
+                                      .split('_')
+                                      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                                      .join(' ')
+                                  )
+                                  .join(', ')}
+                              </span>
+                            </div>
+                          )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>
@@ -826,4 +885,3 @@ const SettingsPage = () => {
 }
 
 export default SettingsPage
-
