@@ -57,7 +57,7 @@ server {
 
     # Frontend (static files)
     location / {
-        root /var/www/autoapply-fe/dist;
+        root /var/www/resumr-fe/dist;
         try_files $uri $uri/ /index.html;
     }
 

@@ -53,7 +53,7 @@ const Header = () => {
         <div className="container">
           <div className="header-content">
             <div className="logo">
-              <h1>AutoApply</h1>
+              <h1>Resumr</h1>
             </div>
             {!isAuthenticated && (
               <nav ref={navRef} className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>

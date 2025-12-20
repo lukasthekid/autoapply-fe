@@ -71,7 +71,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       <header className="dashboard-header">
         <div className="header-container">
           <Link to="/dashboard" className="logo">
-            <h1>AutoApply</h1>
+            <h1>Resumr</h1>
           </Link>
           
           <div className="header-right">

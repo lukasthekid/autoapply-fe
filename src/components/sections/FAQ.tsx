@@ -68,7 +68,7 @@ const FAQ = () => {
       <div className="container">
         <div className="section-header">
           <h2>Frequently Asked Questions</h2>
-          <p>Everything you need to know about AutoApply</p>
+          <p>Everything you need to know about Resumr</p>
         </div>
         <div className="faq-list">
           {faqs.map((faq, index) => (

@@ -16,7 +16,7 @@ const testimonials: Testimonial[] = [
     name: 'Sarah Chen',
     role: 'Software Engineer',
     company: 'Tech Corp',
-    quote: 'Landed an offer from my dream company in 2 weeks. Applied to 150+ jobs with AutoApply.',
+    quote: 'Landed an offer from my dream company in 2 weeks. Applied to 150+ jobs with Resumr.',
     image: '/Sarah Chen.png',
   },
   {
@@ -44,7 +44,7 @@ const testimonials: Testimonial[] = [
     name: 'Lisa Anderson',
     role: 'Marketing Manager',
     company: 'BrandCo',
-    quote: 'As someone switching careers, AutoApply helped me highlight relevant experience from my past roles. The AI understands context and creates compelling narratives.',
+    quote: 'As someone switching careers, Resumr helped me highlight relevant experience from my past roles. The AI understands context and creates compelling narratives.',
     image: '/Lisa Anderson.png',
   },
   {

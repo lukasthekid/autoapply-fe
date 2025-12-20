@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="container">
         <div className="footer-content">
           <div className="footer-section">
-            <h3>AutoApply</h3>
+            <h3>Resumr</h3>
             <p>AI-powered cover letter generator for job applications</p>
           </div>
           <div className="footer-section">
@@ -33,7 +33,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; {new Date().getFullYear()} AutoApply. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Resumr. All rights reserved.</p>
         </div>
       </div>
     </footer>

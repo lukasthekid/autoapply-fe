@@ -1,4 +1,4 @@
-# AutoApply Frontend
+# Resumr Frontend
 
 Frontend for an ML-powered application that automates job applications.
 
@@ -33,7 +33,7 @@ npm run preview
 ## 📁 Project Structure
 
 ```
-autoapply-fe/
+resumr-fe/
 ├── src/
 │   ├── components/          # Reusable React components
 │   │   ├── layout/         # Layout components (Header, Footer)

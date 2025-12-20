@@ -138,7 +138,7 @@ const Hero = () => {
               <div className="hero-visual">
                 <img 
                   src="/product_screenshot_mockup.png" 
-                  alt="AutoApply Dashboard showing application tracking and statistics"
+                  alt="Resumr Dashboard showing application tracking and statistics"
                   className="hero-screenshot"
                 />
               </div>

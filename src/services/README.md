@@ -1,6 +1,6 @@
 # API Integration
 
-This directory contains all API-related services and configuration for connecting to the AutoApply backend.
+This directory contains all API-related services and configuration for connecting to the Resumr backend.
 
 ## Structure
 

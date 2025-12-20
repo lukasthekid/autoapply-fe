@@ -184,7 +184,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }: AuthModalProps) =
         
         <div className="auth-modal-header">
           <h2>{mode === 'login' ? 'Welcome Back' : 'Create Account'}</h2>
-          <p>{mode === 'login' ? 'Sign in to your account to continue' : 'Start your journey with AutoApply'}</p>
+          <p>{mode === 'login' ? 'Sign in to your account to continue' : 'Start your journey with Resumr'}</p>
         </div>
 
         {error && (

@@ -50,12 +50,12 @@ const LandingPage = () => {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'WebPage',
-            name: 'AutoApply - AI-Powered Cover Letter Generator',
+            name: 'Resumr - AI-Powered Cover Letter Generator',
             description: 'Generate personalized cover letters in seconds with AI. Upload your resume, paste job descriptions, and create professional cover letters tailored to each application.',
             url: 'https://project100x.run.place/',
             mainEntity: {
               '@type': 'SoftwareApplication',
-              name: 'AutoApply',
+              name: 'Resumr',
               applicationCategory: 'JobApplication',
               operatingSystem: 'Web',
             },
