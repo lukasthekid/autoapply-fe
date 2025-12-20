@@ -1,128 +1,116 @@
-import { useEffect, useState } from 'react'
-import { useIntersectionObserver } from '@/hooks/useIntersectionObserver'
-import './HowItWorks.css'
-
-interface Step {
-  number: number
-  icon: React.ReactNode
-  title: string
-  description: string
-}
-
-const steps: Step[] = [
-  {
-    number: 1,
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-        <polyline points="17 8 12 3 7 8"></polyline>
-        <line x1="12" y1="3" x2="12" y2="15"></line>
-      </svg>
-    ),
-    title: 'Upload Resume',
-    description: 'Drag & drop your resume, certificates, reference letters and more.',
-  },
-  {
-    number: 2,
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="11" cy="11" r="8"></circle>
-        <path d="m21 21-4.35-4.35"></path>
-      </svg>
-    ),
-    title: 'Search & Import Jobs',
-    description: 'Browse job listings or manually import job descriptions.',
-  },
-  {
-    number: 3,
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-        <polyline points="14 2 14 8 20 8"></polyline>
-        <line x1="16" y1="13" x2="8" y2="13"></line>
-        <line x1="16" y1="17" x2="8" y2="17"></line>
-        <polyline points="10 9 9 9 8 9"></polyline>
-      </svg>
-    ),
-    title: 'Generate Letters',
-    description: 'Our AI creates personalized cover letters in seconds for each application.',
-  },
-  {
-    number: 4,
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="22 6 13.5 15.5 8.5 10.5 2 17"></polyline>
-        <polyline points="16 6 22 6 22 12"></polyline>
-      </svg>
-    ),
-    title: 'Track & Analyze',
-    description: 'Monitor all applications in one dashboard. See who opened your email.',
-  },
-]
+import { Upload, Search, Sparkles, Send } from 'lucide-react'
 
 const HowItWorks = () => {
-  const { elementRef, hasIntersected } = useIntersectionObserver({
-    threshold: 0.3, // 30% into viewport
-    rootMargin: '0px',
-    triggerOnce: true,
-  })
-
-  // Animate cards when section is visible
-  const [cardsAnimated, setCardsAnimated] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
-
-  useEffect(() => {
-    if (hasIntersected) {
-      // Small delay to ensure DOM is ready
-      setTimeout(() => {
-        setCardsAnimated(true)
-      }, 100)
-    }
-  }, [hasIntersected])
+  const steps = [
+    {
+      number: '01',
+      title: 'Upload Your Documents',
+      description: 'Upload your resume, portfolio, and any other relevant documents. Our platform securely stores everything in one place.',
+      icon: Upload,
+      color: 'from-primary to-purple-600',
+    },
+    {
+      number: '02',
+      title: 'Find Perfect Jobs',
+      description: 'Search millions of job listings from top job boards or manually add opportunities you find. Filter by industry, location, and requirements.',
+      icon: Search,
+      color: 'from-purple-600 to-secondary',
+    },
+    {
+      number: '03',
+      title: 'Generate Your Documents',
+      description: 'Our AI analyzes each job description and creates personalized resumes and cover letters that highlight your most relevant experience and skills.',
+      icon: Sparkles,
+      color: 'from-secondary to-green-600',
+    },
+    {
+      number: '04',
+      title: 'Apply & Track',
+      description: 'Download your tailored documents and apply with confidence. Track all applications in one dashboard and never miss a follow-up.',
+      icon: Send,
+      color: 'from-green-600 to-primary',
+    },
+  ]
 
   return (
-    <section id="how-it-works" className="how-it-works" ref={elementRef as React.RefObject<HTMLElement>}>
-      <div className="container">
-        <div className="steps-grid">
-          {steps.map((step, index) => {
-            const isLeft = index % 2 === 0 // Cards 1 & 3 from left, 2 & 4 from right
-            return (
+    <section id="how-it-works" className="py-24 bg-white relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
+      
+      <div className="container mx-auto px-6 lg:px-8 relative z-10">
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-secondary/10 rounded-full">
+            <Sparkles className="w-4 h-4 text-secondary" />
+            <span className="text-sm font-semibold text-secondary">How It Works</span>
+          </div>
+          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900">
+            Land Your Dream Job in 4 Simple Steps
+          </h2>
+          <p className="text-xl text-gray-600">
+            Our streamlined process makes job applications faster and more effective
+          </p>
+        </div>
+
+        {/* Steps */}
+        <div className="relative">
+          {/* Connection Line */}
+          <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-primary via-purple-600 via-secondary to-green-600 transform -translate-y-1/2" 
+               style={{ 
+                 top: '80px',
+                 left: '10%',
+                 right: '10%',
+                 width: '80%'
+               }} 
+          />
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
+            {steps.map((step, index) => (
               <div
-                key={step.number}
-                className={`step-card ${cardsAnimated ? 'animate-in' : ''} ${isLeft ? 'slide-from-left' : 'slide-from-right'}`}
+                key={index}
+                className="relative"
                 style={{
-                  transitionDelay: isMobile 
-                    ? `${index * 50}ms` 
-                    : `${index * 100}ms`,
+                  animation: 'fadeIn 0.8s ease-out forwards',
+                  animationDelay: `${index * 0.2}s`,
+                  opacity: 0,
                 }}
               >
-                <div className="step-number-circle">
-                  <span className="step-number">{step.number}</span>
+                {/* Card */}
+                <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group">
+                  {/* Step Number */}
+                  <div className={`absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-br ${step.color} rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:scale-110 transition-transform`}>
+                    {step.number}
+                  </div>
+
+                  {/* Icon */}
+                  <div className={`inline-flex p-4 bg-gradient-to-br ${step.color} rounded-xl mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                    <step.icon className="w-8 h-8 text-white" />
+                  </div>
+
+                  {/* Content */}
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                    {step.title}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    {step.description}
+                  </p>
                 </div>
-                <div
-                  className={`step-icon ${cardsAnimated ? 'icon-animate-in' : ''}`}
-                  style={{
-                    transitionDelay: isMobile 
-                      ? `${index * 50 + 100}ms` 
-                      : `${index * 100 + 200}ms`,
-                  }}
-                >
-                  {step.icon}
-                </div>
-                <h3 className="step-title">{step.title}</h3>
-                <p className="step-description">{step.description}</p>
               </div>
-            )
-          })}
+            ))}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="mt-16 text-center">
+          <a
+            href="#pricing"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+          >
+            Start Your Job Search Now
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
         </div>
       </div>
     </section>
@@ -130,4 +118,3 @@ const HowItWorks = () => {
 }
 
 export default HowItWorks
-

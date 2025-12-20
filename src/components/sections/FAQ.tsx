@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react'
-import { useIntersectionObserver } from '@/hooks/useIntersectionObserver'
-import './FAQ.css'
+import { useState } from 'react'
+import { ChevronDown, HelpCircle } from 'lucide-react'
 
 interface FAQItem {
   question: string
@@ -9,102 +8,121 @@ interface FAQItem {
 
 const faqs: FAQItem[] = [
   {
-    question: 'How does the AI cover letter generation work?',
-    answer: 'Our platform uses RAG (Retrieval-Augmented Generation) technology. You upload your documents (CV, resume, reference letters, etc.), which are vectorized and stored in our database. When generating a cover letter, the AI retrieves relevant information from your documents and creates personalized content that matches the job requirements.',
+    question: 'How does the AI document generation work?',
+    answer: 'Our AI analyzes your resume, work history, and the job description to create personalized resumes and cover letters. It identifies key skills and experiences that match the job requirements and crafts compelling narratives that highlight your qualifications. Each document is unique and tailored to the specific position.',
+  },
+  {
+    question: 'Can I edit the AI-generated documents?',
+    answer: 'Absolutely! You have full control over every document. Use our integrated editor to make any changes you want. The AI provides a strong foundation, and you can customize it to match your personal style and add specific details.',
+  },
+  {
+    question: 'How many documents can I generate with the free plan?',
+    answer: 'The free plan includes 5 AI-generated documents per month (resumes or cover letters). This is perfect for testing the platform and applying to a few selected positions. If you need more, you can upgrade to Premium for unlimited document generation.',
+  },
+  {
+    question: 'Is my data secure and private?',
+    answer: 'Yes, security is our top priority. All your documents and personal information are encrypted and stored securely. We never share your data with third parties, and you have complete control over your information. You can delete your data at any time.',
   },
   {
     question: 'What file formats can I upload?',
-    answer: 'You can upload text files (.txt), Word documents (.doc, .docx), and PDF files (.pdf). We support common document types including CVs, resumes, reference letters, university theses, and other professional documents.',
+    answer: 'We support all common document formats including PDF, DOCX, TXT, and more. You can upload resumes, portfolios, certificates, transcripts, and any other relevant documents to build your professional profile.',
   },
   {
-    question: 'Which job sources do you support?',
-    answer: 'We scrape jobs from 6+ major sources including LinkedIn, Indeed, and other popular job boards. Our platform aggregates opportunities from multiple sources so you can search and apply from one central location.',
+    question: 'Can I cancel my Premium subscription anytime?',
+    answer: 'Yes, you can cancel your subscription at any time with no questions asked. If you cancel, you\'ll continue to have Premium access until the end of your billing period, after which you\'ll be moved to the free plan.',
   },
   {
-    question: 'Can I customize the generated cover letters?',
-    answer: 'Yes! After the AI generates your cover letter, you can review and edit it before applying. You can also select from multiple professional PDF templates to format your cover letter exactly how you want it.',
-  },
-  {
-    question: 'How secure is my data?',
-    answer: 'We take data security seriously. All your documents are encrypted and stored securely. Your personal information is only used to generate cover letters and is never shared with third parties. You can delete your data at any time from your dashboard.',
-  },
-  {
-    question: 'What happens if I exceed my free plan limits?',
-    answer: 'If you reach your monthly limit on the free plan, you can upgrade to the Pro plan for unlimited cover letters and features. Alternatively, you can wait until the next month when your limits reset.',
-  },
-  {
-    question: 'Can I track my application status?',
-    answer: 'Yes! Our application dashboard allows you to track all your job applications in one place. You can update the state and stage for each application (e.g., Applied, Interview, Offer, Rejected) to stay organized throughout your job search.',
+    question: 'How does the job search integration work?',
+    answer: 'We aggregate job listings from major job boards like LinkedIn, Indeed, and others. You can search, filter, and save jobs directly in our platform. You can also manually add job postings you find elsewhere. Everything is organized in one place.',
   },
   {
     question: 'Do you offer refunds?',
-    answer: 'Yes, we offer a 30-day money-back guarantee. If you\'re not satisfied with the Pro plan, contact us within 30 days of your purchase for a full refund, no questions asked.',
+    answer: 'Yes, we offer a 30-day money-back guarantee. If you\'re not satisfied with Premium for any reason within the first 30 days, contact our support team for a full refund.',
+  },
+  {
+    question: 'Can I use Resumr for international job applications?',
+    answer: 'Yes! Resumr supports multiple languages and can generate resumes and cover letters for international positions. Our AI understands cultural nuances and can adapt the tone and style based on the target country and industry.',
+  },
+  {
+    question: 'How is this different from using ChatGPT directly?',
+    answer: 'While ChatGPT is a powerful tool, Resumr is specifically built for job applications. We provide templates, document management, application tracking, job search integration, and ATS optimization all in one platform. Plus, our AI is fine-tuned for resume and cover letter generation with best practices built in.',
   },
 ]
 
 const FAQ = () => {
-  const [openIndex, setOpenIndex] = useState<number | null>(null) // All collapsed initially
-  const { elementRef, hasIntersected } = useIntersectionObserver({
-    threshold: 0.2,
-    rootMargin: '0px',
-    triggerOnce: true,
-  })
-  const [isAnimated, setIsAnimated] = useState(false)
-
-  useEffect(() => {
-    if (hasIntersected) {
-      setTimeout(() => {
-        setIsAnimated(true)
-      }, 200)
-    }
-  }, [hasIntersected])
+  const [openIndex, setOpenIndex] = useState<number | null>(0)
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index)
   }
 
   return (
-    <section id="faq" className="faq" ref={elementRef as React.RefObject<HTMLElement>}>
-      <div className="container">
-        <div className="section-header">
-          <h2>Frequently Asked Questions</h2>
-          <p>Everything you need to know about Resumr</p>
+    <section id="faq" className="py-24 bg-white">
+      <div className="container mx-auto px-6 lg:px-8">
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 rounded-full">
+            <HelpCircle className="w-4 h-4 text-blue-600" />
+            <span className="text-sm font-semibold text-blue-700">FAQ</span>
+          </div>
+          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-xl text-gray-600">
+            Everything you need to know about Resumr
+          </p>
         </div>
-        <div className="faq-list">
+
+        {/* FAQ List */}
+        <div className="max-w-3xl mx-auto space-y-4">
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className={`faq-item ${openIndex === index ? 'faq-item-open' : ''} ${isAnimated ? 'animate-in' : ''}`}
+              className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300"
               style={{
-                transitionDelay: `${index * 50}ms`,
+                animation: 'fadeIn 0.6s ease-out forwards',
+                animationDelay: `${index * 0.05}s`,
+                opacity: 0,
               }}
             >
               <button
-                className="faq-question"
                 onClick={() => toggleFAQ(index)}
-                aria-expanded={openIndex === index}
+                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
               >
-                <span>{faq.question}</span>
-                <svg
-                  className="faq-icon"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
+                <span className="text-lg font-semibold text-gray-900 pr-8">
+                  {faq.question}
+                </span>
+                <ChevronDown
+                  className={`w-5 h-5 text-primary flex-shrink-0 transition-transform duration-300 ${
+                    openIndex === index ? 'transform rotate-180' : ''
+                  }`}
+                />
               </button>
-              <div className="faq-answer">
-                <p>{faq.answer}</p>
+              
+              <div
+                className={`overflow-hidden transition-all duration-300 ${
+                  openIndex === index ? 'max-h-96' : 'max-h-0'
+                }`}
+              >
+                <div className="px-6 pb-5 text-gray-600 leading-relaxed">
+                  {faq.answer}
+                </div>
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Still Have Questions */}
+        <div className="mt-16 text-center">
+          <p className="text-gray-600 mb-4">
+            Still have questions?
+          </p>
+          <a
+            href="mailto:support@resumr.com"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-colors"
+          >
+            Contact Support
+          </a>
         </div>
       </div>
     </section>
@@ -112,4 +130,3 @@ const FAQ = () => {
 }
 
 export default FAQ
-

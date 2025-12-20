@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
+import { Menu, X } from 'lucide-react'
 import { useScrollPosition } from '@/hooks/useScrollPosition'
 import { useAuth } from '@/contexts/AuthContext'
 import AuthModal from '@/components/AuthModal'
-import './Header.css'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -15,6 +15,12 @@ const Header = () => {
 
   const handleLogin = () => {
     setAuthModalMode('login')
+    setIsAuthModalOpen(true)
+    setIsMenuOpen(false)
+  }
+
+  const handleSignup = () => {
+    setAuthModalMode('signup')
     setIsAuthModalOpen(true)
     setIsMenuOpen(false)
   }
@@ -49,55 +55,166 @@ const Header = () => {
 
   return (
     <>
-      <header className={`header ${isScrolled ? 'header-scrolled' : ''}`}>
-        <div className="container">
-          <div className="header-content">
-            <div className="logo">
-              <h1>Resumr</h1>
-            </div>
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          isScrolled
+            ? 'bg-white/90 backdrop-blur-lg shadow-md'
+            : 'bg-transparent'
+        }`}
+      >
+        <div className="container mx-auto px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            {/* Logo */}
+            <a href="/" className="flex items-center gap-2 group">
+              <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg group-hover:scale-110 transition-transform" />
+              <span className="text-2xl font-bold text-gray-900">Resumr</span>
+            </a>
+
+            {/* Desktop Navigation */}
             {!isAuthenticated && (
-              <nav ref={navRef} className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
-                <a href="#features" onClick={handleNavClick}>Features</a>
-                <a href="#testimonials" onClick={handleNavClick}>Testimonials</a>
-                <a href="#pricing" onClick={handleNavClick}>Pricing</a>
-                <a href="#faq" onClick={handleNavClick}>FAQ</a>
+              <nav className="hidden lg:flex items-center gap-8">
+                <a
+                  href="#features"
+                  className="text-gray-700 hover:text-primary font-medium transition-colors"
+                >
+                  Features
+                </a>
+                <a
+                  href="#how-it-works"
+                  className="text-gray-700 hover:text-primary font-medium transition-colors"
+                >
+                  How It Works
+                </a>
+                <a
+                  href="#pricing"
+                  className="text-gray-700 hover:text-primary font-medium transition-colors"
+                >
+                  Pricing
+                </a>
+                <a
+                  href="#testimonials"
+                  className="text-gray-700 hover:text-primary font-medium transition-colors"
+                >
+                  Testimonials
+                </a>
+                <a
+                  href="#faq"
+                  className="text-gray-700 hover:text-primary font-medium transition-colors"
+                >
+                  FAQ
+                </a>
               </nav>
             )}
-            <div className="header-actions">
+
+            {/* Actions */}
+            <div className="flex items-center gap-4">
               {isAuthenticated ? (
                 <>
-                  <span className="nav-user">👤 {user?.username}</span>
-                  <button 
-                    className="btn-secondary btn-glow-secondary"
+                  <span className="text-gray-700 font-medium hidden sm:block">
+                    👤 {user?.username}
+                  </span>
+                  <button
                     onClick={handleLogout}
+                    className="px-4 py-2 text-gray-700 hover:text-primary font-medium transition-colors"
                   >
                     Logout
                   </button>
                 </>
               ) : (
                 <>
-                  <button 
-                    className="btn-primary btn-glow"
+                  <button
                     onClick={handleLogin}
+                    className="hidden sm:block px-4 py-2 text-gray-700 hover:text-primary font-medium transition-colors"
                   >
                     Login
                   </button>
                   <button
+                    onClick={handleSignup}
+                    className="hidden sm:block px-6 py-2.5 bg-gradient-to-r from-primary to-purple-600 hover:from-primary-dark hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  >
+                    Get Started
+                  </button>
+
+                  {/* Mobile Menu Button */}
+                  <button
                     ref={menuButtonRef}
-                    className="menu-toggle"
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    className="lg:hidden p-2 text-gray-700 hover:text-primary transition-colors"
                     aria-label="Toggle menu"
                   >
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                    {isMenuOpen ? (
+                      <X className="w-6 h-6" />
+                    ) : (
+                      <Menu className="w-6 h-6" />
+                    )}
                   </button>
                 </>
               )}
             </div>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {!isAuthenticated && isMenuOpen && (
+          <nav
+            ref={navRef}
+            className="lg:hidden bg-white border-t border-gray-200 shadow-lg"
+          >
+            <div className="container mx-auto px-6 py-4 space-y-4">
+              <a
+                href="#features"
+                onClick={handleNavClick}
+                className="block py-2 text-gray-700 hover:text-primary font-medium transition-colors"
+              >
+                Features
+              </a>
+              <a
+                href="#how-it-works"
+                onClick={handleNavClick}
+                className="block py-2 text-gray-700 hover:text-primary font-medium transition-colors"
+              >
+                How It Works
+              </a>
+              <a
+                href="#pricing"
+                onClick={handleNavClick}
+                className="block py-2 text-gray-700 hover:text-primary font-medium transition-colors"
+              >
+                Pricing
+              </a>
+              <a
+                href="#testimonials"
+                onClick={handleNavClick}
+                className="block py-2 text-gray-700 hover:text-primary font-medium transition-colors"
+              >
+                Testimonials
+              </a>
+              <a
+                href="#faq"
+                onClick={handleNavClick}
+                className="block py-2 text-gray-700 hover:text-primary font-medium transition-colors"
+              >
+                FAQ
+              </a>
+              <div className="pt-4 border-t border-gray-200 space-y-2">
+                <button
+                  onClick={handleLogin}
+                  className="w-full px-4 py-2 text-gray-700 hover:text-primary font-medium transition-colors text-left"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={handleSignup}
+                  className="w-full px-6 py-2.5 bg-gradient-to-r from-primary to-purple-600 hover:from-primary-dark hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  Get Started
+                </button>
+              </div>
+            </div>
+          </nav>
+        )}
       </header>
+
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
@@ -108,4 +225,3 @@ const Header = () => {
 }
 
 export default Header
-
