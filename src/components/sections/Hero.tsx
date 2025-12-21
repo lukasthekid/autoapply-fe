@@ -127,7 +127,7 @@ const Hero = () => {
                   {/* Dashboard image */}
                   <div className="relative bg-gray-50">
                     <img
-                      src="/dashboard-overview.png"
+                      src="/dashboard-overview.webp"
                       alt="Resumr dashboard showing job tracking, interviews, and application analytics"
                       className="w-full h-auto select-none"
                       loading="lazy"
