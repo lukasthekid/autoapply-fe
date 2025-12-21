@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { jobsService } from '@/services/jobsService'
 import { authService } from '@/services/authService'
 import type { CreateCoverLetterRequest, UserProfile } from '@/types/api'
-import CoverLetterEditor from '@/components/CoverLetterEditor'
 import CoverLetterPreview from '@/components/CoverLetterPreview'
 
 const CoverLetterPage = () => {
@@ -128,12 +127,12 @@ const CoverLetterPage = () => {
   if (coverLetterText) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {/* Header */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Cover Letter</h1>
-              <p className="text-gray-600">Review and edit your cover letter text. Changes in the editor update the preview in real-time.</p>
+              <p className="text-gray-600">Click anywhere in the document body to edit. Use the toolbar to format your text.</p>
             </div>
             <button 
               className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors shadow-sm text-gray-700 font-medium"
@@ -169,42 +168,14 @@ const CoverLetterPage = () => {
             </div>
           )}
 
-          {/* Two Column Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[calc(100vh-200px)]">
-            {/* Left Panel - Editor */}
-            <div className="flex flex-col">
-              <div className="mb-3 flex items-center gap-2">
-                <svg className="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 20h9" />
-                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                </svg>
-                <h2 className="text-xl font-semibold text-gray-900">Edit Cover Letter</h2>
-              </div>
-              <CoverLetterEditor
-                content={coverLetterHtml}
-                onChange={setCoverLetterHtml}
-              />
-            </div>
-
-            {/* Right Panel - Preview */}
-            <div className="flex flex-col">
-              <div className="mb-3 flex items-center gap-2">
-                <svg className="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-                <h2 className="text-xl font-semibold text-gray-900">Preview</h2>
-              </div>
-              <div className="flex-1 border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
-                <CoverLetterPreview
-                  content={coverLetterHtml}
-                  userProfile={userProfile}
-                  companyName={state.companyName}
-                  jobTitle={state.jobTitle}
-                />
-              </div>
-            </div>
-          </div>
+          {/* Single Panel - Inline WYSIWYG Editor */}
+          <CoverLetterPreview
+            content={coverLetterHtml}
+            userProfile={userProfile}
+            companyName={state.companyName}
+            jobTitle={state.jobTitle}
+            onChange={setCoverLetterHtml}
+          />
         </div>
       </div>
     )
