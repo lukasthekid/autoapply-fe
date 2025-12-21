@@ -95,7 +95,7 @@ const DashboardPage = () => {
           <h2 className="text-2xl font-bold text-gray-900 m-0 leading-tight relative z-10 max-md:text-xl">Find Your Next Opportunity</h2>
           <p className="text-[15px] text-gray-600 leading-relaxed m-0 max-w-[500px] relative z-10 max-md:text-sm">
             Search thousands of jobs and discover your perfect match.
-            Apply with AI-powered cover letters.
+            Apply with personalised docuements.
           </p>
           <button 
             className="inline-flex items-center gap-2 px-5 py-3 text-[15px] font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 border-none rounded-xl cursor-pointer transition-all duration-300 mt-0 relative z-10 shadow-lg shadow-indigo-500/30 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-indigo-500/40 active:translate-y-0 max-md:w-full max-md:justify-center" 

@@ -93,7 +93,7 @@ const Hero = () => {
               </div>
             </div>
 
-            {/* Right Side: Visual Element with Placeholder */}
+            {/* Right Side: Dashboard Preview */}
             <div 
               className="relative animate-fade-in" 
               style={{ animationDelay: '0.3s', opacity: 0 }}
@@ -102,88 +102,87 @@ const Hero = () => {
               <div className="absolute -top-12 -right-12 w-80 h-80 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl animate-pulse" />
               <div className="absolute -bottom-12 -left-12 w-80 h-80 bg-gradient-to-tl from-secondary/20 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '0.5s' }} />
               
-              {/* Main Placeholder Container */}
-              <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl border border-gray-200/50 bg-white backdrop-blur-sm">
-                {/* Styled Placeholder */}
-                <div className="relative aspect-[4/3] bg-gradient-to-br from-indigo-50 via-purple-50 to-teal-50 p-8 flex items-center justify-center">
-                  {/* Grid pattern overlay */}
-                  <div className="absolute inset-0 opacity-30"
-                    style={{
-                      backgroundImage: `
-                        linear-gradient(to right, rgba(99, 102, 241, 0.1) 1px, transparent 1px),
-                        linear-gradient(to bottom, rgba(99, 102, 241, 0.1) 1px, transparent 1px)
-                      `,
-                      backgroundSize: '40px 40px'
-                    }}
-                  />
-                  
-                  {/* Decorative elements */}
-                  <div className="absolute top-8 left-8 w-32 h-32 bg-gradient-to-br from-primary/20 to-purple-300/20 rounded-2xl blur-xl" />
-                  <div className="absolute bottom-8 right-8 w-40 h-40 bg-gradient-to-tl from-secondary/20 to-teal-300/20 rounded-2xl blur-xl" />
-                  
-                  {/* Placeholder content */}
-                  <div className="relative z-10 text-center space-y-4 max-w-md">
-                    <div className="flex items-center justify-center">
-                      <div className="p-4 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50">
-                        <Sparkles className="w-12 h-12 text-primary" />
+              {/* Main container */}
+              <div className="relative z-10">
+                {/* Browser window mockup */}
+                <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden transform transition-transform duration-500 hover:scale-[1.02]">
+                  {/* Browser chrome */}
+                  <div className="bg-gradient-to-b from-gray-100 to-gray-50 px-4 py-3 flex items-center gap-3 border-b border-gray-200">
+                    <div className="flex gap-2">
+                      <div className="w-3 h-3 rounded-full bg-red-400 hover:bg-red-500 transition-colors" />
+                      <div className="w-3 h-3 rounded-full bg-yellow-400 hover:bg-yellow-500 transition-colors" />
+                      <div className="w-3 h-3 rounded-full bg-green-400 hover:bg-green-500 transition-colors" />
+                    </div>
+                    <div className="flex-1 flex items-center justify-center">
+                      <div className="bg-white rounded-lg px-4 py-1.5 text-xs text-gray-600 font-medium max-w-xs flex items-center gap-2 shadow-sm border border-gray-200">
+                        <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        <span className="hidden sm:inline">app.resumr.com/dashboard</span>
+                        <span className="sm:hidden">resumr.com</span>
                       </div>
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-800">Dashboard Preview</h3>
-                    <p className="text-gray-600">
-                      Track applications, generate tailored resumes, and land interviews faster
-                    </p>
-                    
-                    {/* Mock UI elements */}
-                    <div className="pt-4 space-y-3">
-                      <div className="h-3 bg-gradient-to-r from-primary/30 to-purple-300/30 rounded-full w-3/4 mx-auto" />
-                      <div className="h-3 bg-gradient-to-r from-purple-300/30 to-secondary/30 rounded-full w-1/2 mx-auto" />
-                      <div className="h-3 bg-gradient-to-r from-secondary/30 to-teal-300/30 rounded-full w-2/3 mx-auto" />
-                    </div>
+                  </div>
+                  
+                  {/* Dashboard image */}
+                  <div className="relative bg-gray-50">
+                    <img
+                      src="/dashboard-overview.png"
+                      alt="Resumr dashboard showing job tracking, interviews, and application analytics"
+                      className="w-full h-auto select-none"
+                      loading="lazy"
+                      draggable="false"
+                    />
                   </div>
                 </div>
                 
-                {/* Floating stat cards - repositioned */}
-                <div 
-                  className="absolute -left-6 top-[20%] bg-white rounded-2xl shadow-2xl p-5 border border-gray-100 animate-fade-in hover:scale-110 transition-transform duration-300" 
-                  style={{ animationDelay: '0.8s', opacity: 0 }}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl">
-                      <Zap className="w-6 h-6 text-green-600" />
-                    </div>
-                    <div>
-                      <div className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">10x</div>
-                      <div className="text-xs font-medium text-gray-600">Faster</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div 
-                  className="absolute -right-6 top-[55%] bg-white rounded-2xl shadow-2xl p-5 border border-gray-100 animate-fade-in hover:scale-110 transition-transform duration-300" 
-                  style={{ animationDelay: '1s', opacity: 0 }}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl">
-                      <CheckCircle2 className="w-6 h-6 text-purple-600" />
-                    </div>
-                    <div>
-                      <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">98%</div>
-                      <div className="text-xs font-medium text-gray-600">Success</div>
+                {/* Stats grid below the mockup */}
+                <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  {/* 10x Faster */}
+                  <div 
+                    className="bg-white rounded-xl shadow-lg p-5 border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in"
+                    style={{ animationDelay: '0.6s', opacity: 0 }}
+                  >
+                    <div className="flex flex-col items-center text-center">
+                      <div className="p-3 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl mb-3">
+                        <Zap className="w-6 h-6 text-green-600" />
+                      </div>
+                      <div className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-1">
+                        10x
+                      </div>
+                      <div className="text-xs font-semibold text-gray-600">Faster Applications</div>
                     </div>
                   </div>
-                </div>
-
-                <div 
-                  className="absolute -left-6 bottom-[15%] bg-white rounded-2xl shadow-2xl p-5 border border-gray-100 animate-fade-in hover:scale-110 transition-transform duration-300" 
-                  style={{ animationDelay: '1.2s', opacity: 0 }}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-xl">
-                      <TrendingUp className="w-6 h-6 text-blue-600" />
+                  
+                  {/* 98% Success */}
+                  <div 
+                    className="bg-white rounded-xl shadow-lg p-5 border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in"
+                    style={{ animationDelay: '0.7s', opacity: 0 }}
+                  >
+                    <div className="flex flex-col items-center text-center">
+                      <div className="p-3 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl mb-3">
+                        <CheckCircle2 className="w-6 h-6 text-purple-600" />
+                      </div>
+                      <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-1">
+                        98%
+                      </div>
+                      <div className="text-xs font-semibold text-gray-600">Success Rate</div>
                     </div>
-                    <div>
-                      <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">3x</div>
-                      <div className="text-xs font-medium text-gray-600">Interviews</div>
+                  </div>
+                  
+                  {/* 3x Interviews */}
+                  <div 
+                    className="bg-white rounded-xl shadow-lg p-5 border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in"
+                    style={{ animationDelay: '0.8s', opacity: 0 }}
+                  >
+                    <div className="flex flex-col items-center text-center">
+                      <div className="p-3 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-xl mb-3">
+                        <TrendingUp className="w-6 h-6 text-blue-600" />
+                      </div>
+                      <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-1">
+                        3x
+                      </div>
+                      <div className="text-xs font-semibold text-gray-600">More Interviews</div>
                     </div>
                   </div>
                 </div>
