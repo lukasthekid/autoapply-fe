@@ -49,30 +49,6 @@ function LoginComponent() {
 }
 ```
 
-### Fetching Templates
-
-```tsx
-import { useTemplates } from '@/hooks/useTemplates'
-
-function TemplatesComponent() {
-  const { templates, isLoading, error } = useTemplates()
-
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error: {error.message}</div>
-
-  return (
-    <div>
-      {templates.map(template => (
-        <div key={template.id}>
-          <h3>{template.name}</h3>
-          <p>Version: {template.version}</p>
-        </div>
-      ))}
-    </div>
-  )
-}
-```
-
 ### Direct API Calls
 
 ```tsx
