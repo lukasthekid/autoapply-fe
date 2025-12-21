@@ -4,6 +4,7 @@ import { jobsService } from '@/services/jobsService'
 import { authService } from '@/services/authService'
 import type { CreateCoverLetterRequest, UserProfile } from '@/types/api'
 import CoverLetterPreview from '@/components/CoverLetterPreview'
+import { generateATSFriendlyPDF } from '@/utils/pdfGenerator'
 
 const CoverLetterPage = () => {
   const navigate = useNavigate()
@@ -33,6 +34,7 @@ const CoverLetterPage = () => {
   const [coverLetterText, setCoverLetterText] = useState(state?.coverLetterText || '')
   const [coverLetterHtml, setCoverLetterHtml] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [isDownloading, setIsDownloading] = useState(false)
 
   // Helper function to convert plain text to HTML
   const convertTextToHtml = (text: string): string => {
@@ -95,6 +97,36 @@ const CoverLetterPage = () => {
     }
   }
 
+  const handleDownloadPDF = () => {
+    if (!coverLetterHtml) {
+      setError('No cover letter content to download')
+      return
+    }
+
+    setIsDownloading(true)
+    setError(null)
+
+    try {
+      // Generate ATS-friendly PDF using pdfmake
+      generateATSFriendlyPDF({
+        content: coverLetterHtml,
+        userProfile,
+        jobTitle: state?.jobTitle,
+        companyName: state?.companyName,
+      })
+      
+      // Brief delay before resetting state
+      setTimeout(() => {
+        setIsDownloading(false)
+      }, 500)
+      
+    } catch (err: any) {
+      console.error('PDF generation error:', err)
+      setError('Failed to generate PDF. Please try again.')
+      setIsDownloading(false)
+    }
+  }
+
 
   // If no job data, redirect back
   if (!state) {
@@ -134,27 +166,50 @@ const CoverLetterPage = () => {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Cover Letter</h1>
               <p className="text-gray-600">Click anywhere in the document body to edit. Use the toolbar to format your text.</p>
             </div>
-            <button 
-              className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors shadow-sm text-gray-700 font-medium"
-              onClick={() => {
-                if (state?.returnPath) {
-                  navigate(state.returnPath, {
-                    state: {
-                      selectedJob: state.job,
-                      restoreJob: true,
-                      searchState: state.searchState,
-                    }
-                  })
-                } else {
-                  navigate(-1)
-                }
-              }}
-            >
-              <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M19 12H5M12 19l-7-7 7-7"/>
-              </svg>
-              Back
-            </button>
+            <div className="flex gap-3">
+              <button 
+                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handleDownloadPDF}
+                disabled={isDownloading}
+              >
+                {isDownloading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></div>
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Download PDF
+                  </>
+                )}
+              </button>
+              <button 
+                className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors shadow-sm text-gray-700 font-medium"
+                onClick={() => {
+                  if (state?.returnPath) {
+                    navigate(state.returnPath, {
+                      state: {
+                        selectedJob: state.job,
+                        restoreJob: true,
+                        searchState: state.searchState,
+                      }
+                    })
+                  } else {
+                    navigate(-1)
+                  }
+                }}
+              >
+                <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Back
+              </button>
+            </div>
           </div>
 
           {error && (

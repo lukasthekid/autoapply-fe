@@ -17,32 +17,29 @@ interface CoverLetterPreviewProps {
 const CoverLetterPreview = ({
   content,
   userProfile,
-  companyName,
   jobTitle,
   onChange,
 }: CoverLetterPreviewProps) => {
-  // Format current date
-  const currentDate = new Date().toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
 
-  // Build user address
-  const userAddress = userProfile
-    ? [
-        userProfile.street,
-        userProfile.city,
-        userProfile.postcode,
-        userProfile.country_display || userProfile.country,
-      ]
+  // Build user information
+  const userName = userProfile
+    ? [userProfile.first_name, userProfile.last_name].filter(Boolean).join(' ').toUpperCase()
+    : ''
+
+  const userLocation = userProfile
+    ? [userProfile.city, userProfile.country_display || userProfile.country]
         .filter(Boolean)
         .join(', ')
     : ''
 
-  const userName = userProfile
-    ? [userProfile.first_name, userProfile.last_name].filter(Boolean).join(' ')
-    : ''
+  // Build single-line contact info
+  const contactInfo = [
+    userProfile?.phone_number,
+    userProfile?.email,
+    userLocation,
+  ].filter(Boolean)
+
+  const subtitle = jobTitle || 'Cover Letter'
 
   // Initialize Tiptap editor
   const editor = useEditor({
@@ -63,7 +60,7 @@ const CoverLetterPreview = ({
     content: content,
     editorProps: {
       attributes: {
-        class: 'prose prose-sm md:prose-base max-w-none focus:outline-none text-gray-800 leading-relaxed min-h-[300px]',
+        class: 'prose prose-sm md:prose-base max-w-none focus:outline-none text-gray-800 leading-relaxed min-h-[200px] text-sm md:text-base',
       },
     },
     onUpdate: ({ editor }) => {
@@ -212,68 +209,44 @@ const CoverLetterPreview = ({
         </div>
       </div>
 
-      {/* Paper-like container - Now with editable content */}
-      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg hover:shadow-xl transition-shadow">
-        {/* A4-like content area */}
-        <div className="px-8 py-10 md:px-16 md:py-12">
-          {/* Header - User Contact Information (Non-editable) */}
-          <div className="mb-8 pb-6 border-b border-gray-200">
+      {/* A4 Paper Container */}
+      <div className="max-w-[210mm] mx-auto bg-white shadow-2xl hover:shadow-3xl transition-shadow min-h-[297mm]">
+        {/* A4 Content Area with proper padding */}
+        <div className="flex flex-col px-12 py-8 md:px-20 md:py-12">
+          {/* Professional Header */}
+          <div className="mb-12">
+            {/* Name - Large, Bold, All Caps */}
             {userName && (
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-wide mb-2 leading-tight">
                 {userName}
               </h1>
             )}
-            <div className="space-y-1 text-sm text-gray-600">
-              {userProfile?.email && (
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="2" y="4" width="20" height="16" rx="2" />
-                    <path d="M22 7l-10 7L2 7" />
-                  </svg>
-                  <span>{userProfile.email}</span>
-                </div>
-              )}
-              {userProfile?.phone_number && (
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                  </svg>
-                  <span>{userProfile.phone_number}</span>
-                </div>
-              )}
-              {userAddress && (
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
-                  <span>{userAddress}</span>
-                </div>
-              )}
+            
+            {/* Subtitle - Job Title or "Cover Letter" */}
+            <div className="text-base md:text-lg text-gray-600 mb-3">
+              {subtitle}
             </div>
+            
+            {/* Single Line Contact Info */}
+            {contactInfo.length > 0 && (
+              <div className="text-xs md:text-sm text-gray-500 leading-relaxed">
+                {contactInfo.join(' | ')}
+              </div>
+            )}
+            
+            {/* Separator Line */}
+            <div className="mt-4 border-t-2 border-gray-900"></div>
           </div>
 
-          {/* Date (Non-editable) */}
-          <div className="mb-8 text-sm text-gray-600">
-            {currentDate}
+          {/* Cover Letter Heading */}
+          <div className="mb-8">
+            <h2 className="text-lg md:text-xl font-bold text-gray-900 tracking-wide">
+              COVER LETTER
+            </h2>
           </div>
-
-          {/* Recipient Information (Non-editable) */}
-          {(companyName || jobTitle) && (
-            <div className="mb-8 space-y-1 text-gray-700">
-              {companyName && (
-                <div className="font-semibold">{companyName}</div>
-              )}
-              {jobTitle && (
-                <div className="text-sm text-gray-600">
-                  Re: {jobTitle}
-                </div>
-              )}
-            </div>
-          )}
 
           {/* Editable Cover Letter Body - Tiptap Editor */}
-          <div className="cursor-text">
+          <div className="flex-1 cursor-text">
             <EditorContent editor={editor} />
           </div>
         </div>
