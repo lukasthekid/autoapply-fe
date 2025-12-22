@@ -4,6 +4,8 @@ import { jobsService } from '@/services/jobsService'
 import { authService } from '@/services/authService'
 import type { CreateCoverLetterRequest, UserProfile } from '@/types/api'
 import CoverLetterPreview from '@/components/CoverLetterPreview'
+import CoverLetterPreviewModern from '@/components/CoverLetterPreviewModern'
+import CoverLetterPreviewClassicSidebar from '@/components/CoverLetterPreviewClassicSidebar'
 import { generateATSFriendlyPDF } from '@/utils/pdfGenerator'
 
 const CoverLetterPage = () => {
@@ -35,6 +37,7 @@ const CoverLetterPage = () => {
   const [coverLetterHtml, setCoverLetterHtml] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isDownloading, setIsDownloading] = useState(false)
+  const [selectedLayout, setSelectedLayout] = useState<'classic' | 'modern' | 'sidebar'>('classic')
 
   // Helper function to convert plain text to HTML
   const convertTextToHtml = (text: string): string => {
@@ -113,6 +116,7 @@ const CoverLetterPage = () => {
         userProfile,
         jobTitle: state?.jobTitle,
         companyName: state?.companyName,
+        layout: selectedLayout,
       })
       
       // Brief delay before resetting state
@@ -164,7 +168,41 @@ const CoverLetterPage = () => {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Cover Letter</h1>
-              <p className="text-gray-600">Click anywhere in the document body to edit. Use the toolbar to format your text.</p>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <p className="text-gray-600">Click anywhere in the document body to edit.</p>
+                <div className="flex items-center bg-gray-200 p-1 rounded-lg shadow-inner w-fit">
+                  <button 
+                    onClick={() => setSelectedLayout('classic')}
+                    className={`px-4 py-1.5 rounded-md text-sm font-semibold transition-all ${
+                      selectedLayout === 'classic' 
+                        ? 'bg-white text-blue-600 shadow-sm' 
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Classic
+                  </button>
+                  <button 
+                    onClick={() => setSelectedLayout('modern')}
+                    className={`px-4 py-1.5 rounded-md text-sm font-semibold transition-all ${
+                      selectedLayout === 'modern' 
+                        ? 'bg-white text-blue-600 shadow-sm' 
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Modern
+                  </button>
+                  <button 
+                    onClick={() => setSelectedLayout('sidebar')}
+                    className={`px-4 py-1.5 rounded-md text-sm font-semibold transition-all ${
+                      selectedLayout === 'sidebar' 
+                        ? 'bg-white text-blue-600 shadow-sm' 
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Sidebar
+                  </button>
+                </div>
+              </div>
             </div>
             <div className="flex gap-3">
               <button 
@@ -224,13 +262,31 @@ const CoverLetterPage = () => {
           )}
 
           {/* Single Panel - Inline WYSIWYG Editor */}
-          <CoverLetterPreview
-            content={coverLetterHtml}
-            userProfile={userProfile}
-            companyName={state.companyName}
-            jobTitle={state.jobTitle}
-            onChange={setCoverLetterHtml}
-          />
+          {selectedLayout === 'modern' ? (
+            <CoverLetterPreviewModern
+              content={coverLetterHtml}
+              userProfile={userProfile}
+              companyName={state.companyName}
+              jobTitle={state.jobTitle}
+              onChange={setCoverLetterHtml}
+            />
+          ) : selectedLayout === 'sidebar' ? (
+            <CoverLetterPreviewClassicSidebar
+              content={coverLetterHtml}
+              userProfile={userProfile}
+              companyName={state.companyName}
+              jobTitle={state.jobTitle}
+              onChange={setCoverLetterHtml}
+            />
+          ) : (
+            <CoverLetterPreview
+              content={coverLetterHtml}
+              userProfile={userProfile}
+              companyName={state.companyName}
+              jobTitle={state.jobTitle}
+              onChange={setCoverLetterHtml}
+            />
+          )}
         </div>
       </div>
     )
